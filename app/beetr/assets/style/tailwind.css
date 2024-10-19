@@ -1,0 +1,12 @@
+/* ./assets/css/tailwind.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  @font-face {
+    font-family: 'Inter variablefont slnt wght';
+    font-weight: 400;
+    src: url(../font-family/Inter-VariableFont_slnt.wght.ttf) format("woff");
+  }
+}

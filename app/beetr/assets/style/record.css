@@ -1,0 +1,100 @@
+.styles_widget__content__GAekn {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  border-radius: inherit
+}
+.styles_widget__content__GAekn.styles_widget__content--snap__v7zti {
+  width: var(--widget-width);
+  height: var(--widget-height)
+}
+
+
+
+
+.styles_link-widget-base__zEwMR {
+  display: flex;
+  padding: 1.5rem
+}
+
+@media screen and (max-width: 400px) {
+  .styles_link-widget-base__zEwMR {
+      padding:1.25rem
+  }
+
+  .styles_link-widget-base--1x4__KmQGD {
+      padding: .875rem 1.25rem
+  }
+}
+.styles_link-widget-base__zEwMR.styles_link-widget-base--maps__371fZ {
+  padding: 0
+}
+
+
+.styles_link-widget-base--1x4__KmQGD {
+  padding: .875rem 1.5rem
+}
+
+@media (min-width: 350px) {
+  .styles_link-widget-base--1x4__KmQGD {
+      padding-top:18px;
+      padding-bottom: 18px
+  }
+}
+
+@media (min-width: 375px) {
+  .styles_link-widget-base--1x4__KmQGD {
+      padding-top:1.25rem;
+      padding-bottom: 1.25rem
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .styles_link-widget-base__zEwMR {
+      padding:1.25rem
+  }
+
+  .styles_link-widget-base--1x4__KmQGD {
+      padding: .875rem 1.25rem
+  }
+}
+
+
+.styles_link-widget___Cd4d {
+  display: flex;
+  height: 100%;
+  width: 100%
+}
+
+.styles_link-widget___Cd4d.styles_link-widget--4x2__xAkeL,.styles_link-widget___Cd4d.styles_link-widget--4x4__YkWAV {
+  flex-direction: column;
+  align-items: flex-start
+}
+.styles_link-widget___Cd4d.styles_link-widget--2x4__KAleD .styles_bio__EQplv {
+  display: none
+}
+
+@media (min-width: 375px) {
+  .styles_link-widget___Cd4d.styles_link-widget--2x4__KAleD .styles_bio__EQplv {
+      display:block;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2
+  }
+}
+@media screen and (max-width: 389px) {
+  .styles_link-widget___Cd4d.styles_link-widget--2x2__Lk0SG .styles_follow-button__8DSDT {
+      display:none!important
+  }
+}
+
+
+.styles_link-widget--2x2__fvUqB .styles_og__Rq6el {
+  max-width: 60%
+}
+.styles_link-widget--1x4__orjBB .styles_host__zTVRc,.styles_link-widget--1x4__orjBB .styles_og-empty__90Vy_,.styles_link-widget--1x4__orjBB .styles_og__Rq6el,.styles_link-widget--2x2__fvUqB .styles_og-empty__90Vy_,.styles_link-widget--2x2__fvUqB .styles_og__Rq6el {
+  display: none
+}

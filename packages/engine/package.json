@@ -1,0 +1,25 @@
+{
+  "name": "@beetr/engine",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "main": "./index.ts",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@beetr/constant": "workspace:^",
+    "gridstack": "^10.3.1",
+    "tailwind-config": "workspace:^",
+    "tailwindcss": "^3.2.7",
+    "vue": "^3.4.37"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.1.2",
+    "sass": "^1.60.0",
+    "sass-loader": "^13.2.1",
+    "vite": "^5.4.1"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "name": "beetr",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:test": "nuxt build --mode staging",
+    "build:prod": "nuxt build --mode production",
+    "dev": "nuxt dev --host --open",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@ant-design/colors": "^7.1.0",
+    "@beetr/constant": "workspace:^",
+    "@beetr/engine": "workspace:^",
+    "@beetr/materials": "workspace:^",
+    "@element-plus/icons-vue": "^2.1.0",
+    "@element-plus/nuxt": "^1.0.10",
+    "@pinia/nuxt": "^0.4.7",
+    "@tiptap/extension-placeholder": "^2.0.3",
+    "@tiptap/pm": "^2.0.3",
+    "@tiptap/starter-kit": "^2.0.3",
+    "@tiptap/vue-3": "^2.0.3",
+    "async-validator": "^4.2.5",
+    "axios": "^1.7.7",
+    "cubic-bezier": "^0.1.2",
+    "element-plus": "^2.3.8",
+    "nuxt": "^3.13.0",
+    "pinia": "^2.0.33",
+    "popmotion": "^11.0.5",
+    "stylefire": "^7.0.3",
+    "tailwind-config": "workspace:^",
+    "tailwindcss": "^3.2.7",
+    "vue": "^3.4.37",
+    "vue-router": "latest"
+  },
+  "devDependencies": {
+    "@nuxtjs/device": "^3.1.1",
+    "@nuxtjs/eslint-config-typescript": "^12.1.0",
+    "@nuxtjs/tailwindcss": "^6.12.0",
+    "@types/canvas-confetti": "^1.6.0",
+    "@types/node": "^18.15.5",
+    "@vitejs/plugin-vue": "^5.1.2",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.21",
+    "sass": "^1.60.0",
+    "sass-loader": "^13.2.1",
+    "tailwind-config": "workspace:^",
+    "vite": "^5.4.1"
+  }
+}
