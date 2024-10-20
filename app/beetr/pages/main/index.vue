@@ -34,7 +34,7 @@ onMounted(async () => {
     await queryUserInfo()
     window.addEventListener('message', handleMessage)
 
-    window.postMessage({
+    window.parent.window.postMessage({
         eventType: 'iframeLoaded',
         query: {
 
@@ -54,9 +54,11 @@ const aboutUs = () => {
 const handleMessage = (event: MessageEvent) => {
     const { data } = event
     const { eventType, query } = data
+
     switch (eventType) {
         case 'env':
             browserEnv.value = query.browserEnv
+            console.log(browserEnv.value, query)
             deviceEnv.value = query.deviceEnv
             break;
     }
@@ -92,7 +94,7 @@ const queryUserInfo = async () => {
             <div class="mb-10 flex flex-col px-4 xl:mb-0 xl:mr-20 xl:flex-1 xl:px-0"></div>
 
             <!-- 右边可拖动的网格布局 -->
-            <moduleContainer v-if="deviceEnv" :deviceEnv="deviceEnv" :editStatus="isEdit">
+            <moduleContainer v-if="deviceEnv" :deviceEnv="deviceEnv" :editStatus="isEdit" :browserEnv="browserEnv">
                 <!-- :isLoading="isLoading" ref="moduleGridRef" :current-step="currentStep"
                 @changeShow="changeShow" @onGridEdit="onGridEdit" @gridTouched="gridTouched" -->
             </moduleContainer>

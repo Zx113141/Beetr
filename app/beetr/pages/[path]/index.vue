@@ -1,77 +1,83 @@
 <script setup lang="ts">
-import { BROWSER_ENV, } from '@beetr/constant'
-import { debounce } from '@beetr/hooks'
-const route = useRoute()
+import { BROWSER_ENV } from "@beetr/constant";
+import { debounce } from "@beetr/hooks";
+const route = useRoute();
 
-const brwoserEnv = ref<keyof typeof BROWSER_ENV>('desktop')
-const deviceEnv = ref<any>('desktop')
+const browserEnv = ref<keyof typeof BROWSER_ENV>("desktop");
+const deviceEnv = ref<any>("desktop");
+const iframeRef = ref<HTMLIFrameElement | null>(null);
 // hooks
 onMounted(() => {
-    window.addEventListener('message', handleFrameMessage);
+    window.addEventListener("message", handleFrameMessage);
     if (!checkBrowserEnv()) {
-        window.addEventListener('resize', debounce(handleWindowResize, 300))
-    } else {
-        brwoserEnv.value = BROWSER_ENV.mobile
-        deviceEnv.value = BROWSER_ENV.mobile
+        window.addEventListener("resize", debounce(handleWindowResize, 300));
     }
     // 主动触发一次
-    handleWindowResize(null)
-})
+    handleWindowResize(null);
+});
 
 // function
 const handleFrameMessage = (e: MessageEvent) => {
-    console.log(e);
-}
+    if (e.data.eventType == "iframeLoaded") {
+        postEnv();
+    }
+};
 
 const checkBrowserEnv = () => {
-    return /iPhone|Android/.test(window.navigator.userAgent)
-}
+    return /iPhone|Android/.test(window.navigator.userAgent);
+};
 
 const handleWindowResize = (e: UIEvent | null) => {
     if (!e) {
-        brwoserEnv.value = BROWSER_ENV.desktop
-        deviceEnv.value = window.innerWidth > 1280 ? BROWSER_ENV.desktop : BROWSER_ENV.mobile
-        postEnv()
-        return
+        browserEnv.value = checkBrowserEnv()
+            ? BROWSER_ENV.mobile
+            : BROWSER_ENV.desktop;
+        deviceEnv.value =
+            window.innerWidth > 1280 ? BROWSER_ENV.desktop : BROWSER_ENV.mobile;
+        postEnv();
+        return;
     }
     if ((e.target as Window).innerWidth > 1280) {
-        brwoserEnv.value = BROWSER_ENV.desktop
-        deviceEnv.value = BROWSER_ENV.desktop
+        browserEnv.value = BROWSER_ENV.desktop;
+        deviceEnv.value = BROWSER_ENV.desktop;
     } else {
-        if (checkBrowserEnv()) {
-            brwoserEnv.value = BROWSER_ENV.mobile
-            deviceEnv.value = BROWSER_ENV.mobile
-        } else {
-            brwoserEnv.value = BROWSER_ENV.desktop
-            deviceEnv.value = BROWSER_ENV.mobile
-        }
+        browserEnv.value = BROWSER_ENV.desktop;
+        deviceEnv.value = BROWSER_ENV.mobile;
     }
-    postEnv()
-}
+    postEnv();
+};
 const postEnv = () => {
-    console.log(1);
-    window.postMessage({
-        eventType: 'env',
-        query: {
-            brwoserEnv: brwoserEnv.value,
-            deviceEnv: brwoserEnv.value,
-        }
-    })
-}
+    iframeRef.value?.contentWindow?.postMessage(
+        {
+            eventType: "env",
+            query: {
+                browserEnv: browserEnv.value,
+                deviceEnv: deviceEnv.value,
+            },
+        },
+        "*"
+    );
+    // window.postMessage(
 
-
+    // );
+};
 </script>
 
 <template>
-    <div
-        :class="['min-h-screen flex flex-col items-center bg-[#F8F8F8]', $device.isMobile ? 'browser-mobile justify-between' : 'browser-desktop justify-center']">
-        <div class="frame_container flex"
-            :class="[$device.isMobile ? 'realmobile' : '', deviceEnv == BROWSER_ENV.mobile ? 'frame_container-mobile' : '']">
+    <div :class="[
+        'min-h-screen flex flex-col items-center bg-[#F8F8F8]',
+        $device.isMobile
+            ? 'browser-mobile justify-between'
+            : 'browser-desktop justify-center',
+    ]">
+        <div class="frame_container flex" :class="[
+            $device.isMobile ? 'realmobile' : '',
+            deviceEnv == BROWSER_ENV.mobile ? 'frame_container-mobile' : '',
+        ]">
             <iframe ref="iframeRef" :data-editor-iframe="true" class="frame_container-iframe backgroundColor"
                 :style="'visibility: visible'" :src="`/main?path=${route.params.path}`">
             </iframe>
         </div>
-
     </div>
 </template>
 <style lang="scss" scoped>
@@ -92,8 +98,10 @@ const postEnv = () => {
         width: 452px;
         border: 12px solid #fff;
         box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 25px 31px rgba(0, 0, 0, 0.02),
-            0 16.2037px 18.1551px rgba(0, 0, 0, 0.015), 0 9.62963px 9.87407px rgba(0, 0, 0, 0.012),
-            0 5px 5.0375px rgba(0, 0, 0, 0.01), 0 2.03704px 2.52593px rgba(0, 0, 0, 0.008),
+            0 16.2037px 18.1551px rgba(0, 0, 0, 0.015),
+            0 9.62963px 9.87407px rgba(0, 0, 0, 0.012),
+            0 5px 5.0375px rgba(0, 0, 0, 0.01),
+            0 2.03704px 2.52593px rgba(0, 0, 0, 0.008),
             0 0.462963px 1.21991px rgba(0, 0, 0, 0.005);
         border-radius: 64px;
         margin-bottom: 5rem;

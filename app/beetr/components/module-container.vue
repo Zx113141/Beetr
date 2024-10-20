@@ -33,7 +33,8 @@ import {
   type ENV_ENUM,
   STEP_PROCESS,
   BROWSER_ENV,
-  EDIT_TYPE
+  EDIT_TYPE,
+  BROWSER_ENV_GRID_COLUMN,
 } from "@beetr/constant";
 import {
   GridContainer,
@@ -47,7 +48,7 @@ import { BeetrModules } from "@beetr/materials";
 import { _userStore } from "~/store/user";
 import { _widgetStore } from "~/store/widget";
 import { _envStore } from "~/store/env";
-
+let flag = false
 // 注册Component
 const ComponentsReflect: any = {};
 BeetrModules.forEach((item) => {
@@ -56,14 +57,14 @@ BeetrModules.forEach((item) => {
 
 const props = defineProps<{
   deviceEnv: keyof typeof BROWSER_ENV;
-  editStatus:boolean
+  editStatus: boolean;
+  browserEnv: keyof typeof BROWSER_ENV;
 }>();
-
 
 const widgetStore = _widgetStore();
 const { userAppList } = storeToRefs(widgetStore);
 
-// TODO 
+// TODO
 const editObject = reactive({
   visibleActionId: "", // 激活widget id
   isEditing: false, // 是否正在编辑
@@ -76,13 +77,25 @@ const onHover = (id: string) => {
   editObject.visibleActionId = id;
 };
 
+
+onMounted(async () => {
+  await render(userAppList.value)
+})
 // grid instance
 const gridRef = ref<InstanceType<typeof GridContainer> | null>(null);
 
-
-const onRemove =async (id:string) => { 
-  gridRef!.value!.remove(`w_${id}`)
-  await widgetStore.onDelete(id)
+const render = async (newList: IUserAppItem[]) => {
+  if (newList.length && gridRef.value) {
+    await nextTick(() => {
+      if (gridRef.value && !gridRef.value?.grid) {
+        gridRef.value.init();
+      }
+    });
+  }
+};
+const onRemove = async (id: string) => {
+  gridRef!.value!.remove(`w_${id}`);
+  await widgetStore.onDelete(id);
 };
 const onWidgetResize = (item: IUserAppItem) => {
   const el = document.getElementById(`w_${item.id}`);
@@ -113,32 +126,91 @@ const onWidgetUpdate = (widgets: IUserAppItem[]) => {
 };
 
 const onGridUpdateWidgets = async (updateList: GridStackNode[]) => {
+  if (flag) return
   const newList: IUserAppItem[] = [];
   updateList.forEach((widget: GridStackNode) => {
-    const item = userAppList.value.find((i: IUserAppItem) => `w_${i.id}` == widget.id) as IUserAppItem
-    item.cusStyle[props.deviceEnv].w = widget.w!
-    item.cusStyle[props.deviceEnv].h = widget.h!
-    item.position[props.deviceEnv].x = widget.x!
-    item.position[props.deviceEnv].y = widget.y!
-    newList.push(item)
+    const item = userAppList.value.find(
+      (i: IUserAppItem) => `w_${i.id}` == widget.id
+    ) as IUserAppItem;
+    item.cusStyle[props.deviceEnv].w = widget.w!;
+    item.cusStyle[props.deviceEnv].h = widget.h!;
+    item.position[props.deviceEnv].x = widget.x!;
+    item.position[props.deviceEnv].y = widget.y!;
+    newList.push(item);
   });
-  await onWidgetUpdate(newList)
+  await onWidgetUpdate(newList);
 };
+
+const columnChange = (newEnv: keyof typeof BROWSER_ENV) => {
+  // 更新 marginconst gridMargin = computed(() => {
+  const margin = props.browserEnv === BROWSER_ENV.mobile ? '10px' : '15px'
+  const width = window.parent.document.documentElement.clientWidth
+  let cellHeight = props.deviceEnv === BROWSER_ENV.mobile ? width / 4 : 105
+  console.log(props.deviceEnv, props.browserEnv)
+  if (props.deviceEnv == BROWSER_ENV.mobile && props.browserEnv == BROWSER_ENV.desktop) {
+    cellHeight = 411 / 4
+    console.log(cellHeight,)
+  }
+  console.log(cellHeight, margin, width)
+  flag = true
+  gridRef.value && gridRef.value.grid && gridRef.value.grid.cellHeight(cellHeight)
+  gridRef.value && gridRef.value.grid && gridRef.value.grid.margin(margin)
+  gridRef.value && gridRef.value.grid && gridRef.value.grid.column(12, (column: number, oldColumn: number, nodes: GridStackNode[], oldNodes: GridStackNode[]) => {
+    oldNodes.forEach((item, index) => {
+      // 1763123482314510338
+      const oldNode = userAppList.value.find((app: IUserAppItem) => 'w_' + app.id === item.id) as IUserAppItem
+      item.x = oldNode.position[newEnv].x
+      item.y = oldNode.position[newEnv].y
+      item.w = oldNode.cusStyle[newEnv].w
+      item.h = oldNode.cusStyle[newEnv].h
+      nodes.push(item)
+
+    })
+
+    oldNodes.length = 0;
+
+  })
+  gridRef.value && gridRef.value.grid && gridRef.value.grid.column(BROWSER_ENV_GRID_COLUMN[newEnv], (column: number, oldColumn: number, nodes: GridStackNode[], oldNodes: GridStackNode[]) => {
+    oldNodes.forEach((item, index) => {
+      // 1763123482314510338
+      const oldNode = userAppList.value.find((app: IUserAppItem) => 'w_' + app.id === item.id) as IUserAppItem
+      item.x = oldNode.position[newEnv].x
+      item.y = oldNode.position[newEnv].y
+      item.w = oldNode.cusStyle[newEnv].w
+      item.h = oldNode.cusStyle[newEnv].h
+      nodes.push(item)
+
+    })
+
+    oldNodes.length = 0;
+  })
+
+  flag = false
+
+}
+
 
 watch(
   () => userAppList,
   async (newList) => {
-    if (newList.value.length && gridRef.value) {
-      await nextTick(() => {
-        if (!gridRef.value?.grid) {
-          gridRef.value.init();
-        }
-      });
-    }
+    render(newList.value)
   },
   {
     deep: true,
   }
+);
+
+watch(
+  () => props.deviceEnv,
+  (newEnv, oldEnv) => {
+    if (newEnv == oldEnv || !gridRef.value) return
+    // grid.off('change', updateGridLayout)
+    // 绕过gridstack 缓存机制
+    nextTick(() => {
+      columnChange(newEnv)
+      console.log(gridRef.value?.grid?.getColumn())
+    })
+  },
 );
 
 onUnmounted(() => {

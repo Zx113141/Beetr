@@ -31,30 +31,36 @@ import {
 } from "gridstack";
 import useDrag from "../../../service/grid";
 import "../../assets/style/grid-item.scss";
-import { BROWSER_ENV_GRID_COLUMN, ENV_ENUM, GridMargin } from "@beetr/constant";
-import { onMounted, ref, provide } from "vue";
- 
-
-const props = defineProps<{
-  env: keyof typeof ENV_ENUM;
-}>();
+import {
+  BROWSER_ENV_GRID_COLUMN,
+  ENV_ENUM,
+  GridMargin,
+  BROWSER_ENV,
+} from "@beetr/constant";
+import { onMounted, ref, provide, inject,watch } from "vue";
 
 const emits = defineEmits(["update"]);
 const [drag, dragstart, dragstop, isMovingWidget] = useDrag();
 
 provide("movingWidgetId", isMovingWidget);
 
+const env = inject<keyof typeof BROWSER_ENV>("env")!;
+const editStatus = inject<boolean>("editStatus");
+
 /** 必须先初始化好数据，才能初始化grid.否则样式会出问题 */
 let grid = ref<GridStack | null>(null);
 const init = () => {
+
   const width = document.documentElement.clientWidth;
+  console.log(   env === ENV_ENUM.mobile ? width / 4 + "px" : "105px",
+  BROWSER_ENV_GRID_COLUMN[env],env)
   grid.value = GridStack.init(
     {
       animate: true,
       disableDrag: false,
-      cellHeight: props.env === ENV_ENUM.mobile ? width / 4 + "px" : "105px",
-      column: BROWSER_ENV_GRID_COLUMN[props.env],
-      margin: GridMargin[props.env],
+      cellHeight: env === ENV_ENUM.mobile ? width / 4 + "px" : "105px",
+      column: BROWSER_ENV_GRID_COLUMN[env],
+      margin: GridMargin[env],
       disableResize: true,
       float: false,
       // disableOneColumnMode: true,
@@ -120,15 +126,16 @@ const dispose = () => {
   }
 };
 
-const add = (id:string) => {
+const add = (id: string) => {
   nextTick(() => {
     grid.value && grid.value.addWidget("w_" + id);
   });
 };
 
-const remove = (id:string, flag = true) => {
-    grid.value && grid.value.removeWidget("w_" + id,flag);
-}
+const remove = (id: string, flag = true) => {
+  grid.value && grid.value.removeWidget("w_" + id, flag);
+};
+
 
 defineExpose({
   updateWidget,
@@ -137,7 +144,7 @@ defineExpose({
   dispose,
   disable,
   add,
-  remove
+  remove,
 });
 </script>
 
