@@ -42,6 +42,7 @@ const fetch = (
     _showToast = false,
     baseURL = baseUrl
 ): Promise<any> => {
+ 
     const reqUrl = baseURL + url
     const sessionId = useCookie(VISIT_CREDENTIALS)
     const cookieToken = useCookie(TOKEN_CREDENTIALS)
@@ -89,7 +90,7 @@ const fetch = (
                             title: '提示',
                             message: response.message,
                         })
-                    window.parent.location.replace(window.parent.location.origin + '/')
+                    // window.parent.location.replace(window.parent.location.origin + '/')
                     reject(unref(response))
 
                 } else {

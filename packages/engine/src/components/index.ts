@@ -1,11 +1,12 @@
-import GridContainer from './container/index.vue'
-import GridWidget from './widget/index.vue'
-import GridResize from './handler/index.vue'
-import GridDelete from './remove/index.vue'
+import GridContainer from './grid-container/index.vue'
+import GridItem from './grid-item/index.vue'
+import GridResize from './grid-item-handler/index.vue'
+import GridDelete from './grid-item-remove/index.vue'
+// import AsyncComponents from './async-component/index.vue'
 
 export {
     GridContainer,
     GridResize,
-    GridWidget,
+    GridItem,
     GridDelete
 }

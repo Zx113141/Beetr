@@ -6,9 +6,10 @@ import {
   deleteUserApp,
   getUserAppsListByUrl,
   updateBatchUserApp,
-  type IAddAppConfig,
-  type IUserAppItem,
+  type ,
+
 } from '@/api/widget/widget'
+import { IUserAppItem, IAddAppConfig } from '@beetr/constant'
 // import { Promise as Promise2 } from 'canvas-confetti'
 import service from '@/api/request2'
 export const _widgetStore = defineStore('widget', () => {

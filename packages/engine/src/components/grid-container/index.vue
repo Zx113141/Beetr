@@ -59,7 +59,7 @@ const init = () => {
     grid.value.on('dragstop', dragstop)
     /** 当小部件由于约束或直接更改而更改其位置/大小时发生 */
     grid.value.on('change', updateGridLayout)
-
+    
 }
 
 
@@ -78,7 +78,7 @@ const updateWidget = (params: any) => {
         // x: allWidth,
         // y: y,
     })
-    // do animate scaleY
+    // do animate scale TODO scale from direction
     updateAnimateByClassNames(el, 'scaleY',)
     // auto do updateGridLayout 
 }
@@ -90,16 +90,18 @@ const updateAnimateByClassNames = (el: HTMLDivElement, name: string, delay = 800
     }, delay)
 }
 
+const dispose = () => {
+    grid.dispose()
+}
+
 defineExpose({
     updateWidget,
     init,
     grid,
-
+    dispose
 })
 
-onMounted(() => {
-    init()
-});
+
 
 
 </script>

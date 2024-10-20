@@ -84,7 +84,6 @@ const queryUserInfo = async () => {
         <div
             class="user-aside flex h-full w-full max-w-[428px] items-center justify-center p-6 pt-12 pb-0 xl:absolute xl:top-0 xl:max-w-[min(100vw,1728px)] xl:items-stretch xl:justify-start xl:p-16">
             <ModuleNavbar v-if="urlInfo"></ModuleNavbar>
-            {{ currentStep, isEdit, browserEnv }}
         </div>
         <!-- grid网格 - 手机端初始化的时候不显示，mextType > 0 的时候才 -->
         <div class="xl:flex h-full w-full max-w-[428px] flex-1 flex-col pt-0 xl:max-w-[1728px] xl:flex-row xl:p-16 xl:overflow-hidden"

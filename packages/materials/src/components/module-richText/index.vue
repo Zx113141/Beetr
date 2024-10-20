@@ -50,7 +50,7 @@ import { useEditor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import Placeholder from '@tiptap/extension-placeholder'
 import { type IUserAppItem, ENV_ENUM, SvgArrow } from '@beetr/constant'
-import { debounce } from '../../utils/common'
+import { debounce } from '@beetr/hooks'
 
 // // init 
 const rotateZ = ref<HTMLDivElement | null>(null)
@@ -99,7 +99,7 @@ const content = useEditor({
                 return
             }
             // debugger
-            emits('onEdit', item);
+            emits('onEdit', item.value, );
         }, 600);
         // item.value.content = content
         // widgetStore.onUpdate([item.value])
