@@ -39,7 +39,7 @@ const onMouseEnter = (item: any) => {
 /** 鼠标移除，仅触发一次 */
 const onMouseleave = () => {
     // 编辑的时候不取消
-    console.log(props.isWidgetEdit);
+    // console.log(props.isWidgetEdit);
     if (props.isWidgetEdit) {
         return
     }

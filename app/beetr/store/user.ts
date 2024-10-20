@@ -17,7 +17,7 @@ export const _userStore = defineStore('user', () => {
 
   /** true-可编辑状态（登录且url等于个人信息中url） */
   const isEdit = computed(() => {
-    return userInfo.value?.url && userInfo.value.url === urlInfo.value?.url
+    return Boolean( userInfo.value?.url && userInfo.value.url === urlInfo.value?.url)
   })
   // const isEdit = true
 

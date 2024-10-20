@@ -39,7 +39,7 @@ const updateUrl = () => {
 }
 
 watch(activeLink, (newval) => {
-    console.log(newval);
+ 
     emit('onEditing', newval)
 }, {
     immediate: true

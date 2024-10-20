@@ -42,7 +42,7 @@ const fetch = (
     _showToast = false,
     baseURL = baseUrl
 ): Promise<any> => {
- 
+
     const reqUrl = baseURL + url
     const sessionId = useCookie(VISIT_CREDENTIALS)
     const cookieToken = useCookie(TOKEN_CREDENTIALS)
@@ -53,7 +53,6 @@ const fetch = (
     options!.headers = { ...options?.headers, session_id: sessionId.value, sessionId: sessionId.value }
     return new Promise((resolve, reject) => {
         // isLoading.value = true
-
         const fetchOptions = {
             ...options,
             headers: cookieToken.value
@@ -64,6 +63,7 @@ const fetch = (
         useFetch(reqUrl, fetchOptions)
             .then(({ data, error }) => {
 
+               
                 // isLoading.value = false
                 if (error.value) {
                     const message = error.value?.data.message || error.value?.message

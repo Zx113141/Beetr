@@ -92,7 +92,7 @@ const queryUserInfo = async () => {
             <div class="mb-10 flex flex-col px-4 xl:mb-0 xl:mr-20 xl:flex-1 xl:px-0"></div>
 
             <!-- 右边可拖动的网格布局 -->
-            <moduleContainer v-if="deviceEnv" :deviceEnv="deviceEnv">
+            <moduleContainer v-if="deviceEnv" :deviceEnv="deviceEnv" :editStatus="isEdit">
                 <!-- :isLoading="isLoading" ref="moduleGridRef" :current-step="currentStep"
                 @changeShow="changeShow" @onGridEdit="onGridEdit" @gridTouched="gridTouched" -->
             </moduleContainer>

@@ -18,13 +18,13 @@ const props = defineProps({
 const { item, visibleActionId, } = toRefs<any>(props)
 
 const emit = defineEmits<{
-    (e: 'remove', item: any): void
+    (e: 'remove', id: string): void
 }>()
 </script>
 
 <template>
     <div class="widget_delete absolute -left-2.5 -top-2.5 z-30">
-        <el-button circle class="el-button--delete" @click="emit('remove', item)">
+        <el-button circle class="el-button--delete" @click="emit('remove', item.id)">
             <SvgDelete />
         </el-button>
     </div>

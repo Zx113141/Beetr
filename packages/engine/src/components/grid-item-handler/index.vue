@@ -39,7 +39,7 @@ const emit = defineEmits<{
     (e: 'onEditing', isEditing: boolean): void
 }>()
 defineProps({
-    /** 当前激活的id */
+    /** 当前激活的item */
     item: {
         type: Object as PropType<IUserAppItem>,
         required: true,
@@ -64,10 +64,6 @@ const onEditing = (isEditing: boolean) => {
     emit('onEditing', isEditing)
 }
 
-// emit events for protocol of iframe
-const protoToFrame = (type: string,) => {
-    console.log(type,);
-}
 
 
 </script>
