@@ -57,9 +57,6 @@ const postEnv = () => {
         },
         "*"
     );
-    // window.postMessage(
-
-    // );
 };
 </script>
 

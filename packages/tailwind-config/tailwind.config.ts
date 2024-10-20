@@ -21,6 +21,7 @@ const config: Config = {
     safelist: [
         { pattern: /^(text|bg|rounded)-[\w-]+$/, variants: ['lg', 'hover', 'focus', 'lg:hover'] },
     ],
+    theme:{}
     // ... 其他配置
 };
 
