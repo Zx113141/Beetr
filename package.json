@@ -6,7 +6,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "beetr":"cd ./app/beetr && yarn dev"
+    "beetr:dev":"cd ./app/beetr && pnpm dev",
+    "beetr:build":"cd ./app/beetr && pnpm build:prod",
+    "beetr:preview":"cd ./app/beetr && pnpm preview"
   },
   "keywords": [],
   "author": "",
