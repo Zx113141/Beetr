@@ -25,7 +25,11 @@
 import {
     ANIMATION_DIRECTION
 } from '@beetr/constant'
+const props = defineProps<{
+    skeltonLoading: boolean
+}>()
 /** 左右切换动画执行方向 */
 const animationDirection = ref<`${ANIMATION_DIRECTION}`>(ANIMATION_DIRECTION.sliderLeft)
+
 
 </script>

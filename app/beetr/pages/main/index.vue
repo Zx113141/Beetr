@@ -4,7 +4,8 @@ import ModuleLock from '~/components/module-lock.vue';
 import {
     STEP_PROCESS,
     BROWSER_ENV,
-    VISIT_CREDENTIALS
+    VISIT_CREDENTIALS,
+    MESSAGE_EVENT_TYPE
 } from '@beetr/constant'
 import { _widgetStore } from '~/store/widget';
 import { _userStore } from '~/store/user';
@@ -12,7 +13,9 @@ import { _envStore } from '~/store/env';
 import { SvgWeixin, SvgControl } from '@beetr/constant';
 import moduleContainer from '~/components/module-container.vue';
 import ModuleNavbar from '~/components/module-navbar.vue';
-import ModuleActionBar from '~/components/module-action-bar.vue';
+import { useMessage } from '@beetr/hooks';
+import { type IUserInfoRes } from '~/api/user/user'
+
 
 // import { onSetDraw } from '~/store/isLoading'
 
@@ -20,6 +23,7 @@ const widgetStore = _widgetStore()
 const userStore = _userStore()
 const envStore = _envStore()
 const route = useRoute()
+const { postMessage } = useMessage()
 
 // refs reactive here
 const { userInfo, urlInfo, currentStep, isScreenLock, isEdit } = storeToRefs(userStore)
@@ -27,19 +31,18 @@ const { browserEnv, deviceEnv } = storeToRefs(envStore)
 const { userTheme, userAppList, } = widgetStore
 const mextType = ref<number>(0)
 const Loading = ref(false)
+const skeltonLoading = ref(false)
 
 // hooks
 onMounted(async () => {
+    skeltonLoading.value = true
     await userStore.queryUserInfo()
     await queryUserInfo()
     window.addEventListener('message', handleMessage)
 
-    window.parent.window.postMessage({
-        eventType: 'iframeLoaded',
-        query: {
-
-        }
-    })
+    postMessage(window.parent.window, MESSAGE_EVENT_TYPE.userInfo, JSON.stringify(userInfo.value!))
+    postMessage(window.parent.window, MESSAGE_EVENT_TYPE.iframeLoaded,)
+    skeltonLoading.value = false
 })
 
 // funcion
@@ -56,10 +59,13 @@ const handleMessage = (event: MessageEvent) => {
     const { eventType, query } = data
 
     switch (eventType) {
-        case 'env':
+        case MESSAGE_EVENT_TYPE.env:
             browserEnv.value = query.browserEnv
-            console.log(browserEnv.value, query)
             deviceEnv.value = query.deviceEnv
+            break;
+        case MESSAGE_EVENT_TYPE.addWidget:
+            break;
+        case MESSAGE_EVENT_TYPE.logout:
             break;
     }
 }
@@ -75,6 +81,8 @@ const queryUserInfo = async () => {
     }
 }
 
+
+
 provide('loading', Loading)
 
 </script>
@@ -85,7 +93,7 @@ provide('loading', Loading)
         :class="['relative flex min-h-screen w-full flex-1 flex-col items-center', `browser-${browserEnv || 'desktop'}`, `device-${deviceEnv || 'desktop'}`]">
         <div
             class="user-aside flex h-full w-full max-w-[428px] items-center justify-center p-6 pt-12 pb-0 xl:absolute xl:top-0 xl:max-w-[min(100vw,1728px)] xl:items-stretch xl:justify-start xl:p-16">
-            <ModuleNavbar v-if="urlInfo"></ModuleNavbar>
+            <ModuleNavbar :skeltonLoading="skeltonLoading"></ModuleNavbar>
         </div>
         <!-- grid网格 - 手机端初始化的时候不显示，mextType > 0 的时候才 -->
         <div class="xl:flex h-full w-full max-w-[428px] flex-1 flex-col pt-0 xl:max-w-[1728px] xl:flex-row xl:p-16 xl:overflow-hidden"
@@ -98,7 +106,7 @@ provide('loading', Loading)
                 <!-- :isLoading="isLoading" ref="moduleGridRef" :current-step="currentStep"
                 @changeShow="changeShow" @onGridEdit="onGridEdit" @gridTouched="gridTouched" -->
             </moduleContainer>
-            <!-- 用于占位 -->
+            <!-- skelton? -->
 
             <div class="browser-mobile-action w-full p-[20px_25px] h-[130px]"
                 v-if="currentStep == STEP_PROCESS.userInfo && userStore.isEdit && browserEnv == BROWSER_ENV.mobile">
@@ -123,9 +131,6 @@ provide('loading', Loading)
         </div>
 
 
-        <div class="module-action">
-            <ModuleActionBar :isLock="isScreenLock" :isEditorRef="false"></ModuleActionBar>
-        </div>
     </div>
 </template>
 

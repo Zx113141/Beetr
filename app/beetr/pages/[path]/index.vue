@@ -1,13 +1,18 @@
 <script setup lang="ts">
-import { BROWSER_ENV, STEP_PROCESS } from "@beetr/constant";
+import { BROWSER_ENV, STEP_PROCESS, MESSAGE_EVENT_TYPE } from "@beetr/constant";
 import { debounce } from "@beetr/hooks";
-import ModuleFooterActionBar from '~/components/module-footer-action-bar.vue'
+import ModuleActionBar from '~/components/module-action-bar.vue'
+import { _userStore } from "~/store/user";
+import { storeToRefs } from 'pinia'
+import { useMessage } from "@beetr/hooks";
 const route = useRoute();
 
 const browserEnv = ref<keyof typeof BROWSER_ENV>("desktop");
 const deviceEnv = ref<any>("desktop");
 const iframeRef = ref<HTMLIFrameElement | null>(null);
-
+const userStore = _userStore()
+const { userInfo, urlInfo, currentStep, isScreenLock, isEdit } = storeToRefs(userStore)
+const { postMessage } = useMessage()
 // hooks
 onMounted(() => {
     window.addEventListener("message", handleFrameMessage);
@@ -20,12 +25,17 @@ onMounted(() => {
 
 // function
 const handleFrameMessage = (e: MessageEvent) => {
-
-    switch (e.data.eventType) {
-        case 'iframeLoaded':
+    const { query, eventType } = e.data;
+    switch (eventType) {
+        case MESSAGE_EVENT_TYPE.iframeLoaded:
             postEnv();
             break;
-
+        case MESSAGE_EVENT_TYPE.userInfo:
+            userInfo.value = JSON.parse(query)
+            console.log(userInfo);
+            break;
+        case MESSAGE_EVENT_TYPE.addWidget:
+            break;
     }
 };
 
@@ -53,16 +63,20 @@ const handleWindowResize = (e: UIEvent | null) => {
     postEnv();
 };
 const postEnv = () => {
-    iframeRef.value?.contentWindow?.postMessage(
-        {
-            eventType: "env",
-            query: {
-                browserEnv: browserEnv.value,
-                deviceEnv: deviceEnv.value,
-            },
-        },
-        "*"
-    );
+    postMessage(iframeRef.value!.contentWindow!, MESSAGE_EVENT_TYPE.env, {
+        browserEnv: browserEnv.value,
+        deviceEnv: deviceEnv.value,
+    })
+    // iframeRef.value?.contentWindow?.postMessage(
+    //     {
+    //         eventType: MESSAGE_EVENT_TYPE.env,
+    //         query: {
+    //             browserEnv: browserEnv.value,
+    //             deviceEnv: deviceEnv.value,
+    //         },
+    //     },
+    //     "*"
+    // );
 };
 </script>
 
@@ -80,7 +94,7 @@ const postEnv = () => {
             <iframe ref="iframeRef" :data-editor-iframe="true" class="frame_container-iframe backgroundColor"
                 :style="'visibility: visible'" :src="`/main?path=${route.params.path}`">
             </iframe>
-
+            <ModuleActionBar :isLock="isScreenLock" :isEditorRef="false"></ModuleActionBar>
         </div>
     </div>
 </template>

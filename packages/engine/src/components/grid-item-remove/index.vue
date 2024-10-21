@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { SvgDelete, type IUserAppItem } from '@beetr/constant'
 import { PropType, toRefs } from 'vue'
-
-const props = defineProps({
+defineProps({
     /** 对应的对象 */
     item: {
         type: Object as PropType<IUserAppItem>,
@@ -15,7 +14,6 @@ const props = defineProps({
     },
 
 })
-const { item, visibleActionId, } = toRefs<any>(props)
 
 const emit = defineEmits<{
     (e: 'remove', id: string): void
@@ -23,7 +21,7 @@ const emit = defineEmits<{
 </script>
 
 <template>
-    <div class="widget_delete absolute -left-2.5 -top-2.5 z-30">
+    <div class="widget_delete absolute -left-2.5 -top-2.5 z-30" v-if="visibleActionId == item.id">
         <el-button circle class="el-button--delete" @click="emit('remove', item.id)">
             <SvgDelete />
         </el-button>

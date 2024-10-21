@@ -58,7 +58,7 @@ const onSetEnv = (env: keyof typeof BROWSER_ENV) => {
     window.parent.postMessage({
         eventType: 'env',
         query: {
-            browserEnv: env
+            deviceEnv: env
         }
     }, '*')
 }
