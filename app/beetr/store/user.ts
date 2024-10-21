@@ -37,10 +37,7 @@ export const _userStore = defineStore('user', () => {
    */
 
   const currentStep = ref<keyof typeof STEP_PROCESS>(STEP_PROCESS.userInfo)
-  /** 网站位于电脑端还是移动端 **/
-  const browserEnv = ref<keyof typeof BROWSER_ENV>(BROWSER_ENV.desktop)
-  /** 当前设备端 **/
-  const deviceEnv = ref<keyof typeof BROWSER_ENV>(BROWSER_ENV.desktop)
+
 
   /** 查询用户信息 */
   const queryUserInfo = async () => {
@@ -65,6 +62,13 @@ export const _userStore = defineStore('user', () => {
       return Promise.reject(error)
     }
   }
+  const setInfo = ({ url, user }: {
+    url: IUserInfoRes | null,
+    user: IUserInfoRes | null
+  }) => {
+    userInfo.value = user
+    urlInfo.value = url
+  }
 
   return {
     userInfo,
@@ -76,9 +80,8 @@ export const _userStore = defineStore('user', () => {
     isGridEdit,
     timestamp,
     currentStep,
-    browserEnv,
-    deviceEnv,
-    isScreenLock
+    isScreenLock,
+    setInfo
   }
 }, {
   // persist: {

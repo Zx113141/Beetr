@@ -40,7 +40,10 @@ onMounted(async () => {
     await queryUserInfo()
     window.addEventListener('message', handleMessage)
 
-    postMessage(window.parent.window, MESSAGE_EVENT_TYPE.userInfo, JSON.stringify(userInfo.value!))
+    postMessage(window.parent.window, MESSAGE_EVENT_TYPE.info, {
+        urlInfo:JSON.stringify(urlInfo.value!),
+        userInfo:JSON.stringify(userInfo.value!),
+    })
     postMessage(window.parent.window, MESSAGE_EVENT_TYPE.iframeLoaded,)
     skeltonLoading.value = false
 })

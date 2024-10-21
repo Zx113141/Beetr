@@ -5,13 +5,13 @@ import ModuleActionBar from '~/components/module-action-bar.vue'
 import { _userStore } from "~/store/user";
 import { storeToRefs } from 'pinia'
 import { useMessage } from "@beetr/hooks";
+import { _envStore } from '~/store/env'
 const route = useRoute();
 
-const browserEnv = ref<keyof typeof BROWSER_ENV>("desktop");
-const deviceEnv = ref<any>("desktop");
 const iframeRef = ref<HTMLIFrameElement | null>(null);
 const userStore = _userStore()
-const { userInfo, urlInfo, currentStep, isScreenLock, isEdit } = storeToRefs(userStore)
+const env = _envStore()
+const { browserEnv, deviceEnv } = storeToRefs(env)
 const { postMessage } = useMessage()
 // hooks
 onMounted(() => {
@@ -30,9 +30,13 @@ const handleFrameMessage = (e: MessageEvent) => {
         case MESSAGE_EVENT_TYPE.iframeLoaded:
             postEnv();
             break;
-        case MESSAGE_EVENT_TYPE.userInfo:
-            userInfo.value = JSON.parse(query)
-            console.log(userInfo);
+        case MESSAGE_EVENT_TYPE.info:
+            const user = JSON.parse(query.userInfo)
+            const url = JSON.parse(query.urlInfo)
+            userStore.setInfo({
+                url,
+                user
+            })
             break;
         case MESSAGE_EVENT_TYPE.addWidget:
             break;
@@ -67,16 +71,6 @@ const postEnv = () => {
         browserEnv: browserEnv.value,
         deviceEnv: deviceEnv.value,
     })
-    // iframeRef.value?.contentWindow?.postMessage(
-    //     {
-    //         eventType: MESSAGE_EVENT_TYPE.env,
-    //         query: {
-    //             browserEnv: browserEnv.value,
-    //             deviceEnv: deviceEnv.value,
-    //         },
-    //     },
-    //     "*"
-    // );
 };
 </script>
 
@@ -94,7 +88,7 @@ const postEnv = () => {
             <iframe ref="iframeRef" :data-editor-iframe="true" class="frame_container-iframe backgroundColor"
                 :style="'visibility: visible'" :src="`/main?path=${route.params.path}`">
             </iframe>
-            <ModuleActionBar :isLock="isScreenLock" :isEditorRef="false"></ModuleActionBar>
+            <ModuleActionBar :isEditorRef="false"></ModuleActionBar>
         </div>
     </div>
 </template>

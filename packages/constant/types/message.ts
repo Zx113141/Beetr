@@ -1,7 +1,7 @@
 export enum MESSAGE_EVENT_TYPE {
     iframeLoaded = 'iframeLoaded',
     env = 'env',
-    userInfo = 'userInfo',
+    info = 'info',
     addWidget = 'addWidget',
     logout = 'logout'
 }

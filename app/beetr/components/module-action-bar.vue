@@ -1,14 +1,13 @@
 <template>
-    <client-only v-if="!isLock">
-        <ModuleFooterActionBar v-if="userStore.isEdit &&
-            userStore.isOnboared &&
-            STEP_PROCESS.congratulations !== userStore.currentStep" @on-set-env="onSetEnv" :isEditorRef="isEditorRef"
+    <client-only v-if="!isScreenLock">
+        <ModuleFooterActionBar v-if="isEdit &&
+            isOnboared &&
+            STEP_PROCESS.congratulations !== currentStep" @on-set-env="onSetEnv" :isEditorRef="isEditorRef"
             :loadingRef="loading">
         </ModuleFooterActionBar>
 
         <!-- 用户登录状态下的操作栏，含登出、修改用户名 -->
-        <ModuleLeftActionOnline :isEditorRef="isEditorRef" v-if="userStore.isEdit && userStore.isOnboared"
-            @logout="logout">
+        <ModuleLeftActionOnline :isEditorRef="isEditorRef" v-if="isEdit && isOnboared" @logout="logout">
         </ModuleLeftActionOnline>
 
         <!-- 手机端设置弹窗 -->
@@ -19,8 +18,8 @@
         <!-- <ModuleFooterLogo></ModuleFooterLogo> -->
 
         <!-- 非登录状态下的操作栏，登录、创建个人链接 -->
-        <!-- <ModuleLeftActionOffline v-if="!userStore.isEdit && browserEnv == BROWSER_ENV.desktop"
-            :path="userStore.userInfo?.url"></ModuleLeftActionOffline> -->
+        <!-- <ModuleLeftActionOffline v-if="!isEdit && browserEnv == BROWSER_ENV.desktop"
+            :path="userInfo?.url"></ModuleLeftActionOffline> -->
         <!-- <themeDraw @closeLoading="closeLoading" @openLoading="openLoading"></themeDraw> -->
         <ModuleWidgetAddDrawer @add="(...params: any[]) => onAddGrid('onAddLink', params)" ref="widgetDraw"
             @add-media="(...params: any[]) => onAddGrid('onAddMedia', params)"
@@ -42,8 +41,17 @@
 import { BROWSER_ENV, STEP_PROCESS } from '@beetr/constant';
 import { _userStore } from '~/store/user';
 const userStore = _userStore()
-const props = defineProps<{
-    isLock: boolean,
+const {
+    userInfo,
+    urlInfo,
+    isOnboared,
+    isEdit,
+    isGridEdit,
+    timestamp,
+    currentStep,
+    isScreenLock,
+     } = toRefs(userStore)
+defineProps<{
     isEditorRef: boolean,
 }>()
 
