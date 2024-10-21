@@ -17,16 +17,16 @@ export const _userStore = defineStore('user', () => {
 
   /** true-可编辑状态（登录且url等于个人信息中url） */
   const isEdit = computed(() => {
-    return Boolean( userInfo.value?.url && userInfo.value.url === urlInfo.value?.url)
+    return Boolean(userInfo.value?.url && userInfo.value.url === urlInfo.value?.url)
   })
   // const isEdit = true
 
   /** 是否锁屏 **/
   const isScreenLock = computed(() => {
     if (userInfo.value) {
-      return userInfo.value?.url !== urlInfo.value?.url && urlInfo.value?.onlock === 1
+      return Boolean(userInfo.value?.url !== urlInfo.value?.url && urlInfo.value?.onlock === 1)
     }
-    return urlInfo.value?.url && urlInfo.value?.onlock === 1
+    return Boolean(urlInfo.value?.url && urlInfo.value?.onlock === 1)
   })
 
   /** Grid编辑模式 **/

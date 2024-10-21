@@ -12,7 +12,7 @@ import { _envStore } from '~/store/env';
 import { SvgWeixin, SvgControl } from '@beetr/constant';
 import moduleContainer from '~/components/module-container.vue';
 import ModuleNavbar from '~/components/module-navbar.vue';
-import ModuleActionBar from '~/components/modue-action-bar.vue';
+import ModuleActionBar from '~/components/module-action-bar.vue';
 
 // import { onSetDraw } from '~/store/isLoading'
 
@@ -26,7 +26,7 @@ const { userInfo, urlInfo, currentStep, isScreenLock, isEdit } = storeToRefs(use
 const { browserEnv, deviceEnv } = storeToRefs(envStore)
 const { userTheme, userAppList, } = widgetStore
 const mextType = ref<number>(0)
-
+const Loading = ref(false)
 
 // hooks
 onMounted(async () => {
@@ -75,7 +75,7 @@ const queryUserInfo = async () => {
     }
 }
 
-
+provide('loading', Loading)
 
 </script>
 <template>
@@ -124,7 +124,7 @@ const queryUserInfo = async () => {
 
 
         <div class="module-action">
-            <!-- <ModuleActionBar :isLock=></ModuleActionBar> -->
+            <ModuleActionBar :isLock="isScreenLock" :isEditorRef="false"></ModuleActionBar>
         </div>
     </div>
 </template>

@@ -12,11 +12,11 @@
         <grid-item v-for="item in userAppList" :item="item" :key="item.id" :env="deviceEnv"
           :isWidgetEdit="editObject.isEditing" @mouseHover="onHover">
           <div class="wiget_size_item_container">
-            <component :is="ComponentsReflect[item.type]" :item="item" @onEdit="onModuleEdit" :env="deviceEnv"
+            <component :is="ComponentsReflect[item.type].module" :item="item" @onEdit="onModuleEdit" :env="deviceEnv"
               :isEdit="editStatus"></component>
-            <grid-resize :env="deviceEnv" :visible-action-id="editObject.visibleActionId" :item="item"
-              @onEdit="onWidgetEdit" @onEditing="onEditing">
-            </grid-resize>
+            <component :is="ComponentsReflect[item.type].Handler" :visible-action-id="editObject.visibleActionId"
+              :item="item" @onEdit="onWidgetEdit" @onEditing="onEditing">
+            </component>
             <grid-delete :visible-action-id="editObject.visibleActionId" :item="item" @remove="onRemove">
             </grid-delete>
           </div>
@@ -39,7 +39,6 @@ import {
 import {
   GridContainer,
   GridItem,
-  GridResize,
   GridDelete,
   type GridStackNode,
   type GridStackWidget,
@@ -48,17 +47,28 @@ import { BeetrModules } from "@beetr/materials";
 import { _userStore } from "~/store/user";
 import { _widgetStore } from "~/store/widget";
 import { _envStore } from "~/store/env";
+import type { DefineComponent, VueElement } from "vue";
 let flag = false
 // 注册Component
-const ComponentsReflect: any = {};
-BeetrModules.forEach((item) => {
-  ComponentsReflect[item.name] = item.module;
+const ComponentsReflect: {
+  [key: string]: {
+    module: DefineComponent<{}, {}, any> | null;
+    name: string;
+    Handler: DefineComponent<{}, {}, any> | null;
+    Drawer: DefineComponent<{}, {}, any> | null;
+  }
+} = {}
+BeetrModules.forEach((item: any) => {
+  ComponentsReflect[item.name] = item
 });
+
+
+
 
 const props = defineProps<{
   deviceEnv: keyof typeof BROWSER_ENV;
   editStatus: boolean;
-  browserEnv: keyof typeof BROWSER_ENV;
+  browserEnv: keyof typeof BROWSER_ENV | undefined;
 }>();
 
 const widgetStore = _widgetStore();
@@ -74,7 +84,7 @@ const onEditing = (isEdit: boolean) => {
 };
 
 const onHover = (id: string) => {
-  editObject.visibleActionId = id;
+  editObject.visibleActionId = id
 };
 
 

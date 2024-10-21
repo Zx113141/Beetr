@@ -428,24 +428,7 @@ const isShowPopover = ref(false)
                 </div>
             </template>
         </el-popover>
-        <!-- <el-tooltip
-      content="探索"
-      effect="light"
-      placement="top"
-      :show-after="300"
-      :offset="7"
-      popper-class="custom-tooltip-animation"
-    >
-      <el-button class="!rounded-full !text-[#8E8E8E] !p-2 !shadow-none">
-        <SvgExplore />
-      </el-button>
-    </el-tooltip>
-    <el-tooltip content="关于我们" effect="light" placement="top" :show-after="300" :offset="7"
-      popper-class="custom-tooltip-animation">
-      <el-button class="!rounded-full !text-[#8E8E8E] !p-2 !shadow-none settingBtn" @click="aboutUs">
-        <SvgCommunity />
-      </el-button>
-    </el-tooltip>  -->
+
         <el-tooltip content="关注我们" effect="light" placement="top" :show-after="300" :offset="7"
             popper-class="custom-tooltip-animation">
             <el-button class="!rounded-full !p-2 !shadow-none settingBtn" @click="aboutUs">
@@ -470,7 +453,7 @@ const isShowPopover = ref(false)
 
 <style lang="scss" scope>
 .popover-btn {
-    @include font_color('popoverColor');
+    // @include font_color('popoverColor');
 }
 
 .fixed_mask {
@@ -484,20 +467,20 @@ const isShowPopover = ref(false)
 }
 
 .settingBtn {
-    @include background_color('actionBarBorderColor')
+    // @include background_color('actionBarBorderColor')
 }
 
 .settingBtn:hover {
 
-    @include background_color('hoverBackgroundColor')
+    // @include background_color('hoverBackgroundColor')
 }
 
 .settingBtn:focus {
-    @include font_color('drawerBodyColor');
-    @include background_color('hoverBackgroundColor')
+    // @include font_color('drawerBodyColor');
+    // @include background_color('hoverBackgroundColor')
 }
 
 .wx-icon {
-    @include font_color('mobileActionBarWXColor')
+    // @include font_color('mobileActionBarWXColor')
 }
 </style>

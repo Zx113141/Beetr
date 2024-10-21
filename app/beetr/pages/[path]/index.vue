@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { BROWSER_ENV } from "@beetr/constant";
+import { BROWSER_ENV, STEP_PROCESS } from "@beetr/constant";
 import { debounce } from "@beetr/hooks";
+import ModuleFooterActionBar from '~/components/module-footer-action-bar.vue'
 const route = useRoute();
 
 const browserEnv = ref<keyof typeof BROWSER_ENV>("desktop");
 const deviceEnv = ref<any>("desktop");
 const iframeRef = ref<HTMLIFrameElement | null>(null);
+
 // hooks
 onMounted(() => {
     window.addEventListener("message", handleFrameMessage);
@@ -18,8 +20,12 @@ onMounted(() => {
 
 // function
 const handleFrameMessage = (e: MessageEvent) => {
-    if (e.data.eventType == "iframeLoaded") {
-        postEnv();
+
+    switch (e.data.eventType) {
+        case 'iframeLoaded':
+            postEnv();
+            break;
+
     }
 };
 
@@ -74,6 +80,7 @@ const postEnv = () => {
             <iframe ref="iframeRef" :data-editor-iframe="true" class="frame_container-iframe backgroundColor"
                 :style="'visibility: visible'" :src="`/main?path=${route.params.path}`">
             </iframe>
+
         </div>
     </div>
 </template>
