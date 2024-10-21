@@ -1,15 +1,17 @@
 <template>
     <transition name="fade" v-if="visibleActionId == item.id">
         <div class="widget_resize cursor-default">
-            <module-reize @onResize="onEdit" :item="item"></module-reize>
+            <slot name="content"></slot>
+
+            <!-- <module-reize @onResize="onEdit" :item="item"></module-reize> -->
 
             <!-- 富文本 -->
-            <template v-if="item.type == WIDGET_TYPE.richText">
+            <!-- <template v-if="item.type == WIDGET_TYPE.richText">
                 <el-divider direction="vertical" class="!mx-2" />
                 <module-font-style @onEditing="onEditing" :item="item"></module-font-style>
                 <el-divider direction="vertical" class="!mx-2" />
                 <module-link :item="item" @onEditing="onEditing"></module-link>
-            </template>
+            </template> -->
             <!-- 链接 -->
             <!-- <template v-if="item.type == WIDGET_TYPE.link">
                 <el-divider direction="vertical" class="!mx-2" />
@@ -24,21 +26,11 @@
 </template>
 
 <script setup lang="ts">
-import { ElDivider } from 'element-plus'
-import moduleReize from './resize/index.vue'
-import moduleFontStyle from './font-style/index.vue'
-import moduleLink from './add-link/index.vue'
 
 
-import { PropType, } from 'vue'
-import { type IUserAppItem, EDIT_TYPE, WIDGET_TYPE } from '@beetr/constant'
-
-
-const emit = defineEmits<{
-    (e: 'onEdit', item: IUserAppItem, type: keyof typeof EDIT_TYPE): void
-    (e: 'onEditing', isEditing: boolean): void
-}>()
-defineProps({
+import { PropType, provide, } from 'vue'
+import { type IUserAppItem, } from '@beetr/constant'
+const props = defineProps({
     /** 当前激活的item */
     item: {
         type: Object as PropType<IUserAppItem>,
@@ -49,22 +41,7 @@ defineProps({
         type: String,
         required: true,
     },
-    // env: {
-    //     type: String as PropType<keyof typeof ENV_ENUM>,
-    //     required: true,
-    // }
 })
-
-
-const onEdit = (item: IUserAppItem, type: keyof typeof EDIT_TYPE) => {
-    emit('onEdit', item, type)
-}
-
-const onEditing = (isEditing: boolean) => {
-    emit('onEditing', isEditing)
-}
-
-
 
 </script>
 

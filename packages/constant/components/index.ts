@@ -20,7 +20,8 @@ import SvgChecked from './svg-checked.vue'
 import SvgSetting from './svg-setting.vue'
 import SvgExplore from './svg-explore.vue'
 import SvgCommunity from './svg-setting.vue'
-
+import SvgAdd from './svg-add.vue'
+import SvgTheme from './svg-theme.vue'
 
 export {
     SvgControl,
@@ -36,4 +37,6 @@ export {
     SvgXCenter, SvgXRight, SvgYTop, SvgYMiddle, SvgYBottom,
     SvgEdit, SvgLinkCompleted, SvgLink,
     SvgChecked, SvgSetting, SvgExplore, SvgCommunity,
+    SvgAdd,
+    SvgTheme
 }

@@ -133,3 +133,32 @@ export interface IUserAppItem {
     longitude?: number
     latitude?: number
 }
+
+export interface IAppConfigItem {
+    widgetColor?: string
+    bgColor?: string
+    useFlag?: number
+    widgetColorHover?: string
+    appName?: string
+    id?: string
+    url: string
+    logoUrl?: string
+    widgetColorActive?: string
+}
+export interface IAppConfigItemLeftEdit extends IAppConfigItem {
+    _completed: boolean
+    nickName?: string
+}
+
+/**
+ * 添加媒体组件
+ * @_tempId 新增时临时用的id,用于后续跟踪上传进度
+ * @_tempUrl 临时展示的路径
+ * @variant 类型
+ */
+export interface IAddMediaItem {
+    // _tempId: number,
+    processing?: boolean,
+    // _tempUrl: string,
+    variant: keyof typeof MEDIA_TYPE,
+}
