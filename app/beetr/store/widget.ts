@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { BROWSER_ENV } from '@beetr/constant'
+import { BROWSER_ENV, MESSAGE_EVENT_TYPE } from '@beetr/constant'
 import { drawData } from "./isLoading"
 import {
   addAppConfig,
@@ -11,7 +11,9 @@ import {
 import { type IUserAppItem, type IAppConfigItem } from '@beetr/constant'
 // import { Promise as Promise2 } from 'canvas-confetti'
 import service from '@/api/request2'
+import { useMessage } from '@beetr/hooks'
 export const _widgetStore = defineStore('widget', () => {
+  const { postMessage } = useMessage()
   /** 时间戳-用户触发缓存更新 */
   const timestamp = ref(0)
 
@@ -43,25 +45,20 @@ export const _widgetStore = defineStore('widget', () => {
       // console.log(data.data)
       userTheme.value = data.theme
       userAppList.value = data.data
+      if (window.parent.window) {
+        postMessage(window.parent.window, MESSAGE_EVENT_TYPE.widgetStatus, {
+          query: {
+            status: MESSAGE_EVENT_TYPE.widgetStatus
+          }
+        })
+      }
       return data
     } catch (err) {
       return Promise.reject(err)
     }
   }
 
-  /** 更新列表，当env改变时，需要手动刷新 */
-  const updateUserAppList = () => {
-    // console.log(userAppList.value)
-    // userAppList.value = userAppList.value.map((x) => {
 
-    //   return {
-    //     ...x,
-    //     w: x.cusStyle?.[env.value].w / 2,
-    //     h: x.cusStyle?.[env.value].h,
-    //     ...x.position?.[env.value],
-    //   }
-    // })
-  }
 
   /** widget-修改 */
   const onUpdate = async (list: IUserAppItem[]) => {
@@ -73,17 +70,14 @@ export const _widgetStore = defineStore('widget', () => {
     // }
     // console.log(list);
     await updateBatchUserApp(updateList)
-    // const arr: IUserAppItem[] = []
-    // userAppList.value.forEach((i: IUserAppItem) => {
-    //   const item = updateList.find(k => k.id == i.id)
-    //   if (item) {
-    //     arr.push(reactive(item))
-    //   } else {
-    //     arr.push(i)
-    //   }
-    // })
-    // userAppList.value = arr
-    // console.log(userAppList);
+    if (window.parent.window) {
+      postMessage(window.parent.window, MESSAGE_EVENT_TYPE.widgetStatus, {
+        query: {
+          status: MESSAGE_EVENT_TYPE.widgetStatus
+        }
+      })
+    }
+
   }
 
   /** widget-新增 */
@@ -139,7 +133,7 @@ export const _widgetStore = defineStore('widget', () => {
     onDelete,
     // env,
     timestamp,
-    updateUserAppList,
+    // updateUserAppList,
     userMapSearchHistory,
     setUserMapSearchHistory,
     appConfigList,

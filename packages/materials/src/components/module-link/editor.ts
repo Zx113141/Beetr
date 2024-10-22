@@ -10,7 +10,7 @@ export const defaultEditorConfigs = (props: any): Partial<IUserAppItem> => {
         desktop: { w: 1, h: 2 },
     }
     const item = {
-        type: WIDGET_TYPE.richText,
+        type: WIDGET_TYPE.link,
         position: INIT_POSITION,
         cusStyle,
         ...props,

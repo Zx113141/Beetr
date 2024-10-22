@@ -17,7 +17,6 @@ import ModuleNavbar from '~/components/module-navbar.vue';
 import { useMessage } from '@beetr/hooks'
 import GridContainer from '~/components/module-container.vue';
 
-import { type IUserInfoRes } from '~/api/user/user'
 
 
 // import { onSetDraw } from '~/store/isLoading'
@@ -50,7 +49,7 @@ onMounted(async () => {
         urlInfo: JSON.stringify(urlInfo.value!),
         userInfo: JSON.stringify(userInfo.value!),
     })
-    postMessage(window.parent.window, MESSAGE_EVENT_TYPE.drawer, JSON.stringify(appConfigList.value))
+    postMessage(window.parent.window, MESSAGE_EVENT_TYPE.appConfigList, JSON.stringify(appConfigList.value))
     skeltonLoading.value = false
 })
 

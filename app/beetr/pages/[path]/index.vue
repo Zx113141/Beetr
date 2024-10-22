@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BROWSER_ENV, STEP_PROCESS, MESSAGE_EVENT_TYPE } from "@beetr/constant";
+import { BROWSER_ENV, STEP_PROCESS, MESSAGE_EVENT_TYPE, type IUserAppItem } from "@beetr/constant";
 import { debounce } from "@beetr/hooks";
 import ModuleActionBar from '~/components/module-action-bar.vue'
 import { _userStore } from "~/store/user";
@@ -7,6 +7,7 @@ import { storeToRefs } from 'pinia'
 import { useMessage } from "@beetr/hooks";
 import { _envStore } from '~/store/env'
 import { widgetDrawerData } from '~~/store/isLoading'
+import type { IModule } from "@beetr/materials";
 const route = useRoute();
 
 const iframeRef = ref<HTMLIFrameElement | null>(null);
@@ -43,8 +44,11 @@ const handleFrameMessage = (e: MessageEvent) => {
             break;
         case MESSAGE_EVENT_TYPE.addWidget:
             break;
-        case MESSAGE_EVENT_TYPE.drawer:
-            widgetDrawerData.prop = JSON.parse(query)
+        case MESSAGE_EVENT_TYPE.appConfigList:
+            widgetDrawerData.prop.appConfigList = JSON.parse(query)
+            break;
+        case MESSAGE_EVENT_TYPE.widgetStatus:
+            console.log(query);
             break
     }
 };
@@ -81,12 +85,21 @@ const postEnv = () => {
 
 // 物料处理
 
-const addItem = (param: any) => {
+const addItem = (param: any, lastParams?: Partial<IUserAppItem>) => {
     const { name } = param
     postMessage(iframeRef.value!.contentWindow!, MESSAGE_EVENT_TYPE.addWidget, {
         name,
-        data: JSON.stringify(param.defaultEditorConfigs()),
+        data: JSON.stringify(param.defaultEditorConfigs(lastParams)),
     })
+}
+
+const prepareDrawData = (widget: IModule) => {
+    // widgetDrawerData.prop.widget = widget
+    // widgetDrawerData.show = true
+}
+
+const logout = () => {
+    // userStore.logout()
 }
 </script>
 
@@ -104,7 +117,9 @@ const addItem = (param: any) => {
             <iframe ref="iframeRef" :data-editor-iframe="true" class="frame_container-iframe backgroundColor"
                 :style="'visibility: visible'" :src="`/main?path=${route.params.path}`">
             </iframe>
-            <ModuleActionBar :isEditorRef="false" @on-add="addItem"></ModuleActionBar>
+            <ModuleActionBar :browserEnv="browserEnv" :isEditorRef="false" @on-add="addItem"
+                @on-prepare="prepareDrawData" @on-logout="logout">
+            </ModuleActionBar>
         </div>
     </div>
 </template>

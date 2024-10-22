@@ -25,7 +25,9 @@
         </ModuleWidgetAddDrawer>
         <ModuleWidgetDrawer>
             <template #content>
-                <component :is="widgetDrawerData.data" :query="widgetDrawerData.data"></component>
+                <component :is="widgetDrawer" :prop="widgetDrawerData.prop" :browserEnv="browserEnv"
+                    :data="widgetDrawerData.data" @finish="finish" @close="back">
+                </component>
             </template>
         </ModuleWidgetDrawer>
         <!-- <addSocial :list="originConfigList" @add="(...params: any[]) => onAddGrid('onAddLink', params)">
@@ -37,18 +39,19 @@
 </template>
 
 <script setup lang="ts">
-import { BROWSER_ENV, STEP_PROCESS } from '@beetr/constant';
+import { BROWSER_ENV, STEP_PROCESS, type IUserAppItem } from '@beetr/constant';
 import { _userStore } from '~/store/user';
-import { defineAsyncComponent } from 'vue';
-import { widgetDrawerData } from '~~/store/isLoading'
+import { widgetDrawerData, addDrawData } from '~~/store/isLoading'
 import type { IModule } from '@beetr/materials';
+let widgetDrawer: any = null
 const userStore = _userStore()
 
 const emits = defineEmits<{
     (e: 'onEdit', params: any): void,
     (e: 'onLogout',): void,
     (e: 'onSetEnv', params: any): void,
-    (e: 'onAdd', params: any): void,
+    (e: 'onAdd', params: any, lastParams?: Partial<IUserAppItem>): void,
+    (e: 'onPrepare', params: IModule): void,
 }>()
 const {
     userInfo,
@@ -60,6 +63,7 @@ const {
 } = toRefs(userStore)
 defineProps<{
     isEditorRef: boolean,
+    browserEnv: keyof typeof BROWSER_ENV | undefined,
 }>()
 
 const loading = inject('loading', false)
@@ -68,23 +72,34 @@ const onAddGrid = (params: IModule) => {
     if (!params.drawer) {
         emits('onAdd', params)
     } else {
+        emits('onPrepare', params)
+        widgetDrawer = params.drawer
         widgetDrawerData.show = true
-        widgetDrawerData.drawer = params.drawer
+        widgetDrawerData.data = null
+        widgetDrawerData.params = params
     }
 }
 
 const onSetEnv = (env: keyof typeof BROWSER_ENV) => {
-    // 发送消息给父窗口
     emits('onSetEnv', env)
 }
 
 const logout = () => {
     emits('onLogout',)
-    // window.parent.postMessage({
-    //     eventType: 'logout',
-    // }, '*')
 }
 
+const finish = (data: Partial<IUserAppItem>) => {
+    emits('onAdd', widgetDrawerData.params, data)
+}
+
+const back = () => {
+    widgetDrawer = null
+    widgetDrawerData.show = false
+    widgetDrawerData.data = null
+    widgetDrawerData.params = null
+
+    addDrawData.show = true
+}
 
 
 </script>

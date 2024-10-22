@@ -1,3 +1,4 @@
+import type { IModule } from "@beetr/materials";
 import type { DefineComponent } from "vue";
 
 export const isLoading = ref(false)
@@ -27,11 +28,11 @@ export const addDrawData = reactive({
 
 export const widgetDrawerData = reactive<{
   show: boolean;
-  data: any;
-  prop: any
+  prop: any,
+  data: any,
+  params: IModule | null
   drawer: DefineComponent<{}, {}, any> | null;
 }>({
-  prop: {},
   drawer: null,
   show: false,
   data: {
@@ -67,6 +68,10 @@ export const widgetDrawerData = reactive<{
     content: '',
     faviconUrl: ''
   },
+  prop: {
+
+  },
+  params: null
 })
 
 

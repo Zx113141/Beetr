@@ -2,7 +2,11 @@
     <client-only>
         <el-drawer :scoped="false" v-model="widgetDrawerData.show" :direction="direction" modal-class="editdrawer"
             title="编辑" @close="close" :with-header="false" size="323">
-            <slot name="content"></slot>
+            <template #default>
+                <slot name="content">
+
+                </slot>
+            </template>
         </el-drawer>
     </client-only>
 </template>
@@ -18,8 +22,6 @@ const direction = computed(() => {
     return browserEnv.value == BROWSER_ENV.mobile ? 'btt' : 'rtl'
 })
 
-
-const props = defineProps(["list"])
 
 const close = () => {
     widgetDrawerData.show = false
