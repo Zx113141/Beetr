@@ -28,13 +28,6 @@
                 <component :is="widgetDrawerData.data" :query="widgetDrawerData.data"></component>
             </template>
         </ModuleWidgetDrawer>
-        <!-- @add="(...params: any[]) => onAddGrid('onAddLink', params)" ref="widgetDraw"
-            @add-media="(...params: any[]) => onAddGrid('onAddMedia', params)"
-            @add-rich-text="(...params: any[]) => onAddGrid('addRichText', params)"
-            @add-section-title="(...params: any[]) => onAddGrid('addSectionTitle', params)"
-            @add-map="(...params: any[]) => onAddGrid('addMap', params)"
-            @delete="(...params: any[]) => onAddGrid('delete', params)" -->
-        <!--  @on-progress="onProgress" @on-success="onSuccess"  @closeLoading="closeLoading"-->
         <!-- <addSocial :list="originConfigList" @add="(...params: any[]) => onAddGrid('onAddLink', params)">
 
         </addSocial>

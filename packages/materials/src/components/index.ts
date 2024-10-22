@@ -1,8 +1,8 @@
 
 import { IUserAppItem } from '@beetr/constant'
 import { ModuleNote, richText, ModuleNoteHandler, defaultEditorConfigs as noteConfigs } from './module-richText'
-import { ModuleLink, link, ModuleLinkHandler, defaultEditorConfigs as linkConfigs } from './module-link'
-import { ModuleSocial, social, ModuleSocialHandler, defaultEditorConfigs as socialConfigs } from './module-social'
+import { ModuleLink, link, ModuleLinkHandler, defaultEditorConfigs as linkConfigs, } from './module-link'
+import { ModuleSocial, social, ModuleSocialHandler, defaultEditorConfigs as socialConfigs, ModuleDrawer } from './module-social'
 // import { ModuleNote, richText, ModuleNoteHandler, defaultEditorConfigs } from './module-richText'
 
 interface IModule {
@@ -49,7 +49,7 @@ const BeetrModules: IModule[] = [
         name: 'social',
         module: ModuleSocial,
         Handler: ModuleSocialHandler,
-        drawer: null,
+        drawer: ModuleDrawer,
         icon: social,
         title: '社交',
         type: 'module',
