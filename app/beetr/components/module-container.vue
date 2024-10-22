@@ -44,6 +44,7 @@ import {
   type GridStackWidget,
 } from "@beetr/engine";
 import { BeetrModules } from "@beetr/materials";
+import { findEmptyPosition } from '@beetr/hooks'
 import { _userStore } from "~/store/user";
 import { _widgetStore } from "~/store/widget";
 import { _envStore } from "~/store/env";
@@ -116,6 +117,28 @@ const onWidgetResize = (item: IUserAppItem) => {
     id: item.id,
   });
 };
+
+const beforeAdd = (widgetConfig: Partial<IUserAppItem>): Partial<IUserAppItem> => {
+  const otherEnv = props.deviceEnv == BROWSER_ENV.desktop ? BROWSER_ENV.mobile : BROWSER_ENV.desktop
+  findEmptyPosition(widgetConfig, userAppList.value, BROWSER_ENV_GRID_COLUMN[props.deviceEnv], props.deviceEnv)
+  findEmptyPosition(widgetConfig, userAppList.value, BROWSER_ENV_GRID_COLUMN[otherEnv], otherEnv)
+
+  return widgetConfig
+}
+const onGrdiAddWidget = (widgetConfig: Partial<IUserAppItem>) => {
+  const config = beforeAdd(widgetConfig)
+  widgetStore.onAdd(config).then((res: any) => {
+    const lastItem = res.result.pop() as IUserAppItem
+    userAppList.value.push(lastItem)
+    gridRef!.value!.add(lastItem.id);
+    if (widgetConfig.temType) {
+      setTimeout(() => {
+        // activeAnimation.value = false
+      }, 1600)
+    }
+  })
+
+}
 // 物料更新
 const onModuleEdit = (item: IUserAppItem) => {
   onWidgetUpdate([item]);
@@ -156,12 +179,12 @@ const columnChange = (newEnv: keyof typeof BROWSER_ENV) => {
   const margin = props.browserEnv === BROWSER_ENV.mobile ? '10px' : '15px'
   const width = window.parent.document.documentElement.clientWidth
   let cellHeight = props.deviceEnv === BROWSER_ENV.mobile ? width / 4 : 105
-  console.log(props.deviceEnv, props.browserEnv)
+
   if (props.deviceEnv == BROWSER_ENV.mobile && props.browserEnv == BROWSER_ENV.desktop) {
     cellHeight = 411 / 4
     console.log(cellHeight,)
   }
-  console.log(cellHeight, margin, width)
+
   flag = true
   gridRef.value && gridRef.value.grid && gridRef.value.grid.cellHeight(cellHeight)
   gridRef.value && gridRef.value.grid && gridRef.value.grid.margin(margin)
@@ -218,7 +241,7 @@ watch(
     // 绕过gridstack 缓存机制
     nextTick(() => {
       columnChange(newEnv)
-      console.log(gridRef.value?.grid?.getColumn())
+      // console.log(gridRef.value?.grid?.getColumn())
     })
   },
 );
@@ -231,6 +254,11 @@ onUnmounted(() => {
 
 provide<keyof typeof BROWSER_ENV>("env", props.deviceEnv);
 provide<boolean>("editStatus", props.editStatus);
+
+
+defineExpose({
+  onGrdiAddWidget
+})
 </script>
 
 <style lang="scss" scoped>

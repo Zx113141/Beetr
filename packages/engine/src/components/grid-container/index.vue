@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="relative flex-1 xl:w-[840px] xl:flex-none dragUploadArea"
-    id="dragUpload"
-  >
+  <div class="relative flex-1 xl:w-[840px] xl:flex-none dragUploadArea" id="dragUpload">
     <!-- <div class="flex items-center toptotle" style="opacity: 1; height: 44px; margin-bottom: 32px">
             <div class="h-[2px] flex-1 bg-[#F8F8F8]"></div>
             <div class="typography-title-3 mx-4">您的主页</div>
@@ -10,11 +7,7 @@
         </div> -->
 
     <!-- 用于渲染动画 -->
-    <div
-      :class="['grid-stack-layout', 'xl:w-[840px]']"
-      id="layoutAddani"
-      ref="layoutAddani"
-    >
+    <div :class="['grid-stack-layout', 'xl:w-[840px]']" id="layoutAddani" ref="layoutAddani">
       <slot></slot>
     </div>
   </div>
@@ -37,10 +30,11 @@ import {
   GridMargin,
   BROWSER_ENV,
 } from "@beetr/constant";
-import { onMounted, ref, provide, inject,watch } from "vue";
+import { onMounted, ref, provide, inject, nextTick } from "vue";
 
 const emits = defineEmits(["update"]);
 const [drag, dragstart, dragstop, isMovingWidget] = useDrag();
+
 
 provide("movingWidgetId", isMovingWidget);
 
@@ -52,8 +46,6 @@ let grid = ref<GridStack | null>(null);
 const init = () => {
 
   const width = document.documentElement.clientWidth;
-  console.log(   env === ENV_ENUM.mobile ? width / 4 + "px" : "105px",
-  BROWSER_ENV_GRID_COLUMN[env],env)
   grid.value = GridStack.init(
     {
       animate: true,
@@ -103,7 +95,7 @@ const updateWidget = (params: any) => {
 };
 
 const updateAnimateByClassNames = (
-  el: HTMLDivElement,
+  el: HTMLElement,
   name: string,
   delay = 800
 ) => {
@@ -112,6 +104,7 @@ const updateAnimateByClassNames = (
     el.classList.remove(name);
   }, delay);
 };
+
 const disable = () => {
   grid.value && grid.value.disable();
 };
@@ -128,7 +121,9 @@ const dispose = () => {
 
 const add = (id: string) => {
   nextTick(() => {
-    grid.value && grid.value.addWidget("w_" + id);
+    grid.value && grid.value.makeWidget("w_" + id);
+    const el = document.getElementById("w_" + id)!;
+    updateAnimateByClassNames(el, "scaleSpring", 600);
   });
 };
 

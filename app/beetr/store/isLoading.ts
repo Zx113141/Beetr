@@ -1,3 +1,4 @@
+import type { DefineComponent } from "vue";
 
 export const isLoading = ref(false)
 export const drawData = reactive({
@@ -18,17 +19,20 @@ export const drawData = reactive({
   ],
   nowColor: 'light',
 })
+
 export const addDrawData = reactive({
   show: false,
 })
-export const addSocialData = reactive({
-  show: false,
-})
-export const addLinkData = reactive({
-  show: false,
-})
 
-export const editDrawData = reactive<{ show: boolean; data: any; }>({
+
+export const widgetDrawerData = reactive<{
+  show: boolean;
+  data: any;
+  prop: any
+  drawer: DefineComponent<{}, {}, any> | null;
+}>({
+  prop: {},
+  drawer: null,
   show: false,
   data: {
     id: '',
@@ -65,6 +69,4 @@ export const editDrawData = reactive<{ show: boolean; data: any; }>({
   },
 })
 
-export const setDrawData = reactive({
-  show: false,
-})
+

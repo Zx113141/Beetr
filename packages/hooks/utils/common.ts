@@ -1,3 +1,4 @@
+import { IUserAppItem, BROWSER_ENV_GRID_COLUMN, BROWSER_ENV } from "@beetr/constant"
 // 节流函数 规定时间内只触发一次
 export const throttle = (fn: Function, delay = 5000, immediate = false) => {
     // 利用闭包保存定时器
@@ -153,3 +154,60 @@ export function removeHtmlTags(input: string): string {
     if (!input) return ''
     return input.replace(/<\/?[^>]+(>|$)/g, '');
 }
+
+
+
+export const findEmptyPosition = (node: Partial<IUserAppItem>, nodeList: IUserAppItem[], column: number, device: keyof typeof BROWSER_ENV) => {
+    const { w, h, } = node.cusStyle![device];
+    const { x, y } = node.position![device];
+    let found = false;
+
+    // 从左上角开始搜索
+    let startX = x,
+        startY = y;
+
+    while (!found) {
+        // 检查从(startX, startY)开始的区域是否可用
+        const available = isAreaAvailable(
+            startX,
+            startY,
+            w,
+            h,
+            nodeList,
+            column,
+            device
+        );
+
+        if (available) {
+            node.position![device] = { x: startX, y: startY };
+            found = true;
+        } else {
+            // 如果当前区域不可用,则向右移动一列,如果到达最右边,则向下移动一行
+            startX++;
+            if (startX + w > column) {
+                startX = 0;
+                startY++;
+            }
+        }
+    }
+
+    return found;
+};
+
+const isAreaAvailable = (x: number, y: number, w: number, h: number, nodeList: IUserAppItem[], column: number, device: keyof typeof BROWSER_ENV) => {
+    // 检查(x, y)开始的区域是否与已有节点重叠
+    for (let i = x; i < x + w; i++) {
+        for (let j = y; j < y + h; j++) {
+            if (i >= column || nodeList.some((n) => overlaps(i, j, n, device))) {
+                return false;
+            }
+        }
+    }
+    return true;
+};
+
+const overlaps = (x: number, y: number, node: IUserAppItem, device: keyof typeof BROWSER_ENV) => {
+    const { x: nodeX, y: nodeY } = node.position[device];
+    const { w: nodeW, h: nodeH } = node.cusStyle[device];
+    return x >= nodeX && x < nodeX + nodeW && y >= nodeY && y < nodeY + nodeH;
+};

@@ -3,5 +3,6 @@ export enum MESSAGE_EVENT_TYPE {
     env = 'env',
     info = 'info',
     addWidget = 'addWidget',
-    logout = 'logout'
+    logout = 'logout',
+    drawer = 'drawer'
 }

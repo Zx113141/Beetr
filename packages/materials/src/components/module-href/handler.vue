@@ -2,15 +2,12 @@
     <ModuleHander :item="item" :visible-action-id="visibleActionId">
         <template #content>
             <ModuleResize @onResize="onEdit" :item="item"></ModuleResize>
-            <el-divider direction="vertical" class="!mx-2" />
-            <el-divider direction="vertical" class="!mx-2" />
         </template>
     </ModuleHander>
 
 </template>
 
 <script setup lang="ts">
-import { ElDivider } from 'element-plus'
 import ModuleHander from '../module-handler/index.vue'
 import ModuleResize from '../module-handler/resize/index.vue'
 import { PropType } from 'vue'

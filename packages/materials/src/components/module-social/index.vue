@@ -1,6 +1,5 @@
 <template>
-
     <div>
-        link
+        social
     </div>
 </template>

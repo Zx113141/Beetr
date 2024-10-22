@@ -6,6 +6,7 @@ import { _userStore } from "~/store/user";
 import { storeToRefs } from 'pinia'
 import { useMessage } from "@beetr/hooks";
 import { _envStore } from '~/store/env'
+import { widgetDrawerData } from '~~/store/isLoading'
 const route = useRoute();
 
 const iframeRef = ref<HTMLIFrameElement | null>(null);
@@ -24,6 +25,8 @@ onMounted(() => {
 });
 
 // function
+
+// 环境处理
 const handleFrameMessage = (e: MessageEvent) => {
     const { query, eventType } = e.data;
     switch (eventType) {
@@ -40,6 +43,9 @@ const handleFrameMessage = (e: MessageEvent) => {
             break;
         case MESSAGE_EVENT_TYPE.addWidget:
             break;
+        case MESSAGE_EVENT_TYPE.drawer:
+            widgetDrawerData.prop = JSON.parse(query)
+            break
     }
 };
 
@@ -72,6 +78,16 @@ const postEnv = () => {
         deviceEnv: deviceEnv.value,
     })
 };
+
+// 物料处理
+
+const addItem = (param: any) => {
+    const { name } = param
+    postMessage(iframeRef.value!.contentWindow!, MESSAGE_EVENT_TYPE.addWidget, {
+        name,
+        data: JSON.stringify(param.defaultEditorConfigs()),
+    })
+}
 </script>
 
 <template>
@@ -88,7 +104,7 @@ const postEnv = () => {
             <iframe ref="iframeRef" :data-editor-iframe="true" class="frame_container-iframe backgroundColor"
                 :style="'visibility: visible'" :src="`/main?path=${route.params.path}`">
             </iframe>
-            <ModuleActionBar :isEditorRef="false"></ModuleActionBar>
+            <ModuleActionBar :isEditorRef="false" @on-add="addItem"></ModuleActionBar>
         </div>
     </div>
 </template>

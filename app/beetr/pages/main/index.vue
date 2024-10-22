@@ -5,7 +5,8 @@ import {
     STEP_PROCESS,
     BROWSER_ENV,
     VISIT_CREDENTIALS,
-    MESSAGE_EVENT_TYPE
+    MESSAGE_EVENT_TYPE,
+    type IUserAppItem
 } from '@beetr/constant'
 import { _widgetStore } from '~/store/widget';
 import { _userStore } from '~/store/user';
@@ -13,7 +14,9 @@ import { _envStore } from '~/store/env';
 import { SvgWeixin, SvgControl } from '@beetr/constant';
 import moduleContainer from '~/components/module-container.vue';
 import ModuleNavbar from '~/components/module-navbar.vue';
-import { useMessage } from '@beetr/hooks';
+import { useMessage } from '@beetr/hooks'
+import GridContainer from '~/components/module-container.vue';
+
 import { type IUserInfoRes } from '~/api/user/user'
 
 
@@ -28,23 +31,26 @@ const { postMessage } = useMessage()
 // refs reactive here
 const { userInfo, urlInfo, currentStep, isScreenLock, isEdit } = storeToRefs(userStore)
 const { browserEnv, deviceEnv } = storeToRefs(envStore)
-const { userTheme, userAppList, } = widgetStore
+const { appConfigList } = storeToRefs(widgetStore)
 const mextType = ref<number>(0)
 const Loading = ref(false)
 const skeltonLoading = ref(false)
+const containerRef = ref<InstanceType<typeof GridContainer> | null>(null);
 
 // hooks
 onMounted(async () => {
     skeltonLoading.value = true
+    await widgetStore.getSocialPreConfig()
     await userStore.queryUserInfo()
     await queryUserInfo()
     window.addEventListener('message', handleMessage)
 
-    postMessage(window.parent.window, MESSAGE_EVENT_TYPE.info, {
-        urlInfo:JSON.stringify(urlInfo.value!),
-        userInfo:JSON.stringify(userInfo.value!),
-    })
     postMessage(window.parent.window, MESSAGE_EVENT_TYPE.iframeLoaded,)
+    postMessage(window.parent.window, MESSAGE_EVENT_TYPE.info, {
+        urlInfo: JSON.stringify(urlInfo.value!),
+        userInfo: JSON.stringify(userInfo.value!),
+    })
+    postMessage(window.parent.window, MESSAGE_EVENT_TYPE.drawer, JSON.stringify(appConfigList.value))
     skeltonLoading.value = false
 })
 
@@ -67,6 +73,7 @@ const handleMessage = (event: MessageEvent) => {
             deviceEnv.value = query.deviceEnv
             break;
         case MESSAGE_EVENT_TYPE.addWidget:
+            handleWidgetAdd(query)
             break;
         case MESSAGE_EVENT_TYPE.logout:
             break;
@@ -84,6 +91,15 @@ const queryUserInfo = async () => {
     }
 }
 
+const handleWidgetAdd = (query: {
+    name: string,
+    data: Partial<IUserAppItem>
+}) => {
+    // console.log(query);
+    // TODO 可以处理query config
+    const config = JSON.parse(query.data as string)
+    containerRef.value!.onGrdiAddWidget(config)
+}
 
 
 provide('loading', Loading)
@@ -105,7 +121,8 @@ provide('loading', Loading)
             <div class="mb-10 flex flex-col px-4 xl:mb-0 xl:mr-20 xl:flex-1 xl:px-0"></div>
 
             <!-- 右边可拖动的网格布局 -->
-            <moduleContainer v-if="deviceEnv" :deviceEnv="deviceEnv" :editStatus="isEdit" :browserEnv="browserEnv">
+            <moduleContainer v-if="deviceEnv" :deviceEnv="deviceEnv" :editStatus="isEdit" :browserEnv="browserEnv"
+                ref="containerRef">
                 <!-- :isLoading="isLoading" ref="moduleGridRef" :current-step="currentStep"
                 @changeShow="changeShow" @onGridEdit="onGridEdit" @gridTouched="gridTouched" -->
             </moduleContainer>

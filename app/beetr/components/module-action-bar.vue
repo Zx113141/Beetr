@@ -21,13 +21,19 @@
         <!-- <ModuleLeftActionOffline v-if="!isEdit && browserEnv == BROWSER_ENV.desktop"
             :path="userInfo?.url"></ModuleLeftActionOffline> -->
         <!-- <themeDraw @closeLoading="closeLoading" @openLoading="openLoading"></themeDraw> -->
-        <ModuleWidgetAddDrawer @add="(...params: any[]) => onAddGrid('onAddLink', params)" ref="widgetDraw"
+        <ModuleWidgetAddDrawer @on-select="onAddGrid">
+        </ModuleWidgetAddDrawer>
+        <ModuleWidgetDrawer>
+            <template #content>
+                <component :is="widgetDrawerData.data" :query="widgetDrawerData.data"></component>
+            </template>
+        </ModuleWidgetDrawer>
+        <!-- @add="(...params: any[]) => onAddGrid('onAddLink', params)" ref="widgetDraw"
             @add-media="(...params: any[]) => onAddGrid('onAddMedia', params)"
             @add-rich-text="(...params: any[]) => onAddGrid('addRichText', params)"
             @add-section-title="(...params: any[]) => onAddGrid('addSectionTitle', params)"
             @add-map="(...params: any[]) => onAddGrid('addMap', params)"
-            @delete="(...params: any[]) => onAddGrid('delete', params)">
-        </ModuleWidgetAddDrawer>
+            @delete="(...params: any[]) => onAddGrid('delete', params)" -->
         <!--  @on-progress="onProgress" @on-success="onSuccess"  @closeLoading="closeLoading"-->
         <!-- <addSocial :list="originConfigList" @add="(...params: any[]) => onAddGrid('onAddLink', params)">
 
@@ -40,41 +46,50 @@
 <script setup lang="ts">
 import { BROWSER_ENV, STEP_PROCESS } from '@beetr/constant';
 import { _userStore } from '~/store/user';
+import { defineAsyncComponent } from 'vue';
+import { widgetDrawerData } from '~~/store/isLoading'
+import type { IModule } from '@beetr/materials';
 const userStore = _userStore()
+
+const emits = defineEmits<{
+    (e: 'onEdit', params: any): void,
+    (e: 'onLogout',): void,
+    (e: 'onSetEnv', params: any): void,
+    (e: 'onAdd', params: any): void,
+}>()
 const {
     userInfo,
     urlInfo,
     isOnboared,
     isEdit,
-    isGridEdit,
-    timestamp,
     currentStep,
     isScreenLock,
-     } = toRefs(userStore)
+} = toRefs(userStore)
 defineProps<{
     isEditorRef: boolean,
 }>()
 
 const loading = inject('loading', false)
 
-const onAddGrid = (type: string, parasm: any) => {
-
+const onAddGrid = (params: IModule) => {
+    if (!params.drawer) {
+        emits('onAdd', params)
+    } else {
+        widgetDrawerData.show = true
+        widgetDrawerData.drawer = params.drawer
+    }
 }
 
 const onSetEnv = (env: keyof typeof BROWSER_ENV) => {
     // 发送消息给父窗口
-    window.parent.postMessage({
-        eventType: 'env',
-        query: {
-            deviceEnv: env
-        }
-    }, '*')
+    emits('onSetEnv', env)
 }
 
 const logout = () => {
-    window.parent.postMessage({
-        eventType: 'logout',
-    }, '*')
+    emits('onLogout',)
+    // window.parent.postMessage({
+    //     eventType: 'logout',
+    // }, '*')
 }
 
 

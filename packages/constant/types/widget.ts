@@ -132,6 +132,8 @@ export interface IUserAppItem {
     zoom?: number
     longitude?: number
     latitude?: number
+    fetchStatus?: number,
+    cut: Position
 }
 
 export interface IAppConfigItem {
@@ -161,4 +163,16 @@ export interface IAddMediaItem {
     processing?: boolean,
     // _tempUrl: string,
     variant: keyof typeof MEDIA_TYPE,
+}
+
+export interface IAppConfigItem {
+    widgetColor?: string
+    bgColor?: string
+    useFlag?: number
+    widgetColorHover?: string
+    appName?: string
+    id?: string
+    url: string
+    logoUrl?: string
+    widgetColorActive?: string
 }

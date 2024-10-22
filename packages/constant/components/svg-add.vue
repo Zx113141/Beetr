@@ -14,6 +14,3 @@
         </g>
     </svg>
 </template>
-
-
-<script></script>

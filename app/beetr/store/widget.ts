@@ -6,10 +6,9 @@ import {
   deleteUserApp,
   getUserAppsListByUrl,
   updateBatchUserApp,
-  type ,
-
+  getAppConfigList
 } from '@/api/widget/widget'
-import { IUserAppItem, IAddAppConfig } from '@beetr/constant'
+import { type IUserAppItem, type IAppConfigItem } from '@beetr/constant'
 // import { Promise as Promise2 } from 'canvas-confetti'
 import service from '@/api/request2'
 export const _widgetStore = defineStore('widget', () => {
@@ -25,6 +24,8 @@ export const _widgetStore = defineStore('widget', () => {
   /** 用户已设置的app列表 */
   const userAppList = ref<IUserAppItem[]>([])
 
+  const appConfigList = ref<IAppConfigItem[]>([])
+
   /** 查询用户已设置的app列表 */
   const queryUserAppList = async (path: string) => {
     try {
@@ -39,7 +40,7 @@ export const _widgetStore = defineStore('widget', () => {
       //   }
       // })
       //
-      console.log(data.data)
+      // console.log(data.data)
       userTheme.value = data.theme
       userAppList.value = data.data
       return data
@@ -86,7 +87,7 @@ export const _widgetStore = defineStore('widget', () => {
   }
 
   /** widget-新增 */
-  const onAdd = async (item: IAddAppConfig): Promise<IUserAppItem> => {
+  const onAdd = async (item: IAppConfigItem): Promise<IUserAppItem> => {
     return service(
       {
         url: "/jeecg-boot/app/seUsers/insertUserApps",
@@ -94,8 +95,12 @@ export const _widgetStore = defineStore('widget', () => {
         data: item
       })
   }
+  const getSocialPreConfig = async () => {
+    const res = await getAppConfigList({ pageNo: 1, pageSize: 999 })
+    appConfigList.value = res.records
+  }
 
-  // const onAdd = (item: IAddAppConfig)=>{
+  // const onAdd = (item: IAppConfigItem)=>{
   //   return service(
   //     {
   //         url: "/jeecg-boot/app/seUsers/insertUserApps",
@@ -124,6 +129,7 @@ export const _widgetStore = defineStore('widget', () => {
     userMapSearchHistory.value = searchData.slice(0, 3)
   }
 
+
   return {
     queryUserAppList,
     userTheme,
@@ -136,5 +142,7 @@ export const _widgetStore = defineStore('widget', () => {
     updateUserAppList,
     userMapSearchHistory,
     setUserMapSearchHistory,
+    appConfigList,
+    getSocialPreConfig
   }
 })

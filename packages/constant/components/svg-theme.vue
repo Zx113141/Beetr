@@ -6,5 +6,3 @@
         </path>
     </svg>
 </template>
-
-<script></script>
