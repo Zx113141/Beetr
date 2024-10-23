@@ -11,12 +11,14 @@ import {
 import { _widgetStore } from '~/store/widget';
 import { _userStore } from '~/store/user';
 import { _envStore } from '~/store/env';
-import { SvgWeixin, SvgControl } from '@beetr/constant';
+import { SvgWeixin, MEDIA_TYPE, TOKEN_CREDENTIALS } from '@beetr/constant';
 import moduleContainer from '~/components/module-container.vue';
 import ModuleNavbar from '~/components/module-navbar.vue';
 import { useMessage } from '@beetr/hooks'
 import GridContainer from '~/components/module-container.vue';
-
+import { UploadMedia } from '@beetr/materials'
+import { uploadFileUrl } from '~/api/widget/widget'
+const auth = useCookie(TOKEN_CREDENTIALS) as unknown as string
 
 
 // import { onSetDraw } from '~/store/isLoading'
@@ -35,6 +37,8 @@ const mextType = ref<number>(0)
 const Loading = ref(false)
 const skeltonLoading = ref(false)
 const containerRef = ref<InstanceType<typeof GridContainer> | null>(null);
+
+const uploadRef = ref<any>(null)
 
 
 
@@ -98,10 +102,22 @@ const handleWidgetAdd = (query: {
     name: string,
     data: Partial<IUserAppItem>
 }) => {
-    // console.log(query);
+    console.log(query);
+    const { name, data } = query
+    const config = JSON.parse(data as string)
     // TODO 可以处理query config
-    const config = JSON.parse(query.data as string)
-    containerRef.value!.onGrdiAddWidget(config)
+    if (config.variant == MEDIA_TYPE.image || config.variant == MEDIA_TYPE.video) {
+        // console.log()
+        uploadRef.value.click()
+          
+        // uploadRef.value.c()
+    }
+    // 
+    // containerRef.value!.onGrdiAddWidget(config)
+}
+
+const onUploadSuccess = () => {
+
 }
 
 
@@ -151,6 +167,13 @@ provide('loading', Loading)
             <!-- 非登录状态下的操作栏，登录、创建个人链接 -->
             <ModuleLeftActionOffline from="main" v-if="!userStore.isEdit" :path="userInfo?.url">
             </ModuleLeftActionOffline>
+        </div>
+
+        <div class="translate-y-[1000px] translate-x-[2000px]">
+            <upload-media  class="w-full h-full" :disabled="!userStore.isEdit"
+                @on-success="onUploadSuccess" :auth="auth" :autoUpload="false" :action="uploadFileUrl">
+                <button id="asdasd" type="primary" ref="uploadRef">select file</button>
+            </upload-media>
         </div>
 
 

@@ -29,13 +29,4 @@ export enum EDIT_TYPE {
  * @media 2×2 图片、视频小组件
  * @richText 2×2 富文本组件
  * @sectionHeader 4×1章节标题
- */
-export enum WIDGET_TYPE {
-    link = 'link',
-    social = 'social',
-    map = 'map',
-    media = 'media',
-    richText = 'rich-text',
-    sectionHeader = 'section-header',
-}
-
+ *  */

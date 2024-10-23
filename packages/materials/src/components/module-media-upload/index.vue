@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type UploadFile, type UploadProgressEvent, type UploadRawFile, ElNotification } from 'element-plus'
+import { type UploadFile, type UploadProgressEvent, type UploadRawFile, ElNotification,type UploadInstance } from 'element-plus'
 import { UPLOAD_TYPE, IMG_ACCEPT_FILES, VIDEO_ACCEPT_FILES, MEDIA_TYPE, TOKEN_CREDENTIALS } from '@beetr/constant'
 // import { uploadFileUrl } from '~/api/widget/widget'
 import { ref, computed } from 'vue'
@@ -60,9 +60,9 @@ const bytesToSize = (bytes: any) => {
     }
     return bol
 }
-const uploadRef = ref<any>('')
+const uploadRef = ref<UploadInstance>('')
 const cancelUpload = () => {
-    console.log(uploadRef.value)
+    // console.log(uploadRef.value)
     uploadRef.value.abort()
 }
 
@@ -190,6 +190,11 @@ const change = (uploadFile: UploadFile,) => {
     }
 
 }
+const handleStart = (rawFile:UploadRawFile) => {
+    // uploadRef.value.handleStart(rawFile)
+    console.log(uploadRef.value)
+}
+ 
 
 const emit = defineEmits<{
     /** 主要对视频本地预览有用 */
@@ -199,16 +204,16 @@ const emit = defineEmits<{
     (e: 'onProgress', evt: UploadProgressEvent, blobUrl: string): void
     (e: 'onPreview', blobUrl: string): void
     (e: 'onError'): void
-    // (e: 'handleStart', mediaType: keyof typeof MEDIA_TYPE): void
+ 
 }>()
-defineExpose({ cancelUpload, submit })
+defineExpose({ cancelUpload, submit, handleStart })
 </script>
 
 <template>
     <el-upload :auto-upload="autoUpload" ref="uploadRef" class="init_upload" :accept="String(currentAcceptFiles)"
         :show-file-list="false" :disabled="props.disabled" :headers="{ 'X-Access-Token': auth }" :action="action"
         :before-upload="onBeforeUpload" :on-success="onSuccess" :on-error="onError" @change="change"
-        :on-progress="onProgress">
+        :on-progress="onProgress"  >
         <slot>子组件插槽</slot>
     </el-upload>
     <!-- <video :src="currentFile" style="width: 200px; height: 200px" controls="controls" loop></video> -->

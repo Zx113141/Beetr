@@ -22,7 +22,7 @@ interface IModule {
     type: string
     isComponent: boolean
     props: any
-    defaultEditorConfigs: (props: any) => Partial<IUserAppItem>
+    defaultEditorConfigs: (props: Partial<IUserAppItem>) => Partial<IUserAppItem>
 }
 
 const BeetrModules: IModule[] = [

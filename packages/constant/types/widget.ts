@@ -177,3 +177,14 @@ export interface IAppConfigItem {
     logoUrl?: string
     widgetColorActive?: string
 }
+
+ 
+export enum WIDGET_TYPE {
+    link = 'link',
+    social = 'social',
+    map = 'map',
+    media = 'media',
+    richText = 'rich-text',
+    sectionHeader = 'section-header',
+}
+

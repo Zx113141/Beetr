@@ -30,10 +30,6 @@
                 </component>
             </template>
         </ModuleWidgetDrawer>
-        <!-- <addSocial :list="originConfigList" @add="(...params: any[]) => onAddGrid('onAddLink', params)">
-
-        </addSocial>
-        <addLink @add="(...params: any[]) => onAddGrid('onAddLink', params)"></addLink> -->
     </client-only>
 
 </template>
