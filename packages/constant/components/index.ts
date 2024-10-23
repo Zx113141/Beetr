@@ -22,7 +22,8 @@ import SvgExplore from './svg-explore.vue'
 import SvgCommunity from './svg-setting.vue'
 import SvgAdd from './svg-add.vue'
 import SvgTheme from './svg-theme.vue'
-import SvgCopyLink from './svg-copylink.vue'
+import SvgCopyLink from './svg-copyLink.vue'
+import SvgCrop from './svg-crop.vue'
 
 export {
     SvgControl,
@@ -40,5 +41,6 @@ export {
     SvgChecked, SvgSetting, SvgExplore, SvgCommunity,
     SvgAdd,
     SvgTheme,
-    SvgCopyLink
+    SvgCopyLink,
+    SvgCrop
 }

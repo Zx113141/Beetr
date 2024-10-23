@@ -47,9 +47,9 @@ const handleFrameMessage = (e: MessageEvent) => {
         case MESSAGE_EVENT_TYPE.appConfigList:
             widgetDrawerData.prop.appConfigList = JSON.parse(query)
             break;
-        case MESSAGE_EVENT_TYPE.widgetStatus:
-            console.log(query);
-            break
+        // case MESSAGE_EVENT_TYPE.widgetStatus:
+        //     console.log(query);
+        //     break
     }
 };
 

@@ -1,3 +1,5 @@
+
+
 export enum MESSAGE_EVENT_TYPE {
     iframeLoaded = 'iframeLoaded',
     env = 'env',
@@ -5,6 +7,6 @@ export enum MESSAGE_EVENT_TYPE {
     addWidget = 'addWidget',
     logout = 'logout',
     appConfigList = 'appConfigList',
-    editWidget = 'editWidget',
-    widgetStatus = 'widgetStatus'
+
 }
+

@@ -133,7 +133,8 @@ export interface IUserAppItem {
     longitude?: number
     latitude?: number
     fetchStatus?: number,
-    cut: Position
+    cut: Position,
+    cropStatus?: boolean
 }
 
 export interface IAppConfigItem {

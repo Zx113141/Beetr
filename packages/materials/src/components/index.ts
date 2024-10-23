@@ -1,8 +1,13 @@
 
 import { IUserAppItem } from '@beetr/constant'
 import { ModuleNote, richText, ModuleNoteHandler, defaultEditorConfigs as noteConfigs } from './module-richText'
-import { ModuleLink, link, ModuleLinkHandler, defaultEditorConfigs as linkConfigs, } from './module-link'
-import { ModuleSocial, social, ModuleSocialHandler, defaultEditorConfigs as socialConfigs, ModuleDrawer } from './module-social'
+import { link, defaultEditorConfigs as linkConfigs, } from './module-link'
+import { ModuleHref, ModuleHrefHandler } from './module-href'
+import { social, defaultEditorConfigs as socialConfigs, ModuleDrawer } from './module-social'
+
+import { ModuleMedia, ModuleMediaHandler } from './module-media'
+import { image, defaultImageConfigs } from './module-image'
+import { video, defaultVideoConfigs } from './module-video'
 // import { ModuleNote, richText, ModuleNoteHandler, defaultEditorConfigs } from './module-richText'
 
 interface IModule {
@@ -34,8 +39,8 @@ const BeetrModules: IModule[] = [
     },
     {
         name: 'link',
-        module: ModuleLink,
-        Handler: ModuleLinkHandler,
+        module: ModuleHref,
+        Handler: ModuleHrefHandler,
         drawer: null,
         icon: link,
         title: '链接',
@@ -47,8 +52,8 @@ const BeetrModules: IModule[] = [
     },
     {
         name: 'social',
-        module: ModuleSocial,
-        Handler: ModuleSocialHandler,
+        module: ModuleHref,
+        Handler: ModuleHrefHandler,
         drawer: ModuleDrawer,
         icon: social,
         title: '社交',
@@ -57,6 +62,32 @@ const BeetrModules: IModule[] = [
         props: {
         },
         defaultEditorConfigs: socialConfigs,
+    },
+    {
+        name: 'media',
+        module: ModuleMedia,
+        Handler: ModuleMediaHandler,
+        drawer: null,
+        icon: image,
+        title: '图片',
+        type: 'module',
+        isComponent: true,
+        props: {
+        },
+        defaultEditorConfigs: defaultImageConfigs,
+    },
+    {
+        name: 'media',
+        module: ModuleMedia,
+        Handler: ModuleMediaHandler,
+        drawer: null,
+        icon: video,
+        title: '视频',
+        type: 'module',
+        isComponent: true,
+        props: {
+        },
+        defaultEditorConfigs: defaultVideoConfigs,
     }
 
 ]

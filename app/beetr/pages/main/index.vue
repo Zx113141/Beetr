@@ -40,8 +40,10 @@ const containerRef = ref<InstanceType<typeof GridContainer> | null>(null);
 onMounted(async () => {
     skeltonLoading.value = true
     await widgetStore.getSocialPreConfig()
-    await userStore.queryUserInfo()
     await queryUserInfo()
+    try {
+        await userStore.queryUserInfo()
+    } catch (error) { }
     window.addEventListener('message', handleMessage)
 
     postMessage(window.parent.window, MESSAGE_EVENT_TYPE.iframeLoaded,)

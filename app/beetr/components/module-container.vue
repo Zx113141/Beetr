@@ -13,7 +13,7 @@
           :isWidgetEdit="editObject.isEditing" @mouseHover="onHover">
           <div class="wiget_size_item_container">
             <component :is="ComponentsReflect[item.type].module" :item="item" @onEdit="onModuleEdit" :env="deviceEnv"
-              :isEdit="editStatus"></component>
+              :isEdit="editStatus" :browserEnv="browserEnv"></component>
             <component :is="ComponentsReflect[item.type].Handler" :visible-action-id="editObject.visibleActionId"
               :item="item" @onEdit="onWidgetEdit" @onEditing="onEditing">
             </component>
