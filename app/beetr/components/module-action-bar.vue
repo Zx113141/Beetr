@@ -26,7 +26,7 @@
         <ModuleWidgetDrawer>
             <template #content>
                 <component :is="widgetDrawer" :prop="widgetDrawerData.prop" :browserEnv="browserEnv"
-                    :data="widgetDrawerData.data" @finish="finish" @close="back">
+                    :deviceEnv="deviceEnv" :data="widgetDrawerData.data" @finish="finish" @close="back">
                 </component>
             </template>
         </ModuleWidgetDrawer>
@@ -63,7 +63,8 @@ const {
 } = toRefs(userStore)
 defineProps<{
     isEditorRef: boolean,
-    browserEnv: keyof typeof BROWSER_ENV | undefined,
+    browserEnv: keyof typeof BROWSER_ENV,
+    deviceEnv: keyof typeof BROWSER_ENV,
 }>()
 
 const loading = inject('loading', false)

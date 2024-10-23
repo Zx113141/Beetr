@@ -1,6 +1,6 @@
 <template>
     <div ref="rotateZ" class="widget_base-rich-text"
-        :class="[`widget_base-${item.cusStyle[env].w}x${item.cusStyle[env].h}`]" :style="`
+        :class="[`widget_base-${item.cusStyle[deviceEnv].w}x${item.cusStyle[deviceEnv].h}`]" :style="`
       --widget-color: ${item.widgetColor};
       --widget-color-bg: ${item.bgColor || '#ffffff'};
       --widget-color-hover: ${item.widgetColorHover};
@@ -14,8 +14,9 @@
 
             <div class="rich_wrap-padding">
                 <div class="rich_wrap-cont"
-                    :class="{ mobile: env == ENV_ENUM.mobile, isEditing: isFocusing, noEdit: !isEdit, }" :style="`justify-content: ${item.halign?.[env]};text-align: ${TEXT_ALIGN[item.halign?.[env] as keyof typeof TEXT_ALIGN || 'flex-start']
-                        };align-items: ${item.valign?.[env]}`" @click="onSetBlur(true, isFocusing)"
+                    :class="{ mobile: deviceEnv == BROWSER_ENV.mobile, isEditing: isFocusing, noEdit: !isEdit, }"
+                    :style="`justify-content: ${item.halign?.[deviceEnv]};text-align: ${TEXT_ALIGN[item.halign?.[deviceEnv] as keyof typeof TEXT_ALIGN || 'flex-start']
+                        };align-items: ${item.valign?.[deviceEnv]}`" @click="onSetBlur(true, isFocusing)"
                     @dragover="imgDragover($event)">
                     <editor-content :editor="content" class="w-full" />
                 </div>
@@ -44,20 +45,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref, toRefs, nextTick, } from 'vue'
+import { ref, toRefs, nextTick, inject, } from 'vue'
 
 import { useEditor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import Placeholder from '@tiptap/extension-placeholder'
-import { type IUserAppItem, ENV_ENUM, SvgArrow } from '@beetr/constant'
+import { type IUserAppItem, BROWSER_ENV, SvgArrow } from '@beetr/constant'
 import { debounce } from '@beetr/hooks'
 
 // // init 
 const rotateZ = ref<HTMLDivElement | null>(null)
+
+const deviceEnv = inject<keyof typeof BROWSER_ENV>('deviceEnv',)!
+const isEdit = inject<boolean>('editStatus')
 const props = defineProps<{
     item: IUserAppItem,
-    env: keyof typeof ENV_ENUM,
-    isEdit: Boolean
 }>()
 const emits = defineEmits(["onFakeClick", 'onEdit'])
 const { item } = toRefs(props)
@@ -74,7 +76,7 @@ var timer: any = null
 /** 用户名称 🎉 */
 const content = useEditor({
     content: item.value?.content,
-    editable: !item.value?.content && !!props.isEdit,
+    editable: !item.value?.content && !!isEdit,
     extensions: [
         StarterKit,
         Placeholder.configure({
@@ -99,7 +101,7 @@ const content = useEditor({
                 return
             }
             // debugger
-            emits('onEdit', item.value, );
+            emits('onEdit', item.value,);
         }, 600);
         // item.value.content = content
         // widgetStore.onUpdate([item.value])
@@ -123,7 +125,7 @@ const content = useEditor({
                 requestAnimationFrame(fn)
             } else {
                 scrollRef.value!.scrollTop = 0
-                props.isEdit && content.value!.setEditable(true)
+                isEdit && content.value!.setEditable(true)
                 isFocusing.value = false
             }
         }
@@ -134,7 +136,7 @@ const content = useEditor({
 /** 手动设置焦点 */
 const onSetBlur = async (focusing: boolean, force = false) => {
     // 手机端不设置焦点
-    if (props.env == ENV_ENUM.mobile && !force) return
+    if (deviceEnv == BROWSER_ENV.mobile && !force) return
     isFocusing.value = focusing
     await nextTick()
     const fn = () => {
@@ -145,8 +147,8 @@ const onSetBlur = async (focusing: boolean, force = false) => {
             requestAnimationFrame(fn)
         } else {
             scrollRef.value!.scrollTop = scrollHeight - offsetHeight
-            props.isEdit && content.value!.setEditable(isFocusing.value)
-            props.isEdit && content.value!.commands.focus('end')
+            isEdit && content.value!.setEditable(isFocusing.value)
+            isEdit && content.value!.commands.focus('end')
         }
     }
     requestAnimationFrame(fn)
@@ -159,18 +161,18 @@ const imgDragover = (event: Event) => {
     event.preventDefault()
 }
 const preventMethod = debounce(() => {
-    if (!props.isEdit) return
+    if (!isEdit) return
     rotateZ.value?.classList.add('rotateZ')
     emits("onFakeClick", item.value)
 }, 50)
 const visitJump = () => {
 
-    if (props.isEdit || !item.value.url) return
+    if (isEdit || !item.value.url) return
     window.open(item.value.url)
 }
 
 // watch(
-//     () => props.isEdit,
+//     () => isEdit,
 //     (val) => {
 //         console.log('props.edit', val);
 //         // 选中的才焦点

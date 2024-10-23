@@ -117,7 +117,7 @@ const logout = () => {
             <iframe ref="iframeRef" :data-editor-iframe="true" class="frame_container-iframe backgroundColor"
                 :style="'visibility: visible'" :src="`/main?path=${route.params.path}`">
             </iframe>
-            <ModuleActionBar :browserEnv="browserEnv" :isEditorRef="false" @on-add="addItem"
+            <ModuleActionBar :deviceEnv="deviceEnv!" :browserEnv="browserEnv!" :isEditorRef="false" @on-add="addItem"
                 @on-prepare="prepareDrawData" @on-logout="logout">
             </ModuleActionBar>
         </div>

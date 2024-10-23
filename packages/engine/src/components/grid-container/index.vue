@@ -38,8 +38,7 @@ const [drag, dragstart, dragstop, isMovingWidget] = useDrag();
 
 provide("movingWidgetId", isMovingWidget);
 
-const env = inject<keyof typeof BROWSER_ENV>("env")!;
-const editStatus = inject<boolean>("editStatus");
+const deviceEnv = inject<keyof typeof BROWSER_ENV>("deviceEnv")!;
 
 /** 必须先初始化好数据，才能初始化grid.否则样式会出问题 */
 let grid = ref<GridStack | null>(null);
@@ -50,9 +49,9 @@ const init = () => {
     {
       animate: true,
       disableDrag: false,
-      cellHeight: env === ENV_ENUM.mobile ? width / 4 + "px" : "105px",
-      column: BROWSER_ENV_GRID_COLUMN[env],
-      margin: GridMargin[env],
+      cellHeight: deviceEnv === ENV_ENUM.mobile ? width / 4 + "px" : "105px",
+      column: BROWSER_ENV_GRID_COLUMN[deviceEnv],
+      margin: GridMargin[deviceEnv],
       disableResize: true,
       float: false,
       // disableOneColumnMode: true,

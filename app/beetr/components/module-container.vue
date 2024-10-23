@@ -8,12 +8,11 @@
     <div
       class="xl:flex flex h-full w-full max-w-[428px] flex-1 flex-col pt-0 xl:max-w-[1728px] xl:flex-row xl:p-16 xl:overflow-hidden">
       <div class="mb-10 flex flex-col px-4 xl:mb-0 xl:mr-20 xl:flex-1 xl:px-0"></div>
-      <grid-container :env="deviceEnv" ref="gridRef" @update="onGridUpdateWidgets">
+      <grid-container ref="gridRef" @update="onGridUpdateWidgets">
         <grid-item v-for="item in userAppList" :item="item" :key="item.id" :env="deviceEnv"
           :isWidgetEdit="editObject.isEditing" @mouseHover="onHover">
           <div class="wiget_size_item_container">
-            <component :is="ComponentsReflect[item.type].module" :item="item" @onEdit="onModuleEdit" :env="deviceEnv"
-              :isEdit="editStatus" :browserEnv="browserEnv"></component>
+            <component :is="ComponentsReflect[item.type].module" :item="item" @onEdit="onModuleEdit"></component>
             <component :is="ComponentsReflect[item.type].Handler" :visible-action-id="editObject.visibleActionId"
               :item="item" @onEdit="onWidgetEdit" @onEditing="onEditing">
             </component>
@@ -64,12 +63,10 @@ BeetrModules.forEach((item: any) => {
 });
 
 
-
-
 const props = defineProps<{
   deviceEnv: keyof typeof BROWSER_ENV;
   editStatus: boolean;
-  browserEnv: keyof typeof BROWSER_ENV | undefined;
+  browserEnv: keyof typeof BROWSER_ENV;
 }>();
 
 const widgetStore = _widgetStore();
@@ -80,6 +77,14 @@ const editObject = reactive({
   visibleActionId: "", // 激活widget id
   isEditing: false, // 是否正在编辑
 });
+// grid instance
+const gridRef = ref<InstanceType<typeof GridContainer> | null>(null);
+
+provide<boolean>("editStatus", props.editStatus);
+provide<keyof typeof BROWSER_ENV>("deviceEnv", props.deviceEnv);
+provide<keyof typeof BROWSER_ENV>("browserEnv", props.browserEnv);
+provide('containerRef', gridRef);
+
 const onEditing = (isEdit: boolean) => {
   editObject.isEditing = isEdit;
 };
@@ -92,8 +97,6 @@ const onHover = (id: string) => {
 onMounted(async () => {
   await render(userAppList.value)
 })
-// grid instance
-const gridRef = ref<InstanceType<typeof GridContainer> | null>(null);
 
 const render = async (newList: IUserAppItem[]) => {
   if (newList.length && gridRef.value) {
@@ -250,10 +253,6 @@ onUnmounted(() => {
   gridRef.value!.dispose();
 });
 
-// provide context here
-
-provide<keyof typeof BROWSER_ENV>("env", props.deviceEnv);
-provide<boolean>("editStatus", props.editStatus);
 
 
 defineExpose({

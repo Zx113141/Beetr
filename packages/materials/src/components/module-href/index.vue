@@ -1,64 +1,21 @@
 <script setup lang="ts">
-import { InputInstance, ElNotification } from 'element-plus'
+import { LINK_TYPE, IUserAppItem, BROWSER_ENV } from '@beetr/constant'
 
-import { BROWSER_ENV, LINK_TYPE, IUserAppItem, ENV_ENUM } from '@beetr/constant'
-
-import { toRefs, ref, onMounted, onBeforeUnmount, nextTick, computed } from 'vue'
+import { toRefs, ref, inject, onBeforeUnmount, computed } from 'vue'
 import ModuleLink from '../module-link/index.vue'
 import ModuleSocial from '../module-social/index.vue'
 
+const deviceEnv = inject<keyof typeof BROWSER_ENV>('deviceEnv',)!
+const isEdit = inject<boolean>('editStatus')
 const props = defineProps<{
     item: IUserAppItem,
-    env: keyof typeof ENV_ENUM,
-    isEdit: boolean
 }>()
 const { item } = toRefs(props)
-
-/** 切换显示input输入框 */
-const showInput = ref(false)
 const hover = ref(false)
-/** 输入框ref */
-const inputRef = ref<InputInstance | null>(null)
-
-/** 切换为输入模式 */
-const onToggleInput = async () => {
-    if (!props.isEdit || props.env == BROWSER_ENV.mobile) return
-    showInput.value = true
-    await nextTick()
-    inputRef.value!.focus()
-}
-
-const visitJump = () => {
-    if (props.isEdit || !item.value.url) return
-    window.open(item.value.url)
-}
 
 
 
-/** 更新title */
-const updateWidget = () => {
-    // widgetStore.onUpdate([item.value])
-    emits('onEdit', [item.value])
-}
-const addUrl = ref('')
-const getPaste = async () => {
-    const res = await navigator.clipboard.readText()
-    addUrl.value = res
-}
 const emits = defineEmits(['addTemp', 'onEdit'])
-const onSetComplete = () => {
-    if (!addUrl.value) return
-    if (addUrl.value.indexOf('https://') != 0 && addUrl.value.indexOf('http://') != 0) {
-        ElNotification({
-            title: '提示',
-            message: '无效的URL，需包含：https://、http://',
-        })
-        return
-    }
-    // showPoper.value = false
-    emits('addTemp', addUrl.value)
-}
-
 
 const styleCompute = computed(() => {
     return function (item: IUserAppItem) {
@@ -70,34 +27,34 @@ const styleCompute = computed(() => {
 
 
 const onHover = () => {
-    if (!props.isEdit) {
+    if (!isEdit) {
         hover.value = true
     }
 }
 const onLeave = () => {
     hover.value = false
 }
-let timer: any = null
-onMounted(() => {
-    const type = item.value.variant
-    const status = item.value.fetchStatus
-    if (type == 'normal' && status == 1) {
-        timer = setInterval(() => {
-            widgetStore.onUpdateCrawler(item.value.id).then(res => {
-                if (!res.fetchStatus) {
-                    clearInterval(timer)
-                }
-            })
+// let timer: any = null
+// onMounted(() => {
+//     const type = item.value.variant
+//     const status = item.value.fetchStatus
+//     if (type == 'normal' && status == 1) {
+//         timer = setInterval(() => {
+//             widgetStore.onUpdateCrawler(item.value.id).then(res => {
+//                 if (!res.fetchStatus) {
+//                     clearInterval(timer)
+//                 }
+//             })
 
-        }, 3000)
-    }
+//         }, 3000)
+//     }
 
-})
-onBeforeUnmount(() => {
-    if (timer) {
-        clearInterval(timer)
-    }
-});
+// })
+// onBeforeUnmount(() => {
+//     if (timer) {
+//         clearInterval(timer)
+//     }
+// });
 
 const finish = () => {
     emits('onEdit', item.value)
@@ -106,11 +63,10 @@ const finish = () => {
 
 <template>
 
-    <div @mouseover="onHover" @mouseleave="onLeave" class="widget_base-link" :class="`${item.temType ? 'temStyle' : ''} widget_base-${item.cusStyle[env].w * 2}x${item.cusStyle[env].h
+    <div @mouseover="onHover" @mouseleave="onLeave" class="widget_base-link" :class="`${item.temType ? 'temStyle' : ''} widget_base-${item.cusStyle[deviceEnv].w * 2}x${item.cusStyle[deviceEnv].h
         }`" :style="styleCompute(item)">
-        <ModuleLink v-if="item.variant == LINK_TYPE.normal" :item="item" :env="env" :is-edit="isEdit"></ModuleLink>
-        <ModuleSocial @finish="finish" v-if="item.variant == LINK_TYPE.social" :item="item" :env="env"
-            :is-edit="isEdit"></ModuleSocial>
+        <ModuleLink v-if="item.variant == LINK_TYPE.normal" :item="item"></ModuleLink>
+        <ModuleSocial @finish="finish" v-if="item.variant == LINK_TYPE.social" :item="item"></ModuleSocial>
     </div>
 </template>
 

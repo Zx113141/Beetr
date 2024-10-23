@@ -1,9 +1,9 @@
 
 import { IUserAppItem } from '@beetr/constant'
 import { ModuleNote, richText, ModuleNoteHandler, defaultEditorConfigs as noteConfigs } from './module-richText'
-import { link, defaultEditorConfigs as linkConfigs, } from './module-link'
-import { ModuleHref, ModuleHrefHandler } from './module-href'
-import { social, defaultEditorConfigs as socialConfigs, ModuleDrawer } from './module-social'
+import { link, defaultEditorConfigs as linkConfigs, ModuleLinkDrawer } from './module-link'
+import { ModuleHref, ModuleHrefHandler, } from './module-href'
+import { social, defaultEditorConfigs as socialConfigs, ModuleSocialDrawer } from './module-social'
 
 import { ModuleMedia, ModuleMediaHandler } from './module-media'
 import { image, defaultImageConfigs } from './module-image'
@@ -41,7 +41,7 @@ const BeetrModules: IModule[] = [
         name: 'link',
         module: ModuleHref,
         Handler: ModuleHrefHandler,
-        drawer: null,
+        drawer: ModuleLinkDrawer,
         icon: link,
         title: '链接',
         type: 'module',
@@ -54,7 +54,7 @@ const BeetrModules: IModule[] = [
         name: 'social',
         module: ModuleHref,
         Handler: ModuleHrefHandler,
-        drawer: ModuleDrawer,
+        drawer: ModuleSocialDrawer,
         icon: social,
         title: '社交',
         type: 'module',

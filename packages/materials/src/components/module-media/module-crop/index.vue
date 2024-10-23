@@ -45,8 +45,8 @@
 
         <div class="box_border" v-if="item.cropStatus"></div>
 
-        <div class="pc_content_mask" v-if="item.cropStatus && env == 'desktop'" @click="onFinish"></div>
-        <div class="mobile_content_mask" v-if="item.cropStatus && env == 'mobile' && browserEnv == 'desktop'"
+        <div class="pc_content_mask" v-if="item.cropStatus && deviceEnv == 'desktop'" @click="onFinish"></div>
+        <div class="mobile_content_mask" v-if="item.cropStatus && deviceEnv == 'mobile' && browserEnv == 'desktop'"
             @click="onFinish"></div>
     </div>
 </template>
@@ -54,14 +54,15 @@
 <script setup lang="ts">
 // import { _widgetStore } from '~~/store/widget'
 import { MEDIA_TYPE, type IUserAppItem, BROWSER_ENV } from '@beetr/constant'
-import { ref, reactive, watch, computed, toRefs, onMounted, nextTick } from 'vue'
-// import { _envStore } from '~/store/env'
+import { ref, reactive, watch, computed, toRefs, onMounted, nextTick, inject } from 'vue'
+// import { _envStore } from '~/store/deviceEnv'
 const emit = defineEmits(['isCrop', 'onFinish'])
+
+const deviceEnv = inject<keyof typeof BROWSER_ENV>('deviceEnv',)!
+const browserEnv = inject<keyof typeof BROWSER_ENV>('browserEnv',)!
 
 const props = defineProps<{
     item: IUserAppItem
-    browserEnv: keyof typeof BROWSER_ENV,
-    env: keyof typeof BROWSER_ENV,
 }>()
 const imgRect = reactive({
     width: 0,
@@ -104,8 +105,8 @@ onMounted(async () => {
     const { width, height } = await getImageDimensions()
     imgRect.width = width
     imgRect.height = height
-    const w = item.value.cusStyle[props.env].w
-    const h = item.value.cusStyle[props.env].h / 2
+    const w = item.value.cusStyle[deviceEnv].w
+    const h = item.value.cusStyle[deviceEnv].h / 2
     emit('isCrop', !(w / h == imgRect.width / imgRect.height))
     preDrawMask()
 })
@@ -116,10 +117,10 @@ const mediaContent = ref<HTMLDivElement | null>(null)
 const getBoxContent = () => {
 
 
-    if (props.browserEnv == BROWSER_ENV.desktop) {
-        const margin = (props.env === BROWSER_ENV.mobile ? 10 : 15)
-        const { w, h } = item.value.cusStyle[props.env]
-        const base_px = props.env == BROWSER_ENV.desktop ? 105 : 428 / 4
+    if (browserEnv == BROWSER_ENV.desktop) {
+        const margin = (deviceEnv === BROWSER_ENV.mobile ? 10 : 15)
+        const { w, h } = item.value.cusStyle[deviceEnv]
+        const base_px = deviceEnv == BROWSER_ENV.desktop ? 105 : 428 / 4
         return {
             width: (base_px * w) * 2 - margin * 2,
             height: (base_px * h) - margin * 2
@@ -262,8 +263,8 @@ const getImageWH = computed(() => {
 
     const naturalW = imgRect.width
     const naturalH = imgRect.height
-    const w = item.value.cusStyle[props.env].w
-    const h = item.value.cusStyle[props.env].h / 2
+    const w = item.value.cusStyle[deviceEnv].w
+    const h = item.value.cusStyle[deviceEnv].h / 2
 
     const { width, height } = getBoxContent()
     if (w <= h) {
@@ -303,7 +304,7 @@ const getParams = () => {
         cropStatus: false,
         cut: {
             ...item.value.cut,
-            [props.env]: getXYRadio()
+            [deviceEnv]: getXYRadio()
         }
     }
 }
@@ -332,9 +333,9 @@ const preDrawMask = () => {
     const { radioX, radioY } = calculateRadio()
     if (w == width && height < h) {
         position.x = 0
-        position.y = item.value.cut[props.env]?.y * radioY || 0
+        position.y = item.value.cut[deviceEnv]?.y * radioY || 0
     } else {
-        position.x = item.value.cut[props.env]?.x * radioX || 0
+        position.x = item.value.cut[deviceEnv]?.x * radioX || 0
         position.y = 0
     }
     console.log(position, item.value.cut);
@@ -376,10 +377,10 @@ const excuteAnimation = () => {
 
 
 watch(
-    () => props.item.cusStyle[props.env],
+    () => props.item.cusStyle[deviceEnv],
     async (newval, oldval) => {
         if (newval.w == oldval.w && newval.h == oldval.h) return
-        // console.log(props.item.cusStyle[props.env], el.clientWidth, el.clientHeight);
+        // console.log(props.item.cusStyle[deviceEnv], el.clientWidth, el.clientHeight);
         // console.log(getBoxContent());
         setTimeout(() => {
             preDrawMask()
@@ -391,7 +392,7 @@ watch(
     },
 
 )
-watch(() => props.env, () => {
+watch(() => deviceEnv, () => {
     setTimeout(() => {
         console.log(1);
         preDrawMask()
@@ -419,7 +420,7 @@ watch(
             return
         }
         nextTick(() => {
-            if (props.env != BROWSER_ENV.mobile) {
+            if (deviceEnv != BROWSER_ENV.mobile) {
                 excuteAnimation()
             }
             drawMask()

@@ -15,7 +15,7 @@ const { item, } = toRefs(props)
 const emit = defineEmits<{
     (e: 'onResize', item: IUserAppItem, type: 'resize'): void
 }>()
-const env = inject<keyof typeof ENV_ENUM>('env') as keyof typeof ENV_ENUM
+const deviceEnv = inject<keyof typeof ENV_ENUM>('deviceEnv') as keyof typeof ENV_ENUM
 
 const linkResizeList = [
     {
@@ -77,15 +77,15 @@ const resizeList = computed(() => {
 
 const resize = (item: IUserAppItem, width: number, height: number) => {
     const newItem = { ...item, }
-    newItem.cusStyle[env].w = width
-    newItem.cusStyle[env].h = height
+    newItem.cusStyle[deviceEnv].w = width
+    newItem.cusStyle[deviceEnv].h = height
     emit('onResize', newItem, 'resize')
 }
 </script>
 
 <template>
     <button v-for="(child, index) in resizeList" :key="index"
-        class="rounded-[4px] outline-none disabled:text-white disabled:text-opacity-40 active:scale-90" :class="`${item.cusStyle[env].w}×${item.cusStyle[env].h}` ===
+        class="rounded-[4px] outline-none disabled:text-white disabled:text-opacity-40 active:scale-90" :class="`${item.cusStyle[deviceEnv].w}×${item.cusStyle[deviceEnv].h}` ===
             `${child.width}×${child.height}`
             ? `active`
             : ``

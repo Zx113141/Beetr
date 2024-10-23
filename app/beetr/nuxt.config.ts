@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  builder: 'vite',
   devtools: { enabled: true },
   ssr: false,
   typescript: {
@@ -36,10 +37,32 @@ export default defineNuxtConfig({
   },
 
   vite: {
+    plugins: [
+
+    ],
     server: {
       hmr: {
         overlay: false
       }
+    },
+    build: {
+      // rollupOptions: {
+      //   output: {
+
+      //     chunkFileNames: 'js/[name]-[hash].js',
+      //     entryFileNames: 'js/[name]-[hash].js',
+      //     assetFileNames: '[ext]/[name]-[hash].[ext]',
+      //     // manualChunks: () => 'vendor'
+      //   }
+      // },
+      // manifest: 'terser',
+      // cssCodeSplit: true,
+      // terserOptions: {
+      //   compress: {
+      //     drop_console: true,
+      //     drop_debugger: true,
+      //   }
+      // }
     }
   },
 

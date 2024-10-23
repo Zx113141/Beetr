@@ -15,6 +15,7 @@ export const defaultEditorConfigs = (props: any): Partial<IUserAppItem> => {
         cusStyle,
         ...props,
     }
+    console.log(props, 'props', item);
     return {
         ...item
     }

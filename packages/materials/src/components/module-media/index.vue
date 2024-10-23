@@ -10,19 +10,18 @@ import { debounce } from '@beetr/hooks'
 // import { _widgetStore } from '~~/store/widget'
 // import { _userStore } from '~~/store/user'
 // import { _envStore } from '~/store/env'
-import { toRefs, reactive, ref, computed, watch } from 'vue'
+import { toRefs, reactive, ref, computed, watch, inject } from 'vue'
 // import service from '~/utils/request2'
 // import baseUrl from '~~/utils/env'
 import ModuleWidgetCrop from './module-crop/index.vue'
 
+const deviceEnv = inject<keyof typeof BROWSER_ENV>('deviceEnv',)!
+// const browserEnv = inject<keyof typeof BROWSER_ENV>('browserEnv',)!
+const isEdit = inject<boolean>('editStatus')
+const isMovingWidget = inject("movingWidgetId");
 const props = defineProps<{
     item: IUserAppItem
-    /** 正在移动的widget */
-    isMovingWidget: string
     isLoading: boolean
-    env: keyof typeof BROWSER_ENV,
-    browserEnv: keyof typeof BROWSER_ENV,
-    isEdit: boolean
 }>()
 let { item } = toRefs(props)
 
@@ -39,7 +38,7 @@ const showRichText = ref(false)
 /** 用户名称 🎉 */
 const caption = useEditor({
     content: item.value?.caption,
-    editable: !!props.isEdit,
+    editable: !!isEdit,
     extensions: [
         StarterKit,
         Placeholder.configure({
@@ -153,7 +152,7 @@ const onSuccess = (
     }
 }
 const visitJump = () => {
-    if (props.isEdit || !item.value.url) return
+    if (isEdit || !item.value.url) return
     window.open(item.value.url)
 }
 
@@ -198,10 +197,10 @@ watch(
 
 <template>
     <div class="widget_base-media" :class="[
-        `widget_base-${item.cusStyle[env].w}x${item.cusStyle[env].h}`,
-        props.isMovingWidget === `w_${item.id}` ? 'pointer-events-none' : '',
+        `widget_base-${item.cusStyle[deviceEnv].w}x${item.cusStyle[deviceEnv].h}`,
+        isMovingWidget === `w_${item.id}` ? 'pointer-events-none' : '',
     ]" :style="`
-          border:${item.temType ? '0' : ''};overflow:${env == 'desktop' ? 'none' : 'hidden'}`" @click="visitJump"
+          border:${item.temType ? '0' : ''};overflow:${deviceEnv == 'desktop' ? 'none' : 'hidden'}`" @click="visitJump"
         @mouseover="showRichText = true">
         <div class="prevent" v-if="item.temType && !progress.show" @drag.stop @touchstart.stop @mousedown.stop>
             <div>
@@ -214,11 +213,11 @@ watch(
         </div>
         <!-- 视频、图片显示 -->
         <upload-media ref="uploadMediaRef" :type="uploadMediaType" class="w-full h-full rela"
-            @on-preview="(e: string) => item.screenshotUrl = e" :auto-upload="true" :disabled="!props.isEdit || (env == BROWSER_ENV.mobile && !item.temType) || item.cropStatus
+            @on-preview="(e: string) => item.screenshotUrl = e" :auto-upload="true" :disabled="!isEdit || (deviceEnv == BROWSER_ENV.mobile && !item.temType) || item.cropStatus
                 " :item="item" @on-before="onBefore" @on-success="onSuccess" @on-progress="onProgress"
             @on-start="onStart">
             <div class="absolute inset-0 rounded-[inherit]" @on-error="onError">
-                <module-widget-crop :item="item" :env="env" :browser-env="browserEnv" :isLoading="props.isLoading"
+                <module-widget-crop :item="item" :isLoading="props.isLoading"
                     @onFinish="(item) => emits('onEdit', item)"></module-widget-crop>
             </div>
         </upload-media>
@@ -227,10 +226,10 @@ watch(
         <el-progress v-if="progress.show" class="init_progress !absolute left-6 top-6" :show-text="false" :width="18"
             :stroke-width="2" color="#ffffff" type="circle" :percentage="progress.percent" />
         <!-- 富文本 - 手机端禁止编辑 -->
-        <!-- (props.isEdit && !item.caption) && !item.temType -->
-        <div v-if="(showRichText && props.isEdit) || item.caption" class="caption_container" :class="[
+        <!-- (isEdit && !item.caption) && !item.temType -->
+        <div v-if="(showRichText && isEdit) || item.caption" class="caption_container" :class="[
             item.caption ? '!opacity-100' : '',
-            env == BROWSER_ENV.mobile && 'pointer-events-none',
+            deviceEnv == BROWSER_ENV.mobile && 'pointer-events-none',
         ]">
             <div class="bg-white px-2 py-1.5 text-[14px] shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06)] rounded-[8px]">
                 <div class="caption_container-wrap">
