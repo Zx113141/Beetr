@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build:test": "nuxt build --mode staging",
-    "build:prod": "nuxt build --mode production",
+    "build:prod": "nuxt build --mode production --report",
     "dev": "nuxt dev --host --open",
     "generate": "nuxt generate",
     "preview": "nuxt preview",

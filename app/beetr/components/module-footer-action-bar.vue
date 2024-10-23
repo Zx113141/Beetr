@@ -58,7 +58,7 @@ const onShare = () => {
             <span v-if="!props.loadingRef">发给朋友</span>
             <div class="animation__shine" style="animation-duration: 4000ms"></div>
             <el-icon class="is-loading" v-if="props.loadingRef">
-                <img src="./loading.png" alt="">
+                <img src="./images/loading.png" alt="">
             </el-icon>
         </el-button>
 
