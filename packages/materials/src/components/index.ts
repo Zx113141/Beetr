@@ -1,4 +1,6 @@
 
+import UploadMedia from './module-media-upload/index.vue'
+
 import { IUserAppItem } from '@beetr/constant'
 import { ModuleNote, richText, ModuleNoteHandler, defaultEditorConfigs as noteConfigs } from './module-richText'
 import { link, defaultEditorConfigs as linkConfigs, ModuleLinkDrawer } from './module-link'
@@ -94,5 +96,6 @@ const BeetrModules: IModule[] = [
 
 export {
     BeetrModules,
-    type IModule
+    type IModule,
+    UploadMedia
 }

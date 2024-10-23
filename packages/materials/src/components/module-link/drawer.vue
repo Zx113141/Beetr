@@ -29,7 +29,8 @@
                 <h3 class="title font-normal xl:text-sm mb-[10px]">图标</h3>
                 <div class="w-full flex flex-col gap-2">
                     <upload-media class="relative w-full h-full" ref="uploadImg" :auto-upload="true"
-                        :type="UPLOAD_TYPE.img" @on-success="onSuccess" @on-progress="onProgress">
+                        :type="UPLOAD_TYPE.img" @on-success="onSuccess" @on-progress="onProgress" :auth="auth"
+                        :action="action">
                         <div class="cursor-pointer bg-[#F7F7F7] w-full flex items-center justify-between p-[13px_10px]">
                             <div class="flex-1 flex items-center text-left">
                                 <!-- 上传图片 -->
@@ -56,10 +57,13 @@
 // import { storeToRefs } from 'pinia'
 // import { addLinkData, addDrawData } from '~~/store/isLoading'
 import backL from './back2.png'
-import { BROWSER_ENV, LINK_TYPE, UPLOAD_TYPE, Style } from "@beetr/constant";
+import { BROWSER_ENV, LINK_TYPE, UPLOAD_TYPE, Style, TOKEN_CREDENTIALS } from "@beetr/constant";
 import type { UploadFile, UploadProgressEvent } from "element-plus";
 import { computed, reactive, ref, watch } from 'vue'
 import { ElNotification } from 'element-plus'
+import UploadMedia from '../module-media-upload/index.vue'
+const auth = useCookie(TOKEN_CREDENTIALS)
+const action = import.meta.env.VITE_API_URL + '/jeecg-boot/app/utils/aliOssUpload'
 
 const direction = computed(() => {
     return props.browserEnv == BROWSER_ENV.mobile ? 'btt' : 'rtl'
@@ -110,14 +114,6 @@ const addNEwLink = () => {
         variant: LINK_TYPE.normal,// 固定类型
         ...INIT_STYLE
     })
-    // const params = {
-    //     url: url.value,
-    //     faviconUrl: faviconUrl.value,
-    //     _completed: true,
-    //     variant: LINK_TYPE.normal, // 固定类型
-    // }
-    // emit('add', params, INIT_STYLE)
-    // addLinkData.show = false
 }
 // 上传
 

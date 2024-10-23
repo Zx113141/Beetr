@@ -52,8 +52,6 @@ const bytesToSize = (bytes: any) => {
     }
     return bol
 }
-/** 1M */
-const SIZE_UNIT = 1024 * 1024
 const uploadRef = ref<any>('')
 const cancelUpload = () => {
     console.log(uploadRef.value)
@@ -122,19 +120,6 @@ const onBeforeUpload = (file: UploadRawFile) => {
     } else {
         return false
     }
-    // if (file.size > limitSize * SIZE_UNIT) {
-    //   ElNotification({
-    //     title: '提示',
-    //     message: `${fileType}限制${limitSize}M以内`,
-    //     type: 'warning',
-    //   })
-    //   return false
-    // }
-
-    // emit('onStart', currentMediaType.value)
-
-    // emit('onStart', file.uid, fileUrl, currentMediaType.value)
-
 }
 
 /** 上传文件成功 */
@@ -226,17 +211,7 @@ defineExpose({ cancelUpload, submit })
         width: 100%;
         height: 100%;
 
-        // .el-upload-dragger {
 
-        //   border-color: transparent;
-        //   background-color: transparent;
-        // }
-
-        // .is-dragover {
-        //   background-color: transparent;
-        //   border: 2px dashed var(--el-color-primary);
-        //   height: 100%;
-        // }
     }
 }
 </style>

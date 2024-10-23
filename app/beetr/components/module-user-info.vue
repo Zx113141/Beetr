@@ -7,10 +7,12 @@ import Placeholder from '@tiptap/extension-placeholder'
 import { updateUserInfo } from '~/api/user/user'
 import { _userStore } from '~~/store/user'
 import { _envStore } from '~/store/env'
-import { BROWSER_ENV, SvgDelete } from '@beetr/constant'
+import { BROWSER_ENV, SvgDelete, TOKEN_CREDENTIALS } from '@beetr/constant'
 import { debounce } from '@beetr/hooks'
-import UploadMedia from './module-upload.vue'
-
+// import UploadMedia from './module-upload.vue'
+import { UploadMedia } from '@beetr/materials'
+import { uploadFileUrl } from '~/api/widget/widget'
+const auth = useCookie(TOKEN_CREDENTIALS) as unknown as string
 const envStore = _envStore()
 const userStore = _userStore()
 const { userInfo, urlInfo } = storeToRefs(userStore)
@@ -89,7 +91,8 @@ const onDeleteAvatar = async () => {
                 <div class="relative styles_avatar-editor-wrapper__hgyBW styles_input-mode--mouse__RMnJU w-full h-full">
                     <div class="styles_avatar-editor__xBM_4 group/avatar">
                         <!-- 上传图片 -->
-                        <upload-media class="w-full h-full" :disabled="!userStore.isEdit" @on-success="onUploadSuccess">
+                        <upload-media class="w-full h-full" :disabled="!userStore.isEdit" @on-success="onUploadSuccess"
+                            :auth="auth" :action="uploadFileUrl">
                             <div v-if="!currentUserInfo?.avatarUrl && userStore.isEdit"
                                 class="absolute inset-0 rounded-full border-2 border-dashed border-black/[0.08] bg-[#FAFAFA] transition-colors duration-200 ease-in-out group-hover/avatar:bg-[#F6F6F6] group-active/avatar:bg-[#F1F1F1]">
                                 <div
@@ -115,7 +118,8 @@ const onDeleteAvatar = async () => {
                         <template v-if="currentUserInfo?.avatarUrl && userStore.isEdit">
                             <!-- 上传 -->
                             <div class="absolute left-3 bottom-3 hidden xl:block styles_delete-wrapper__8J1Rq">
-                                <upload-media class="w-full h-full" @on-success="onUploadSuccess">
+                                <upload-media class="w-full h-full" @on-success="onUploadSuccess" :auth="auth"
+                                    :action="uploadFileUrl">
                                     <el-button class="!rounded-full w-[34px] h-[34px]">
                                         <svg width="18" height="18" viewBox="0 0 18 18" fill="none"
                                             xmlns="http://www.w3.org/2000/svg">
