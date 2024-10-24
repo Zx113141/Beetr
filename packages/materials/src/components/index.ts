@@ -1,7 +1,7 @@
 
 import UploadMedia from './module-media-upload/index.vue'
 
-import { IUserAppItem } from '@beetr/constant'
+import { IUserAppItem, WIDGET_TYPE } from '@beetr/constant'
 import { ModuleNote, richText, ModuleNoteHandler, defaultEditorConfigs as noteConfigs } from './module-richText'
 import { link, defaultEditorConfigs as linkConfigs, ModuleLinkDrawer } from './module-link'
 import { ModuleHref, ModuleHrefHandler, } from './module-href'
@@ -10,7 +10,8 @@ import { social, defaultEditorConfigs as socialConfigs, ModuleSocialDrawer } fro
 import { ModuleMedia, ModuleMediaHandler } from './module-media'
 import { image, defaultImageConfigs } from './module-image'
 import { video, defaultVideoConfigs } from './module-video'
-// import { ModuleNote, richText, ModuleNoteHandler, defaultEditorConfigs } from './module-richText'
+
+import { defaultTitleConfigs, sectionTitle, ModuleSectionTitle } from './module-title'
 
 interface IModule {
     name: string
@@ -27,7 +28,7 @@ interface IModule {
 
 const BeetrModules: IModule[] = [
     {
-        name: 'rich-text',
+        name: WIDGET_TYPE.richText,
         module: ModuleNote,
         Handler: ModuleNoteHandler,
         drawer: null,
@@ -40,7 +41,7 @@ const BeetrModules: IModule[] = [
         defaultEditorConfigs: noteConfigs,
     },
     {
-        name: 'link',
+        name: WIDGET_TYPE.link,
         module: ModuleHref,
         Handler: ModuleHrefHandler,
         drawer: ModuleLinkDrawer,
@@ -53,7 +54,7 @@ const BeetrModules: IModule[] = [
         defaultEditorConfigs: linkConfigs,
     },
     {
-        name: 'social',
+        name: WIDGET_TYPE.social,
         module: ModuleHref,
         Handler: ModuleHrefHandler,
         drawer: ModuleSocialDrawer,
@@ -66,7 +67,7 @@ const BeetrModules: IModule[] = [
         defaultEditorConfigs: socialConfigs,
     },
     {
-        name: 'media',
+        name: WIDGET_TYPE.media,
         module: ModuleMedia,
         Handler: ModuleMediaHandler,
         drawer: null,
@@ -79,7 +80,7 @@ const BeetrModules: IModule[] = [
         defaultEditorConfigs: defaultImageConfigs,
     },
     {
-        name: 'media',
+        name: WIDGET_TYPE.media,
         module: ModuleMedia,
         Handler: ModuleMediaHandler,
         drawer: null,
@@ -90,6 +91,19 @@ const BeetrModules: IModule[] = [
         props: {
         },
         defaultEditorConfigs: defaultVideoConfigs,
+    },
+    {
+        name: WIDGET_TYPE.sectionHeader,
+        module: ModuleSectionTitle,
+        Handler: null,
+        drawer: null,
+        icon: sectionTitle,
+        title: '标题',
+        type: 'module',
+        isComponent: true,
+        props: {
+        },
+        defaultEditorConfigs: defaultTitleConfigs,
     }
 
 ]
