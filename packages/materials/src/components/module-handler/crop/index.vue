@@ -14,23 +14,21 @@
 
 <script lang="ts" setup>
 import { type IUserAppItem, SvgCrop, BROWSER_ENV } from '@beetr/constant'
-import { ref, reactive, PropType, onMounted, watchEffect } from 'vue'
+import { ref, reactive, PropType, onMounted, watchEffect, inject } from 'vue'
 const visible = ref(false)
 const disabled = ref(false)
 const imgRect = reactive({
     width: 0,
     height: 0
 })
+const deviceEnv = inject<keyof typeof BROWSER_ENV>('deviceEnv')!
 
 const props = defineProps({
     item: {
         type: Object as PropType<IUserAppItem>,
         required: true,
     },
-    env: {
-        type: String as PropType<keyof typeof BROWSER_ENV>,
-        required: true,
-    }
+     
 })
 const getImageDimensions = (url: string): Promise<{ width: number, height: number }> => {
     return new Promise((resolve, reject) => {
@@ -65,8 +63,8 @@ onMounted(async () => {
 })
 
 watchEffect(() => {
-    const w = props.item.cusStyle[props.env].w
-    const h = props.item.cusStyle[props.env].h / 2
+    const w = props.item.cusStyle[deviceEnv].w
+    const h = props.item.cusStyle[deviceEnv].h / 2
     disabled.value = w / h == imgRect.width / imgRect.height
     if (disabled.value) {
         emit('onCrop', false)

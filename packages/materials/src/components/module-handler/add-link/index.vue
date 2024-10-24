@@ -2,8 +2,8 @@
 <template>
     <button v-if="item.type === WIDGET_TYPE.link"
         class="rounded-[4px] outline-none disabled:text-white disabled:text-opacity-40 active:scale-90"
-        @click="emit('onLinkEdit', 'onLinkEdit')">
-        <component :is="SvgEdit"></component>
+        @click="emit('onProtocol', 'linkEdit')">
+        <SvgEdit></SvgEdit>
     </button>
     <el-popover v-else v-model:visible="activeLink" trigger="click" placement="bottom" popper-class="!p-[6px] !bg-black"
         :width="240" popper-style="background-color:#000 !important;">
@@ -20,11 +20,15 @@
 </template>
 
 <script setup lang="ts">
-import { SvgEdit, SvgLinkCompleted, SvgLink, WIDGET_TYPE, type IUserAppItem, } from '@beetr/constant'
+import { SvgEdit, SvgLinkCompleted, SvgLink, WIDGET_TYPE, type IUserAppItem, EDIT_TYPE } from '@beetr/constant'
 import { toRefs, ref, watch } from 'vue'
 
 
-const emit = defineEmits(['onLinkEdit', 'onEditing'])
+const emit = defineEmits<{
+    (e: 'onEdit', item: IUserAppItem, type: keyof typeof EDIT_TYPE): void
+    (e: 'onEditing', activeLink:boolean): void
+    (e: 'onProtocol', type: string): void
+}>()
 const props = defineProps<{
     item: IUserAppItem,
 
@@ -35,11 +39,11 @@ const { item } = toRefs(props)
 
 /** 更新链接 */
 const updateUrl = () => {
-    // widgetStore.onUpdate([item.value])
+    emit('onEdit', item.value, EDIT_TYPE.normal)
 }
 
 watch(activeLink, (newval) => {
- 
+
     emit('onEditing', newval)
 }, {
     immediate: true

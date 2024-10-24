@@ -5,7 +5,7 @@
         <div class="flex items-center cursor-auto media_opera">
             <!-- 水平方向 -->
             <button v-for="(child, index) in xList" :key="index"
-                class="rounded-[4px] outline-none disabled:text-white disabled:text-opacity-40 active:scale-90" :class="(item.halign?.[env] || xList[0].justifyContent) ===
+                class="rounded-[4px] outline-none disabled:text-white disabled:text-opacity-40 active:scale-90" :class="(item.halign?.[deviceEnv] || xList[0].justifyContent) ===
                     child.justifyContent
                     ? `active`
                     : ``
@@ -16,7 +16,7 @@
             <el-divider direction="vertical" class="!mx-2" />
             <!-- 垂直方向 -->
             <button v-for="(child, index) in yList" :key="index"
-                class="rounded-[4px] outline-none disabled:text-white disabled:text-opacity-40 active:scale-90" :class="(item.valign?.[env] || yList[0].alignItems) === child.alignItems
+                class="rounded-[4px] outline-none disabled:text-white disabled:text-opacity-40 active:scale-90" :class="(item.valign?.[deviceEnv] || yList[0].alignItems) === child.alignItems
                     ? `active`
                     : ``
                     " @click="updatePositionY(child.alignItems)">
@@ -74,7 +74,8 @@ import {
     SvgXLeft,
     SvgXCenter, SvgXRight, SvgYTop, SvgYMiddle, SvgYBottom,
     WHITE_COLOR, colorList, EXG_COLOR,
-    type IUserAppItem, ENV_ENUM
+    type IUserAppItem, ENV_ENUM,
+    EDIT_TYPE
 } from '@beetr/constant'
 
 import { MoreFilled } from '@element-plus/icons-vue'
@@ -84,9 +85,10 @@ const props = defineProps<{
     item: IUserAppItem,
 
 }>()
-const env = inject<keyof typeof ENV_ENUM>('env') as keyof typeof ENV_ENUM
+const deviceEnv = inject<keyof typeof ENV_ENUM>('deviceEnv') as keyof typeof ENV_ENUM
 const emit = defineEmits<{
     (e: 'onEditing', isEditing: boolean): void
+    (e: 'onEdit', item: IUserAppItem, type: keyof typeof EDIT_TYPE): void
 }>()
 
 const { item } = toRefs(props)
@@ -133,28 +135,34 @@ const activeRichTextOpera = ref(false)
 /** 更新x轴 */
 const updatePositionX = (value: string) => {
     const halign = item.value.halign || {}
-    halign[env] = value
+    halign[deviceEnv] = value
     item.value.halign = halign
+    emit('onEdit', item.value, EDIT_TYPE.normal)
     // widgetStore.onUpdate([item.value])
 }
 
 /** 更新y轴 */
 const updatePositionY = (value: string) => {
     const valign = item.value.valign || {}
-    valign[env] = value
+    valign[deviceEnv] = value
     item.value.valign = valign
+    emit('onEdit', item.value, EDIT_TYPE.normal)
     // widgetStore.onUpdate([item.value])
 }
 
 /** 更新组件颜色 */
 const updateColor = (color: string) => {
     item.value.bgColor = color
+    emit('onEdit', item.value, EDIT_TYPE.normal)
     // widgetStore.onUpdate([item.value])
 }
 
 /** 校验颜色值是否合法 */
 const updateColorByInput = (value: string) => {
-    if (EXG_COLOR.test(value)) item.value.bgColor = value
+    if (EXG_COLOR.test(value)) {
+        item.value.bgColor = value
+        emit('onEdit', item.value, EDIT_TYPE.normal)
+    }
     // widgetStore.onUpdate([item.value])
 }
 

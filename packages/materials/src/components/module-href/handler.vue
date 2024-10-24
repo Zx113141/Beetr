@@ -2,14 +2,18 @@
     <ModuleHander :item="item" :visible-action-id="visibleActionId">
         <template #content>
             <ModuleResize @onResize="onEdit" :item="item"></ModuleResize>
+            <el-divider direction="vertical" class="!mx-2" />
+            <ModuleAddLink :item="item" @onEditing="onEditing" @on-protocol="onProtocol"></ModuleAddLink>
         </template>
     </ModuleHander>
 
 </template>
 
 <script setup lang="ts">
+import { ElDivider } from 'element-plus'
 import ModuleHander from '../module-handler/index.vue'
 import ModuleResize from '../module-handler/resize/index.vue'
+import ModuleAddLink from '../module-handler/add-link/index.vue'
 import { PropType } from 'vue'
 import { type IUserAppItem, EDIT_TYPE } from '@beetr/constant'
 defineProps({
@@ -40,5 +44,8 @@ const onEditing = (isEditing: boolean) => {
     emit('onEditing', isEditing)
 }
 
+const onProtocol = (type:string) => {
+
+}
 
 </script>

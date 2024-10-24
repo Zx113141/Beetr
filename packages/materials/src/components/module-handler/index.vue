@@ -7,10 +7,7 @@
 
             <!-- 富文本 -->
             <!-- <template v-if="item.type == WIDGET_TYPE.richText">
-                <el-divider direction="vertical" class="!mx-2" />
-                <module-font-style @onEditing="onEditing" :item="item"></module-font-style>
-                <el-divider direction="vertical" class="!mx-2" />
-                <module-link :item="item" @onEditing="onEditing"></module-link>
+               
             </template> -->
             <!-- 链接 -->
             <!-- <template v-if="item.type == WIDGET_TYPE.link">
