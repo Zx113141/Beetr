@@ -3,8 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build:test": "nuxt build --mode staging",
-    "build:prod": "nuxt build --mode production --report",
+    "build:stage": "nuxt build --dotenv staging",
+    "build:prod": "nuxt build --dotenv production --preset",
     "dev": "nuxt dev --host --open",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
