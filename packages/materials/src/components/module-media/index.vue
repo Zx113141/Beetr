@@ -4,18 +4,18 @@ import { ElNotification, ElProgress } from 'element-plus'
 import { EditorContent, useEditor } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import Placeholder from '@tiptap/extension-placeholder'
-import { SvgArrow, BROWSER_ENV, MEDIA_TYPE, UPLOAD_TYPE, IUserAppItem } from '@beetr/constant'
+import { SvgArrow, BROWSER_ENV, MEDIA_TYPE, UPLOAD_TYPE, IUserAppItem, TOKEN_CREDENTIALS } from '@beetr/constant'
 import { debounce } from '@beetr/hooks'
 import UploadMedia from '../module-media-upload/index.vue'
 // import type { IUserAppItem } from '~/api/widget'
 // import { _widgetStore } from '~~/store/widget'
 // import { _userStore } from '~~/store/user'
 // import { _envStore } from '~/store/env'
-import { toRefs, reactive, ref, computed, watch, inject } from 'vue'
+import { toRefs, reactive, ref, computed, watch, inject, onMounted } from 'vue'
 // import service from '~/utils/request2'
 // import baseUrl from '~~/utils/env'
 import ModuleWidgetCrop from './module-crop/index.vue'
-
+import { uploadFileUrl } from '~/api/widget/widget'
 const deviceEnv = inject<keyof typeof BROWSER_ENV>('deviceEnv',)!
 // const browserEnv = inject<keyof typeof BROWSER_ENV>('browserEnv',)!
 const isEdit = inject<boolean>('editStatus')
@@ -31,7 +31,11 @@ const progress = reactive({
     percent: 0,
 })
 const showRichText = ref(false)
-
+const triggerRef = ref<HTMLDivElement | null>(null)
+const auth = useCookie(TOKEN_CREDENTIALS)
+const allowCrop = computed(() => {
+    return item.value?.screenshotUrl !== 'undefined' && progress.show == false
+})
 
 
 // TODO optim
@@ -166,6 +170,13 @@ const uploadMediaType = computed(() => {
 })
 
 
+onMounted(() => {
+    if (!allowCrop.value) {
+        // console.log(triggerRef.value!);
+        triggerRef.value!.click()
+    }
+})
+
 // 监听更新
 watch(
     () => item.value.caption,
@@ -216,9 +227,9 @@ watch(
         <upload-media ref="uploadMediaRef" :type="uploadMediaType" class="w-full h-full rela"
             @on-preview="(e: string) => item.screenshotUrl = e" :auto-upload="true" :disabled="!isEdit || (deviceEnv == BROWSER_ENV.mobile && !item.temType) || item.cropStatus
                 " :item="item" @on-before="onBefore" @on-success="onSuccess" @on-progress="onProgress"
-            @on-start="onStart">
-            <div class="absolute inset-0 rounded-[inherit]" @on-error="onError">
-                <module-widget-crop :item="item" :isLoading="props.isLoading"
+            @on-start="onStart" @on-error="onError" :action="uploadFileUrl" :auth="auth">
+            <div class="absolute inset-0 rounded-[inherit]" ref="triggerRef">
+                <module-widget-crop :item="item" :isLoading="props.isLoading" :allowCrop="allowCrop"
                     @onFinish="(item) => emits('onEdit', item)"></module-widget-crop>
             </div>
         </upload-media>

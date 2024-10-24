@@ -62,7 +62,8 @@ const deviceEnv = inject<keyof typeof BROWSER_ENV>('deviceEnv',)!
 const browserEnv = inject<keyof typeof BROWSER_ENV>('browserEnv',)!
 
 const props = defineProps<{
-    item: IUserAppItem
+    item: IUserAppItem,
+    allowCrop: boolean,
 }>()
 const imgRect = reactive({
     width: 0,
@@ -100,7 +101,7 @@ const getImageDimensions = (): Promise<{ width: number, height: number }> => {
     });
 }
 
-onMounted(async () => {
+const init = async () => {
     if (!clipImage.value) return
     const { width, height } = await getImageDimensions()
     imgRect.width = width
@@ -109,6 +110,13 @@ onMounted(async () => {
     const h = item.value.cusStyle[deviceEnv].h / 2
     emit('isCrop', !(w / h == imgRect.width / imgRect.height))
     preDrawMask()
+}
+
+onMounted(async () => {
+    if (props.allowCrop) {
+        init()
+    }
+
 })
 
 
@@ -427,6 +435,12 @@ watch(
         })
     }
 )
+
+watch(() => props.allowCrop, (allow) => {
+    if (allow) {
+        init()
+    }
+},)
 
 
 defineExpose({ getXYRadio, })

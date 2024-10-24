@@ -108,7 +108,7 @@ const render = async (newList: IUserAppItem[]) => {
   }
 };
 const onRemove = async (id: string) => {
-  gridRef!.value!.remove(`w_${id}`);
+  gridRef!.value!.remove(`w_${id}`, true);
   await widgetStore.onDelete(id);
 };
 const onWidgetResize = (item: IUserAppItem) => {

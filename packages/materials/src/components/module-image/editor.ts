@@ -15,6 +15,11 @@ export const defaultImageConfigs = (props: any): Partial<IUserAppItem> => {
         position: INIT_POSITION,
         cusStyle,
         ...props,
+        screenshotUrl: 'undefined',
+        cut: {
+            desktop: 0,
+            mobile: 0
+        }
     }
     return {
         ...item

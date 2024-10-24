@@ -14,6 +14,11 @@ export const defaultVideoConfigs = (props: any): Partial<IUserAppItem> => {
         type: WIDGET_TYPE.media,
         position: INIT_POSITION,
         cusStyle,
+        screenshotUrl: 'undefined',
+        cut: {
+            desktop: 0,
+            mobile: 0
+        },
         ...props,
     }
     return {
