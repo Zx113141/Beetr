@@ -1,28 +1,29 @@
 <template>
-  <div class="relative flex min-h-screen w-full flex-1 flex-col items-center browser-desktop">
-    <!-- 左边栏 -->
-    <div
-      class="flex h-full w-full max-w-[428px] items-center justify-center p-6 pt-12 pb-0 xl:absolute xl:top-0 xl:max-w-[min(100vw,1728px)] xl:items-stretch xl:justify-start xl:p-16">
-    </div>
-    <!-- grid网格 - 手机端初始化的时候不显示，mextType > 0 的时候才 -->
-    <div
-      class="xl:flex flex h-full w-full max-w-[428px] flex-1 flex-col pt-0 xl:max-w-[1728px] xl:flex-row xl:p-16 xl:overflow-hidden">
-      <div class="mb-10 flex flex-col px-4 xl:mb-0 xl:mr-20 xl:flex-1 xl:px-0"></div>
-      <grid-container ref="gridRef" @update="onGridUpdateWidgets">
-        <grid-item v-for="item in userAppList" :item="item" :key="item.id" :env="deviceEnv"
-          :isWidgetEdit="editObject.isEditing" @mouseHover="onHover">
-          <div class="wiget_size_item_container">
-            <component :is="ComponentsReflect[item.type].module" :item="item" @onEdit="onModuleEdit"></component>
-            <component :is="ComponentsReflect[item.type].Handler" :visible-action-id="editObject.visibleActionId"
-              :item="item" @onEdit="onWidgetEdit" @onEditing="onEditing">
-            </component>
-            <grid-delete :visible-action-id="editObject.visibleActionId" :item="item" @remove="onRemove">
-            </grid-delete>
-          </div>
-        </grid-item>
-      </grid-container>
-    </div>
-  </div>
+  <!-- grid网格 - 手机端初始化的时候不显示，mextType > 0 的时候才 -->
+  <grid-container ref="gridRef" @update="onGridUpdateWidgets">
+    <template #top>
+      <div v-if="(!userStore.isOnboared || STEP_PROCESS.congratulations === currentStep) &&
+        userStore.isEdit
+      " class="flex items-center toptotle" style="opacity: 1; height: 44px; margin-bottom: 32px">
+        <div class="h-[2px] flex-1 bg-[#F8F8F8]"></div>
+        <div class="typography-title-3 mx-4">您的主页</div>
+        <div class="h-[2px] flex-1 bg-[#F8F8F8]"></div>
+      </div>
+    </template>
+    <template #default>
+      <grid-item v-for="item in userAppList" :item="item" :key="item.id" :env="deviceEnv"
+        :isWidgetEdit="editObject.isEditing" @mouseHover="onHover">
+        <div class="wiget_size_item_container">
+          <component :is="ComponentsReflect[item.type].module" :item="item" @onEdit="onModuleEdit"></component>
+          <component :is="ComponentsReflect[item.type].Handler" :visible-action-id="editObject.visibleActionId"
+            :item="item" @onEdit="onWidgetEdit" @onEditing="onEditing">
+          </component>
+          <grid-delete :visible-action-id="editObject.visibleActionId" :item="item" @remove="onRemove">
+          </grid-delete>
+        </div>
+      </grid-item>
+    </template>
+  </grid-container>
 </template>
 
 <script setup lang="ts">
@@ -67,8 +68,10 @@ const props = defineProps<{
   deviceEnv: keyof typeof BROWSER_ENV;
   editStatus: boolean;
   browserEnv: keyof typeof BROWSER_ENV;
+  currentStep: keyof typeof STEP_PROCESS;
 }>();
 
+const userStore = _userStore();
 const widgetStore = _widgetStore();
 const { userAppList } = storeToRefs(widgetStore);
 

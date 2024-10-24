@@ -1,14 +1,10 @@
 <template>
   <div class="relative flex-1 xl:w-[840px] xl:flex-none dragUploadArea" id="dragUpload">
-    <!-- <div class="flex items-center toptotle" style="opacity: 1; height: 44px; margin-bottom: 32px">
-            <div class="h-[2px] flex-1 bg-[#F8F8F8]"></div>
-            <div class="typography-title-3 mx-4">您的主页</div>
-            <div class="h-[2px] flex-1 bg-[#F8F8F8]"></div>
-        </div> -->
+    <slot name="top"></slot>
 
     <!-- 用于渲染动画 -->
     <div :class="['grid-stack-layout', 'xl:w-[840px]']" id="layoutAddani" ref="layoutAddani">
-      <slot></slot>
+      <slot name="default"></slot>
     </div>
   </div>
 </template>
