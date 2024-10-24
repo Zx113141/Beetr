@@ -1,4 +1,4 @@
-import { IUserAppItem, WIDGET_TYPE, type Style } from '@beetr/constant'
+import { IUserAppItem, WIDGET_TYPE, type Style, LINK_TYPE } from '@beetr/constant'
 
 export const defaultEditorConfigs = (props: any): Partial<IUserAppItem> => {
     const INIT_POSITION = {
@@ -11,6 +11,7 @@ export const defaultEditorConfigs = (props: any): Partial<IUserAppItem> => {
     }
     const item = {
         type: WIDGET_TYPE.link,
+        variant: LINK_TYPE.normal,
         position: INIT_POSITION,
         cusStyle,
         ...props,

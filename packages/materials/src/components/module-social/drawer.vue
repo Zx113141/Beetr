@@ -70,11 +70,14 @@ const addNEwLink = () => {
         mobile: { w: 1, h: 2 },
         desktop: { w: 1, h: 2 },
     }
-    emit('finish', {
+    const params = {
+        configId: nowEditData.value.id,
+        faviconUrl: nowEditData.value.logoUrl,
         ...nowEditData.value,
-        variant: LINK_TYPE.social,// 固定类型
         ...INIT_STYLE
-    })
+    }
+    delete params.id
+    emit('finish', params)
 }
 
 const closeDrawer = () => {

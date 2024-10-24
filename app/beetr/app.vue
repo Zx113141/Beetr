@@ -9,15 +9,16 @@
 import ModuleFullscreenLoading from './components/module-fullscreen-loading.vue';
 const nuxtApp = useNuxtApp()
 
-// 是否首次加载
 const isFullLoading = ref(true)
 
-nuxtApp.hook('page:start', () => {
-  isFullLoading.value = true
-})
+// nuxtApp.hook('app:created', () => {
+//   console.log('app:created');
+//   isFullLoading.value = true
+// })
 
 nuxtApp.hook('page:finish', () => {
   setTimeout(() => {
+    console.log('page:finish');
     isFullLoading.value = false
   }, 2000)
 })
