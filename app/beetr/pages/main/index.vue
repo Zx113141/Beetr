@@ -39,7 +39,9 @@ const containerRef = ref<InstanceType<typeof GridContainer> | null>(null);
 // const uploadRef = ref<any>(null)
 // const triggerRef = ref<HTMLDivElement | null>(null)
 
-
+const framePostMessagx = <T extends keyof typeof MESSAGE_EVENT_TYPE, K,>(e: T, params?: K) => {
+    postMessage(window.parent.window, e, JSON.stringify(appConfigList.value))
+}
 
 // hooks
 onMounted(async () => {
@@ -51,14 +53,16 @@ onMounted(async () => {
     } catch (error) { }
     window.addEventListener('message', handleMessage)
 
-    postMessage(window.parent.window, MESSAGE_EVENT_TYPE.iframeLoaded,)
-    postMessage(window.parent.window, MESSAGE_EVENT_TYPE.info, {
+    framePostMessagx(MESSAGE_EVENT_TYPE.iframeLoaded,)
+    framePostMessagx(MESSAGE_EVENT_TYPE.info, {
         urlInfo: JSON.stringify(urlInfo.value!),
         userInfo: JSON.stringify(userInfo.value!),
     })
-    postMessage(window.parent.window, MESSAGE_EVENT_TYPE.appConfigList, JSON.stringify(appConfigList.value))
+    framePostMessagx(MESSAGE_EVENT_TYPE.appConfigList, JSON.stringify(appConfigList.value))
     skeltonLoading.value = false
 })
+
+
 
 // funcion
 const onSetDraw = () => {
@@ -132,7 +136,8 @@ provide('loading', Loading)
 
             <!-- 右边可拖动的网格布局 -->
             <moduleContainer :currentStep="currentStep" v-if="deviceEnv" :deviceEnv="deviceEnv" :editStatus="isEdit"
-                :browserEnv="browserEnv!" ref="containerRef">
+                :browserEnv="browserEnv!" ref="containerRef"
+                @postMessage="(e: IUserAppItem, messageType) => framePostMessagx(messageType, e)">
                 <!-- :isLoading="isLoading" ref="moduleGridRef" :current-step="currentStep"
                 @changeShow="changeShow" @onGridEdit="onGridEdit" @gridTouched="gridTouched" -->
             </moduleContainer>

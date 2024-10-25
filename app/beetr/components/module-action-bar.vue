@@ -65,14 +65,14 @@ defineProps<{
 
 const loading = inject('loading', false)
 
-const onAddGrid = (params: IModule) => {
+const onAddGrid = (params: IModule, data?: any) => {
     if (!params.drawer) {
         emits('onAdd', params)
     } else {
         emits('onPrepare', params)
         widgetDrawer = params.drawer
         widgetDrawerData.show = true
-        widgetDrawerData.data = null
+        widgetDrawerData.data = data || null
         widgetDrawerData.params = params
     }
 }
@@ -98,6 +98,9 @@ const back = () => {
     addDrawData.show = true
 }
 
+defineExpose({
+    onAddGrid
+})
 
 </script>
 

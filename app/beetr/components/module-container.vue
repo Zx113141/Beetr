@@ -35,6 +35,7 @@ import {
   BROWSER_ENV,
   EDIT_TYPE,
   BROWSER_ENV_GRID_COLUMN,
+  MESSAGE_TYPE,
 } from "@beetr/constant";
 import {
   GridContainer,
@@ -74,6 +75,10 @@ const props = defineProps<{
 const userStore = _userStore();
 const widgetStore = _widgetStore();
 const { userAppList } = storeToRefs(widgetStore);
+
+const emit = defineEmits<{
+  (e: "postMessage", params: IUserAppItem, messageType: keyof typeof MESSAGE_TYPE): void
+}>()
 
 // TODO
 const editObject = reactive({
@@ -150,7 +155,7 @@ const onModuleEdit = (item: IUserAppItem) => {
   onWidgetUpdate([item]);
 };
 // hanlder 触发
-const onWidgetEdit = (item: IUserAppItem, type: keyof typeof EDIT_TYPE) => {
+const onWidgetEdit = (item: IUserAppItem, type: keyof typeof EDIT_TYPE, messaggeType?: keyof typeof MESSAGE_TYPE) => {
   switch (type) {
     case "resize":
       onWidgetResize(item);
@@ -158,6 +163,8 @@ const onWidgetEdit = (item: IUserAppItem, type: keyof typeof EDIT_TYPE) => {
     case "normal":
       onWidgetUpdate([item]);
       break;
+    case "messagge":
+      emit('postMessage', item, messaggeType!)
   }
 };
 const onWidgetUpdate = (widgets: IUserAppItem[]) => {
@@ -227,6 +234,8 @@ const columnChange = (newEnv: keyof typeof BROWSER_ENV) => {
   flag = false
 
 }
+
+
 
 
 watch(

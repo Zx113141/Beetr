@@ -7,10 +7,11 @@ import { storeToRefs } from 'pinia'
 import { useMessage } from "@beetr/hooks";
 import { _envStore } from '~/store/env'
 import { widgetDrawerData } from '~~/store/isLoading'
-import type { IModule } from "@beetr/materials";
+import { type IModule, BeetrModules } from "@beetr/materials";
 const route = useRoute();
 
 const iframeRef = ref<HTMLIFrameElement | null>(null);
+const actionRef = ref<InstanceType<typeof ModuleActionBar> | null>(null)
 const userStore = _userStore()
 const env = _envStore()
 const { browserEnv, deviceEnv } = storeToRefs(env)
@@ -47,6 +48,13 @@ const handleFrameMessage = (e: MessageEvent) => {
         case MESSAGE_EVENT_TYPE.appConfigList:
             widgetDrawerData.prop.appConfigList = JSON.parse(query)
             break;
+        case MESSAGE_EVENT_TYPE.edit:
+            const data = JSON.parse(query)
+            const drawer = BeetrModules.find(i => i.type == data.type)
+            const m = {
+                drawer,
+            }
+            actionRef.value!.onAddGrid(JSON.parse(query))
         // case MESSAGE_EVENT_TYPE.widgetStatus:
         //     console.log(query);
         //     break
@@ -117,8 +125,8 @@ const logout = () => {
             <iframe ref="iframeRef" :data-editor-iframe="true" class="frame_container-iframe backgroundColor"
                 :style="'visibility: visible'" :src="`/main?path=${route.params.path}`">
             </iframe>
-            <ModuleActionBar :deviceEnv="deviceEnv!" :browserEnv="browserEnv!" :isEditorRef="false" @on-add="addItem"
-                @on-prepare="prepareDrawData" @on-logout="logout">
+            <ModuleActionBar ref="actionRef" :deviceEnv="deviceEnv!" :browserEnv="browserEnv!" :isEditorRef="false"
+                @on-add="addItem" @on-prepare="prepareDrawData" @on-logout="logout">
             </ModuleActionBar>
         </div>
     </div>

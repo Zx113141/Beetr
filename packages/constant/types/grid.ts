@@ -19,9 +19,14 @@ export enum ENV_ENUM {
 
 export enum EDIT_TYPE {
     resize = 'resize',
-    normal = 'normal'
+    normal = 'normal',
+    messagge = 'message',
 }
 
+
+export enum MESSAGE_TYPE {
+    edit = 'edit'
+}
 
 
 /** 小组件类型

@@ -7,6 +7,7 @@ export enum MESSAGE_EVENT_TYPE {
     addWidget = 'addWidget',
     logout = 'logout',
     appConfigList = 'appConfigList',
+    edit = 'edit'
 
 }
 
