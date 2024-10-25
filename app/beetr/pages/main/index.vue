@@ -40,7 +40,7 @@ const containerRef = ref<InstanceType<typeof GridContainer> | null>(null);
 // const triggerRef = ref<HTMLDivElement | null>(null)
 
 const framePostMessagx = <T extends keyof typeof MESSAGE_EVENT_TYPE, K,>(e: T, params?: K) => {
-    postMessage(window.parent.window, e, JSON.stringify(appConfigList.value))
+    postMessage(window.parent.window, e, JSON.stringify(params))
 }
 
 // hooks
@@ -54,11 +54,12 @@ onMounted(async () => {
     window.addEventListener('message', handleMessage)
 
     framePostMessagx(MESSAGE_EVENT_TYPE.iframeLoaded,)
+  
     framePostMessagx(MESSAGE_EVENT_TYPE.info, {
-        urlInfo: JSON.stringify(urlInfo.value!),
-        userInfo: JSON.stringify(userInfo.value!),
+        urlInfo:urlInfo.value!,
+        userInfo:userInfo.value!,
     })
-    framePostMessagx(MESSAGE_EVENT_TYPE.appConfigList, JSON.stringify(appConfigList.value))
+    framePostMessagx(MESSAGE_EVENT_TYPE.appConfigList, appConfigList.value)
     skeltonLoading.value = false
 })
 

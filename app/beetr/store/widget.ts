@@ -45,13 +45,6 @@ export const _widgetStore = defineStore('widget', () => {
       // console.log(data.data)
       userTheme.value = data.theme
       userAppList.value = data.data
-      if (window.parent.window) {
-        postMessage(window.parent.window, MESSAGE_EVENT_TYPE.widgetStatus, {
-          query: {
-            status: MESSAGE_EVENT_TYPE.widgetStatus
-          }
-        })
-      }
       return data
     } catch (err) {
       return Promise.reject(err)
@@ -70,13 +63,13 @@ export const _widgetStore = defineStore('widget', () => {
     // }
     // console.log(list);
     await updateBatchUserApp(updateList)
-    if (window.parent.window) {
-      postMessage(window.parent.window, MESSAGE_EVENT_TYPE.widgetStatus, {
-        query: {
-          status: MESSAGE_EVENT_TYPE.widgetStatus
-        }
-      })
-    }
+    // if (window.parent.window) {
+    //   postMessage(window.parent.window, MESSAGE_EVENT_TYPE.widgetStatus, {
+    //     query: {
+    //       status: MESSAGE_EVENT_TYPE.widgetStatus
+    //     }
+    //   })
+    // }
 
   }
 

@@ -31,30 +31,31 @@ onMounted(() => {
 // 环境处理
 const handleFrameMessage = (e: MessageEvent) => {
     const { query, eventType } = e.data;
+    console.log(query,eventType)
+    const params =query ? JSON.parse(query): ''
     switch (eventType) {
         case MESSAGE_EVENT_TYPE.iframeLoaded:
             postEnv();
             break;
         case MESSAGE_EVENT_TYPE.info:
-            const user = JSON.parse(query.userInfo)
-            const url = JSON.parse(query.urlInfo)
+            const user = params.userInfo
+            const url = params.urlInfo
             userStore.setInfo({
                 url,
                 user
             })
             break;
-        case MESSAGE_EVENT_TYPE.addWidget:
-            break;
+        // case MESSAGE_EVENT_TYPE.addWidget:
+        //     break;
         case MESSAGE_EVENT_TYPE.appConfigList:
-            widgetDrawerData.prop.appConfigList = JSON.parse(query)
+            widgetDrawerData.prop.appConfigList = params
             break;
         case MESSAGE_EVENT_TYPE.edit:
-            const data = JSON.parse(query)
-            const drawer = BeetrModules.find(i => i.type == data.type)
+            const drawer = BeetrModules.find(i => i.type == params.type)
             const m = {
                 drawer,
             }
-            actionRef.value!.onAddGrid(JSON.parse(query))
+            actionRef.value!.onAddGrid(params)
         // case MESSAGE_EVENT_TYPE.widgetStatus:
         //     console.log(query);
         //     break
