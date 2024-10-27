@@ -31,7 +31,7 @@ onMounted(() => {
 // 环境处理
 const handleFrameMessage = (e: MessageEvent) => {
     const { query, eventType } = e.data;
-    console.log(query,eventType)
+    // console.log(query,eventType)
     const params =query ? JSON.parse(query): ''
     switch (eventType) {
         case MESSAGE_EVENT_TYPE.iframeLoaded:
@@ -103,6 +103,7 @@ const addItem = (param: any, lastParams?: Partial<IUserAppItem>) => {
 }
 
 const prepareDrawData = (widget: IModule) => {
+    console.log(widget, window.$pinia.state.value.env . user.value)
     // widgetDrawerData.prop.widget = widget
     // widgetDrawerData.show = true
 }

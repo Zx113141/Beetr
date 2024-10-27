@@ -22,8 +22,18 @@ interface IModule {
     title: string
     type: string
     isComponent: boolean
-    props: any
+    props: IModulePropsPath | null
     defaultEditorConfigs: (props: Partial<IUserAppItem>) => Partial<IUserAppItem>
+}
+type ModulePathRules = string | boolean | string[] 
+
+interface IModulePropsPath {
+    drawer?:{
+        [key:string]:ModulePathRules
+    },
+    props?:{
+
+    }
 }
 
 const BeetrModules: IModule[] = [
@@ -36,8 +46,7 @@ const BeetrModules: IModule[] = [
         title: '笔记',
         type: 'module',
         isComponent: true,
-        props: {
-        },
+        props: null,
         defaultEditorConfigs: noteConfigs,
     },
     {
@@ -50,6 +59,11 @@ const BeetrModules: IModule[] = [
         type: 'module',
         isComponent: true,
         props: {
+            drawer:{
+                deviceEnv:'envStore.deviceEnv',
+                browserEnv:'envStore.browserEnv',
+                data:true,
+            }
         },
         defaultEditorConfigs: linkConfigs,
     },
@@ -63,6 +77,11 @@ const BeetrModules: IModule[] = [
         type: 'module',
         isComponent: true,
         props: {
+            drawer:{
+                deviceEnv:'$pinia.state.value',
+                browserEnv:'envStore.browserEnv',
+                data:true,
+            }
         },
         defaultEditorConfigs: socialConfigs,
     },
@@ -75,8 +94,7 @@ const BeetrModules: IModule[] = [
         title: '图片',
         type: 'module',
         isComponent: true,
-        props: {
-        },
+        props: null,
         defaultEditorConfigs: defaultImageConfigs,
     },
     {
@@ -88,8 +106,7 @@ const BeetrModules: IModule[] = [
         title: '视频',
         type: 'module',
         isComponent: true,
-        props: {
-        },
+        props:null,
         defaultEditorConfigs: defaultVideoConfigs,
     },
     {
@@ -101,8 +118,7 @@ const BeetrModules: IModule[] = [
         title: '标题',
         type: 'module',
         isComponent: true,
-        props: {
-        },
+        props:null,
         defaultEditorConfigs: defaultTitleConfigs,
     }
 
