@@ -3,9 +3,9 @@ import UploadMedia from './module-media-upload/index.vue'
 
 import { IUserAppItem, WIDGET_TYPE } from '@beetr/constant'
 import { ModuleNote, richText, ModuleNoteHandler, defaultEditorConfigs as noteConfigs } from './module-richText'
-import { link, defaultEditorConfigs as linkConfigs, ModuleLinkDrawer } from './module-link'
-import { ModuleHref, ModuleHrefHandler, } from './module-href'
-import { social, defaultEditorConfigs as socialConfigs, ModuleSocialDrawer } from './module-social'
+import { link, defaultEditorConfigs as linkConfigs, } from './module-link'
+import { ModuleHref, ModuleHrefHandler, ModuleHrefDrawer } from './module-href'
+import { social, defaultEditorConfigs as socialConfigs, } from './module-social'
 
 import { ModuleMedia, ModuleMediaHandler } from './module-media'
 import { image, defaultImageConfigs } from './module-image'
@@ -14,7 +14,7 @@ import { video, defaultVideoConfigs } from './module-video'
 import { defaultTitleConfigs, sectionTitle, ModuleSectionTitle } from './module-title'
 
 interface IModule {
-    name: string
+    name: WIDGET_TYPE
     module: any;
     Handler: any;
     drawer: any;
@@ -23,15 +23,15 @@ interface IModule {
     type: string
     isComponent: boolean
     props: IModulePropsPath | null
-    defaultEditorConfigs: (props: Partial<IUserAppItem>) => Partial<IUserAppItem>
+    defaultEditorConfigs: (props?: Partial<IUserAppItem>) => Partial<IUserAppItem>
 }
-type ModulePathRules = string | boolean | string[] 
+type ModulePathRules = string | boolean | string[]
 
 interface IModulePropsPath {
-    drawer?:{
-        [key:string]:ModulePathRules
+    drawer?: {
+        [key: string]: ModulePathRules
     },
-    props?:{
+    props?: {
 
     }
 }
@@ -53,16 +53,16 @@ const BeetrModules: IModule[] = [
         name: WIDGET_TYPE.link,
         module: ModuleHref,
         Handler: ModuleHrefHandler,
-        drawer: ModuleLinkDrawer,
+        drawer: ModuleHrefDrawer,
         icon: link,
         title: '链接',
         type: 'module',
         isComponent: true,
         props: {
-            drawer:{
-                deviceEnv:'envStore.deviceEnv',
-                browserEnv:'envStore.browserEnv',
-                data:true,
+            drawer: {
+                deviceEnv: 'envStore.deviceEnv',
+                browserEnv: 'envStore.browserEnv',
+                data: true,
             }
         },
         defaultEditorConfigs: linkConfigs,
@@ -71,16 +71,16 @@ const BeetrModules: IModule[] = [
         name: WIDGET_TYPE.social,
         module: ModuleHref,
         Handler: ModuleHrefHandler,
-        drawer: ModuleSocialDrawer,
+        drawer: ModuleHrefDrawer,
         icon: social,
         title: '社交',
         type: 'module',
         isComponent: true,
         props: {
-            drawer:{
-                deviceEnv:'$pinia.state.value',
-                browserEnv:'envStore.browserEnv',
-                data:true,
+            drawer: {
+                deviceEnv: '$pinia.state.value',
+                browserEnv: 'envStore.browserEnv',
+                data: true,
             }
         },
         defaultEditorConfigs: socialConfigs,
@@ -106,7 +106,7 @@ const BeetrModules: IModule[] = [
         title: '视频',
         type: 'module',
         isComponent: true,
-        props:null,
+        props: null,
         defaultEditorConfigs: defaultVideoConfigs,
     },
     {
@@ -118,7 +118,7 @@ const BeetrModules: IModule[] = [
         title: '标题',
         type: 'module',
         isComponent: true,
-        props:null,
+        props: null,
         defaultEditorConfigs: defaultTitleConfigs,
     }
 

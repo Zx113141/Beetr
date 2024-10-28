@@ -2,13 +2,13 @@
 <template>
     <button v-if="item.type === WIDGET_TYPE.link"
         class="rounded-[4px] outline-none disabled:text-white disabled:text-opacity-40 active:scale-90"
-        @click="updateUrl">
+        @click="() => updateUrl(EDIT_TYPE.messagge)">
         <SvgEdit></SvgEdit>
     </button>
     <el-popover v-else v-model:visible="activeLink" trigger="click" placement="bottom" popper-class="!p-[6px] !bg-black"
         :width="240" popper-style="background-color:#000 !important;">
-        <el-input v-model="item.url" size="small" class="init_link-input" placeholder="输入链接" @change="updateUrl"
-            @keyup.enter="updateUrl()"></el-input>
+        <el-input v-model="item.url" size="small" class="init_link-input" placeholder="输入链接"
+            @change="() => updateUrl(EDIT_TYPE.normal)" @keyup.enter="() => updateUrl(EDIT_TYPE.normal)"></el-input>
         <template #reference>
             <button class="rounded-[4px] outline-none disabled:text-white disabled:text-opacity-40 active:scale-90"
                 :class="activeLink ? `active` : ``">
@@ -38,8 +38,8 @@ const activeLink = ref(false)
 const { item } = toRefs(props)
 
 /** 更新链接 */
-const updateUrl = () => {
-    emit('onEdit', item.value, EDIT_TYPE.normal)
+const updateUrl = (type: keyof typeof EDIT_TYPE) => {
+    emit('onEdit', item.value, type)
 }
 
 watch(activeLink, (newval) => {

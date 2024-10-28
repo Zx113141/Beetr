@@ -32,7 +32,7 @@ onMounted(() => {
 const handleFrameMessage = (e: MessageEvent) => {
     const { query, eventType } = e.data;
     // console.log(query,eventType)
-    const params =query ? JSON.parse(query): ''
+    const params = query ? JSON.parse(query) : ''
     switch (eventType) {
         case MESSAGE_EVENT_TYPE.iframeLoaded:
             postEnv();
@@ -51,11 +51,9 @@ const handleFrameMessage = (e: MessageEvent) => {
             widgetDrawerData.prop.appConfigList = params
             break;
         case MESSAGE_EVENT_TYPE.edit:
-            const drawer = BeetrModules.find(i => i.type == params.type)
-            const m = {
-                drawer,
-            }
-            actionRef.value!.onAddGrid(params)
+            const bModule = BeetrModules.find(i => (i.name == params.type)) as IModule
+            actionRef.value!.onAddGrid(bModule, params)
+            break;
         // case MESSAGE_EVENT_TYPE.widgetStatus:
         //     console.log(query);
         //     break
@@ -103,7 +101,7 @@ const addItem = (param: any, lastParams?: Partial<IUserAppItem>) => {
 }
 
 const prepareDrawData = (widget: IModule) => {
-    console.log(widget, window.$pinia.state.value.env . user.value)
+    // console.log(widget, window.$pinia.state.value.env.user.value)
     // widgetDrawerData.prop.widget = widget
     // widgetDrawerData.show = true
 }

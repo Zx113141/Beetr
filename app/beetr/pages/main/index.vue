@@ -54,10 +54,10 @@ onMounted(async () => {
     window.addEventListener('message', handleMessage)
 
     framePostMessagx(MESSAGE_EVENT_TYPE.iframeLoaded,)
-  
+
     framePostMessagx(MESSAGE_EVENT_TYPE.info, {
-        urlInfo:urlInfo.value!,
-        userInfo:userInfo.value!,
+        urlInfo: urlInfo.value!,
+        userInfo: userInfo.value!,
     })
     framePostMessagx(MESSAGE_EVENT_TYPE.appConfigList, appConfigList.value)
     skeltonLoading.value = false

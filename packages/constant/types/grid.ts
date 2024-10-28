@@ -20,7 +20,7 @@ export enum ENV_ENUM {
 export enum EDIT_TYPE {
     resize = 'resize',
     normal = 'normal',
-    messagge = 'message',
+    messagge = 'messagge',
 }
 
 

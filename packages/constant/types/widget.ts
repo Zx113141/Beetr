@@ -99,7 +99,7 @@ export interface IUserAppItem {
     _tempId?: string | number
     configId?: string
     type: string
-    variant?: string
+    variant: LINK_TYPE | MEDIA_TYPE,
     temType?: string,
     _percent: number | string
     _tempUrl?: string
@@ -178,7 +178,7 @@ export interface IAppConfigItem {
     widgetColorActive?: string
 }
 
- 
+
 export enum WIDGET_TYPE {
     link = 'link',
     social = 'social',

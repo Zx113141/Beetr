@@ -26,7 +26,8 @@
         <ModuleWidgetDrawer>
             <template #content>
                 <component :is="widgetDrawer" :prop="widgetDrawerData.prop" :browserEnv="browserEnv"
-                    :deviceEnv="deviceEnv" :data="widgetDrawerData.data" @finish="finish" @close="back">
+                    :key="widgetDrawerData.data.id" :deviceEnv="deviceEnv" :data="widgetDrawerData.data"
+                    @finish="finish" @close="back">
                 </component>
             </template>
         </ModuleWidgetDrawer>
@@ -65,15 +66,18 @@ defineProps<{
 
 const loading = inject('loading', false)
 
-const onAddGrid = (params: IModule, data?: any) => {
+const onAddGrid = (params: IModule, data?: IUserAppItem) => {
     if (!params.drawer) {
         emits('onAdd', params)
     } else {
         emits('onPrepare', params)
+        console.log(widgetDrawer);
         widgetDrawer = params.drawer
-        widgetDrawerData.show = true
-        widgetDrawerData.data = data || null
+        widgetDrawerData.data = params.defaultEditorConfigs(data)
         widgetDrawerData.params = params
+        widgetDrawerData.show = true
+
+        triggerRef(widgetDrawerData.data)
     }
 }
 
