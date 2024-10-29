@@ -143,8 +143,11 @@ const addTempares = (nameList: WidgetRandomAdd[], interval: number = 500) => {
             setTimeout(() => {
                 const widgetModule = BeetrModules.find((i) => item.name == i.name) as IModule
                 const config = item.randomAdd ? widgetModule?.defaultEditorConfigs({
-                    cusStyle: randomRect()
-                }) : widgetModule?.defaultEditorConfigs()
+                    cusStyle: randomRect(),
+                    temType: item.name,
+                }) : widgetModule?.defaultEditorConfigs({
+                    temType: item.name,
+                })
                 containerRef.value!.onGrdiAddWidget(config)
             }, index * interval)
         }

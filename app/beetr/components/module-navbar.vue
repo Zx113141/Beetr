@@ -35,25 +35,18 @@ const emits = defineEmits<{
 
 const onNext = (value: STEP_PROCESS) => {
     // 从标签页过来设置为媒体添加页
-    if (value == STEP_PROCESS.socialMedia) {
-        currentStep.value = STEP_PROCESS.socialMedia
-
-    }
-
-    if (props.mextType > 0) {
-        animationDirection.value = ANIMATION_DIRECTION.sliderRight
-        currentStep.value = STEP_PROCESS[value]
-
-        // console.log(value)
-        // changeShow(false)
-        // window.parent.postMessage({ type: 'changeTheme', data: drawData.nowColor }, '*')
+    if (currentStep.value == STEP_PROCESS[STEP_PROCESS.socialMedia] && props.mextType == 0) {
+        currentStep.value == STEP_PROCESS[STEP_PROCESS.socialMedia]
+        emits('update:mextType', props.mextType + 1)
         return
     }
-    emits('update:mextType', props.mextType + 1)
-
+    animationDirection.value = ANIMATION_DIRECTION.sliderRight
+    currentStep.value = STEP_PROCESS[value]
 }
 const onLast = () => {
-    emits('update:mextType', props.mextType + 1)
+    animationDirection.value = ANIMATION_DIRECTION.sliderLeft
+    currentStep.value = STEP_PROCESS.socialMedia
+    emits('update:mextType', props.mextType - 1)
 }
 
 const onAddLink = () => {

@@ -171,7 +171,7 @@ const uploadMediaType = computed(() => {
 
 
 onMounted(() => {
-    if (!allowCrop.value) {
+    if (!allowCrop.value && !item.value.temType) {
         // console.log(triggerRef.value!);
         triggerRef.value!.click()
     }

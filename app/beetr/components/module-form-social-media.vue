@@ -54,7 +54,7 @@ watch(userAppList, getEditConfigList, { deep: true })
 const ulRef = ref<HTMLElement>()
 const scrollProcess = ref(0)
 onMounted(async () => {
-    ulRef.value!.addEventListener('scroll', () => {
+    ulRef.value && ulRef.value!.addEventListener('scroll', () => {
         const i = ulRef.value!.scrollHeight - ulRef.value!.clientHeight
         scrollProcess.value = ulRef.value!.scrollTop / (i + 0.01)
     })
@@ -108,7 +108,7 @@ defineExpose({
 <template>
     <div class="flex w-full flex-col px-4 xl:mr-20 xl:flex-1 xl:px-0">
         <Transition>
-            <img src="./arrow.png" style="width: 20px;margin-bottom: 46px;" @click="emit('last')" alt=""
+            <img src="./images/arrow.png" style="width: 20px;margin-bottom: 46px;" @click="emit('last')" alt=""
                 v-if="props.mextType == 1">
         </Transition>
         <Transition>
