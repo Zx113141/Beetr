@@ -11,13 +11,17 @@ import {
 import { _widgetStore } from '~/store/widget';
 import { _userStore } from '~/store/user';
 import { _envStore } from '~/store/env';
-import { SvgWeixin, MEDIA_TYPE, TOKEN_CREDENTIALS } from '@beetr/constant';
-import moduleContainer from '~/components/module-container.vue';
+import { SvgWeixin, SvgControl, WIDGET_TYPE, type Style, randomList } from '@beetr/constant';
+import ModuleContainer from '~/components/module-container.vue';
 import ModuleNavbar from '~/components/module-navbar.vue';
+import { BeetrModules, type IModule } from '@beetr/materials';
 import { useMessage } from '@beetr/hooks'
 import GridContainer from '~/components/module-container.vue';
 
-
+interface WidgetRandomAdd {
+    name: WIDGET_TYPE,
+    randomAdd: boolean
+}
 
 // import { onSetDraw } from '~/store/isLoading'
 
@@ -30,10 +34,10 @@ const { postMessage } = useMessage()
 // refs reactive here
 const { userInfo, urlInfo, currentStep, isScreenLock, isEdit } = storeToRefs(userStore)
 const { browserEnv, deviceEnv } = storeToRefs(envStore)
-const { appConfigList } = storeToRefs(widgetStore)
+const { appConfigList, userAppList } = storeToRefs(widgetStore)
 const mextType = ref<number>(0)
 const Loading = ref(false)
-const skeltonLoading = ref(false)
+// const skeltonLoading = ref(false)
 const containerRef = ref<InstanceType<typeof GridContainer> | null>(null);
 
 // const uploadRef = ref<any>(null)
@@ -45,7 +49,7 @@ const framePostMessagx = <T extends keyof typeof MESSAGE_EVENT_TYPE, K,>(e: T, p
 
 // hooks
 onMounted(async () => {
-    skeltonLoading.value = true
+    // skeltonLoading.value = true
     await widgetStore.getSocialPreConfig()
     await queryUserInfo()
     try {
@@ -60,7 +64,7 @@ onMounted(async () => {
         userInfo: userInfo.value!,
     })
     framePostMessagx(MESSAGE_EVENT_TYPE.appConfigList, appConfigList.value)
-    skeltonLoading.value = false
+    // skeltonLoading.value = false
 })
 
 
@@ -106,7 +110,7 @@ const handleWidgetAdd = (query: {
     name: string,
     data: Partial<IUserAppItem>
 }) => {
-    console.log(query);
+
     const { name, data } = query
     const config = JSON.parse(data as string)
     // TODO 可以处理query config
@@ -114,7 +118,55 @@ const handleWidgetAdd = (query: {
     containerRef.value!.onGrdiAddWidget(config)
 }
 
+// 获取随机形状
+const randomRect = (): Style => {
+    let resultSeed = 0
+    const random = Math.ceil(Math.random() * 100)
+    randomList.forEach((item, index) => {
+        if (index * 25 <= random && (index + 1) * 25 > random) {
+            resultSeed = index
+        }
+    })
+    const randomSize = randomList[resultSeed]
 
+    const obj: Style = {
+        mobile: { w: randomSize.width, h: randomSize.height },
+        desktop: { w: randomSize.width, h: randomSize.height },
+    }
+    return obj
+}
+const addTempares = (nameList: WidgetRandomAdd[], interval: number = 500) => {
+    const items = userAppList.value.filter((app) => app.temType).map((item) => item.temType)
+
+    nameList.forEach((item: WidgetRandomAdd, index: number) => {
+        if (!items.includes(item.name)) {
+            setTimeout(() => {
+                const widgetModule = BeetrModules.find((i) => item.name == i.name) as IModule
+                const config = item.randomAdd ? widgetModule?.defaultEditorConfigs({
+                    cusStyle: randomRect()
+                }) : widgetModule?.defaultEditorConfigs()
+                containerRef.value!.onGrdiAddWidget(config)
+            }, index * interval)
+        }
+    })
+}
+
+watch(() => mextType.value, (newType) => {
+    if (currentStep.value == STEP_PROCESS.socialMedia) {
+        if (newType == 1) {
+            addTempares([
+                { name: WIDGET_TYPE.media, randomAdd: true },
+                { name: WIDGET_TYPE.sectionHeader, randomAdd: false },
+                { name: WIDGET_TYPE.richText, randomAdd: true },
+            ])
+        } else {
+            containerRef.value!.removeWidgetList(userAppList.value.filter((app) => app.temType))
+        }
+    }
+
+}, {
+    immediate: true
+})
 
 
 provide('loading', Loading)
@@ -127,7 +179,7 @@ provide('loading', Loading)
         :class="['relative flex min-h-screen w-full flex-1 flex-col items-center', `browser-${browserEnv || 'desktop'}`, `device-${deviceEnv || 'desktop'}`]">
         <div
             class="user-aside flex h-full w-full max-w-[428px] items-center justify-center p-6 pt-12 pb-0 xl:absolute xl:top-0 xl:max-w-[min(100vw,1728px)] xl:items-stretch xl:justify-start xl:p-16">
-            <ModuleNavbar :skeltonLoading="skeltonLoading"></ModuleNavbar>
+            <ModuleNavbar v-model:mextType="mextType"></ModuleNavbar>
         </div>
         <!-- grid网格 - 手机端初始化的时候不显示，mextType > 0 的时候才 -->
         <div class="xl:flex h-full w-full max-w-[428px] flex-1 flex-col pt-0 xl:max-w-[1728px] xl:flex-row xl:p-16 xl:overflow-hidden"
@@ -136,16 +188,16 @@ provide('loading', Loading)
             <div class="mb-10 flex flex-col px-4 xl:mb-0 xl:mr-20 xl:flex-1 xl:px-0"></div>
 
             <!-- 右边可拖动的网格布局 -->
-            <moduleContainer :currentStep="currentStep" v-if="deviceEnv" :deviceEnv="deviceEnv" :editStatus="isEdit"
+            <ModuleContainer :currentStep="currentStep" v-if="deviceEnv" :deviceEnv="deviceEnv" :editStatus="isEdit"
                 :browserEnv="browserEnv!" ref="containerRef"
                 @postMessage="(e: IUserAppItem, messageType) => framePostMessagx(messageType, e)">
                 <!-- :isLoading="isLoading" ref="moduleGridRef" :current-step="currentStep"
                 @changeShow="changeShow" @onGridEdit="onGridEdit" @gridTouched="gridTouched" -->
-            </moduleContainer>
+            </ModuleContainer>
             <!-- skelton? -->
 
             <div class="browser-mobile-action w-full p-[20px_25px] h-[130px]"
-                v-if="currentStep == STEP_PROCESS.userInfo && userStore.isEdit && browserEnv == BROWSER_ENV.mobile">
+                v-if="currentStep == STEP_PROCESS.userInfo && isEdit && browserEnv == BROWSER_ENV.mobile">
                 <div class="flex items-center justify-start">
                     <el-button @click="onSetDraw" class="!p-2 !shadow-none relative !text-block !bg-[transparent]">
                         <SvgControl class="ctrl-icon" />
@@ -162,7 +214,7 @@ provide('loading', Loading)
                 </div>
             </div>
             <!-- 非登录状态下的操作栏，登录、创建个人链接 -->
-            <ModuleLeftActionOffline from="main" v-if="!userStore.isEdit" :path="userInfo?.url">
+            <ModuleLeftActionOffline from="main" v-if="!isEdit" :path="userInfo?.url">
             </ModuleLeftActionOffline>
         </div>
 

@@ -48,7 +48,6 @@ import { BeetrModules } from "@beetr/materials";
 import { findEmptyPosition } from '@beetr/hooks'
 import { _userStore } from "~/store/user";
 import { _widgetStore } from "~/store/widget";
-import { _envStore } from "~/store/env";
 import type { DefineComponent, VueElement } from "vue";
 let flag = false
 // 注册Component
@@ -71,10 +70,10 @@ const props = defineProps<{
   browserEnv: keyof typeof BROWSER_ENV;
   currentStep: keyof typeof STEP_PROCESS;
 }>();
-
 const userStore = _userStore();
 const widgetStore = _widgetStore();
 const { userAppList } = storeToRefs(widgetStore);
+
 
 const emit = defineEmits<{
   (e: "postMessage", params: IUserAppItem, messageType: keyof typeof MESSAGE_TYPE): void
@@ -235,6 +234,12 @@ const columnChange = (newEnv: keyof typeof BROWSER_ENV) => {
 
 }
 
+const removeWidgetList = (prepareDeleteList: IUserAppItem[]) => {
+  prepareDeleteList.forEach(async (v) => {
+    await onRemove(v.id)
+  })
+}
+
 
 
 
@@ -260,6 +265,25 @@ watch(
     })
   },
 );
+watch(() => props.currentStep, (step) => {
+  if (!gridRef.value) return
+  nextTick(() => {
+    if (step == STEP_PROCESS.userInfo) {
+      gridRef.value!.updateAnimateByClassNames('layoutAddani', 'gridAnimate', 1000)
+    }
+    if (step == STEP_PROCESS.congratulations) {
+      const prepareDeleteList: IUserAppItem[] = userAppList.value.filter(item => item.temType)
+      removeWidgetList(prepareDeleteList)
+      // activeAnimation.value = true
+      // setTimeout(() => {
+      //   activeAnimation.value = false
+      // }, 1600)
+    }
+  })
+
+}, {
+  immediate: true
+})
 
 onUnmounted(() => {
   gridRef.value!.dispose();
@@ -268,7 +292,8 @@ onUnmounted(() => {
 
 
 defineExpose({
-  onGrdiAddWidget
+  onGrdiAddWidget,
+  removeWidgetList
 })
 </script>
 

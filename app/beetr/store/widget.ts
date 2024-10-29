@@ -74,7 +74,7 @@ export const _widgetStore = defineStore('widget', () => {
   }
 
   /** widget-新增 */
-  const onAdd = async (item: IUserAppItem): Promise<IUserAppItem> => {
+  const onAdd = async (item: Partial<IUserAppItem>): Promise<IUserAppItem> => {
     return service(
       {
         url: "/jeecg-boot/app/seUsers/insertUserApps",

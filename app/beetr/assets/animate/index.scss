@@ -41,7 +41,8 @@
 }
 
 .rotateZ {
-  animation: rotate-vert-center 0.5s cubic-bezier(0.455, 0.03, 0.515, 0.955) both;
+  animation: rotate-vert-center 0.5s cubic-bezier(0.455, 0.03, 0.515, 0.955)
+    both;
 }
 
 @keyframes rotate-vert-center {
@@ -52,5 +53,18 @@
   100% {
     -webkit-transform: rotateY(360deg);
     transform: rotateY(360deg);
+  }
+}
+
+.grid {
+  animation: gridAnimate 1s forwards;
+}
+
+@keyframes gridAnimate {
+  0% {
+    transform: translateY(76px);
+  }
+  100% {
+    transform: translateY(0px);
   }
 }

@@ -90,13 +90,17 @@ const updateWidget = (params: any) => {
 };
 
 const updateAnimateByClassNames = (
-  el: HTMLElement,
+  el: HTMLElement | string,
   name: string,
   delay = 800
 ) => {
-  el.classList.add(name);
+  const element = typeof el === "string" ? document.getElementById(el) : el;
+  if (!element) {
+    return
+  }
+  element.classList.add(name);
   setTimeout(() => {
-    el.classList.remove(name);
+    element.classList.remove(name);
   }, delay);
 };
 
@@ -135,6 +139,7 @@ defineExpose({
   disable,
   add,
   remove,
+  updateAnimateByClassNames
 });
 </script>
 
