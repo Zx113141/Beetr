@@ -53,6 +53,10 @@ const id = inject('movingWidgetId')
 </script>
 
 <style lang="scss" scoped>
+.pointer-events-none {
+    pointer-events: none;
+}
+
 .grid-stack-item {
 
     .thisarea {

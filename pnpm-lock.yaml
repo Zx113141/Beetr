@@ -277,6 +277,9 @@ importers:
 
   packages/materials:
     dependencies:
+      '@ant-design/colors':
+        specifier: ^7.1.0
+        version: 7.1.0
       '@beetr/constant':
         specifier: workspace:^
         version: link:../constant

@@ -16,8 +16,8 @@
                 <div class="rich_wrap-cont"
                     :class="{ mobile: deviceEnv == BROWSER_ENV.mobile, isEditing: isFocusing, noEdit: !isEdit, }"
                     :style="`justify-content: ${item.halign?.[deviceEnv]};text-align: ${TEXT_ALIGN[item.halign?.[deviceEnv] as keyof typeof TEXT_ALIGN || 'flex-start']
-                        };align-items: ${item.valign?.[deviceEnv]}`" @click="onSetBlur(true, isFocusing)"
-                    @dragover="imgDragover($event)">
+                        };align-items: ${item.valign?.[deviceEnv]}${computedStyle(item.bgColor)}`"
+                    @click="onSetBlur(true, isFocusing)" @dragover="imgDragover($event)">
                     <editor-content :editor="content" class="w-full" />
                 </div>
             </div>
@@ -45,13 +45,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, toRefs, nextTick, inject, } from 'vue'
+import { ref, toRefs, nextTick, inject, computed } from 'vue'
 
 import { useEditor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import Placeholder from '@tiptap/extension-placeholder'
-import { type IUserAppItem, BROWSER_ENV, SvgArrow } from '@beetr/constant'
+import { type IUserAppItem, BROWSER_ENV, SvgArrow, colorList } from '@beetr/constant'
 import { debounce } from '@beetr/hooks'
+import { generate } from '@ant-design/colors'
 
 // // init 
 const rotateZ = ref<HTMLDivElement | null>(null)
@@ -60,6 +61,7 @@ const deviceEnv = inject<keyof typeof BROWSER_ENV>('deviceEnv',)!
 const isEdit = inject<boolean>('editStatus')
 const props = defineProps<{
     item: IUserAppItem,
+    hover: boolean
 }>()
 const emits = defineEmits(["onFakeClick", 'onEdit'])
 const { item } = toRefs(props)
@@ -69,7 +71,7 @@ const TEXT_ALIGN = {
     center: 'center',
     'flex-end': 'right',
 }
-
+console.log(props.hover);
 /** 是否正在编辑 */
 const isFocusing = ref(false)
 var timer: any = null
@@ -171,14 +173,28 @@ const visitJump = () => {
     window.open(item.value.url)
 }
 
-// watch(
-//     () => isEdit,
-//     (val) => {
-//         console.log('props.edit', val);
-//         // 选中的才焦点
-//         visibleActionId.value === item.value?.id && onSetBlur(val as boolean, true)
-//     }
-// )
+const computedStyle = computed(() => {
+    return (colo?: string) => {
+        const primaryColor = colorList.find(col => col.bgColor == colo)
+        let bgColor: string = ''
+        if (!colo) [
+            colo = '#FFFFFF'
+        ]
+        if (colo == '#FFFFFF') {
+            bgColor = '#F0f0f0'
+        } else {
+            bgColor = generate(colo)[4]
+        }
+
+        // console.log(color)
+        let str = primaryColor ? `color: ${primaryColor?.color} !important;` : ''
+        if (props.hover) {
+            // console.log(str + `background-color:${color?.bgColor}33 !important;`);
+            return str + `background-color:${bgColor} !important;`
+        }
+        return str
+    }
+})
 
 </script>
 

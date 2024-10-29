@@ -14,7 +14,8 @@
       <grid-item v-for="item in userAppList" :item="item" :key="item.id" :env="deviceEnv"
         :isWidgetEdit="editObject.isEditing" @mouseHover="onHover">
         <div class="wiget_size_item_container">
-          <component :is="ComponentsReflect[item.type].module" :item="item" @onEdit="onModuleEdit"></component>
+          <component :is="ComponentsReflect[item.type].module" :item="item" @onEdit="onModuleEdit"
+            :hover="editObject.visibleActionId == item.id"></component>
           <component :is="ComponentsReflect[item.type].Handler" :visible-action-id="editObject.visibleActionId"
             :item="item" @onEdit="onWidgetEdit" @onEditing="onEditing">
           </component>
@@ -110,7 +111,6 @@ const render = async (newList: IUserAppItem[]) => {
   if (newList.length && gridRef.value) {
     await nextTick(() => {
       if (gridRef.value && !gridRef.value?.grid) {
-        console.log(123123);
         const width = document.documentElement.clientWidth;
         const options = {
           animate: true,
@@ -124,7 +124,6 @@ const render = async (newList: IUserAppItem[]) => {
           acceptWidgets: true,
           alwaysShowResizeHandle: 'mobile' as 'mobile',
         }
-        console.log(options);
         gridRef.value.init(options);
       }
     });
@@ -193,7 +192,6 @@ const onGridUpdateWidgets = async (updateList: GridStackNode[]) => {
     const item = userAppList.value.find(
       (i: IUserAppItem) => `w_${i.id}` == widget.id
     ) as IUserAppItem;
-    console.log(item, widget);
     item.cusStyle[props.deviceEnv].w = widget.w!;
     item.cusStyle[props.deviceEnv].h = widget.h!;
     item.position[props.deviceEnv].x = widget.x!;
@@ -211,7 +209,6 @@ const columnChange = (newEnv: keyof typeof BROWSER_ENV) => {
 
   if (props.deviceEnv == BROWSER_ENV.mobile && props.browserEnv == BROWSER_ENV.desktop) {
     cellHeight = 411 / 4
-    console.log(cellHeight,)
   }
 
   flag = true
