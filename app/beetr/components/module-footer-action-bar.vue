@@ -52,7 +52,7 @@ const onShare = () => {
 </script>
 
 <template>
-    <div :class="['action_bar', $device.isMobile ? 'mobile' : 'desktop', isEditorRef ? 'editor' : '']">
+    <div :class="['action_bar', browserEnv == BROWSER_ENV.mobile ? 'mobile' : 'desktop', isEditorRef ? 'editor' : '']">
         <el-button type="success" :disabled="props.loadingRef" style="width:127px" class="relative greenBtn "
             @click="onShare">
             <span v-if="!props.loadingRef">发给朋友</span>
@@ -61,7 +61,7 @@ const onShare = () => {
                 <img src="./images/loading.png" alt="">
             </el-icon>
         </el-button>
-
+ 
         <template v-if="browserEnv == BROWSER_ENV.mobile">
             <el-button type="success" style="width:89px;" class="relative blackBtn" @click="addDrawData.show = true">
                 <span>

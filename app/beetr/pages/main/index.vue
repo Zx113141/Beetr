@@ -11,7 +11,7 @@ import {
 import { _widgetStore } from '~/store/widget';
 import { _userStore } from '~/store/user';
 import { _envStore } from '~/store/env';
-import { SvgWeixin, SvgControl, WIDGET_TYPE, type Style, randomList } from '@beetr/constant';
+import { SvgWeixin, SvgControl, WIDGET_TYPE, type Style, randomList,TOKEN_CREDENTIALS } from '@beetr/constant';
 import ModuleContainer from '~/components/module-container.vue';
 import ModuleNavbar from '~/components/module-navbar.vue';
 import { BeetrModules, type IModule } from '@beetr/materials';
@@ -81,7 +81,6 @@ const aboutUs = () => {
 const handleMessage = (event: MessageEvent) => {
     const { data } = event
     const { eventType, query } = data
-
     switch (eventType) {
         case MESSAGE_EVENT_TYPE.env:
             browserEnv.value = query.browserEnv
@@ -91,6 +90,7 @@ const handleMessage = (event: MessageEvent) => {
             handleWidgetAdd(query)
             break;
         case MESSAGE_EVENT_TYPE.logout:
+            hanldeLogout()
             break;
     }
 }
@@ -152,6 +152,14 @@ const addTempares = (nameList: WidgetRandomAdd[], interval: number = 500) => {
             }, index * interval)
         }
     })
+}
+
+const hanldeLogout = () => {
+    const cookieToken = useCookie(TOKEN_CREDENTIALS)
+    cookieToken.value = ''
+    userInfo.value = null
+    const sessionId = useCookie(VISIT_CREDENTIALS)
+    sessionId.value = ''
 }
 
 watch(() => mextType.value, (newType) => {

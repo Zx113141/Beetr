@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { BROWSER_ENV } from '@beetr/constant';
+import { type PropType } from 'vue'
 const props = defineProps({
     // 区分来源
     from: {
@@ -8,6 +10,10 @@ const props = defineProps({
     path: {
         default: '',
         type: String
+    },
+    browserEnv: {
+        default: '',
+        type: String as PropType<keyof typeof BROWSER_ENV>
     }
 })
 const router = useRouter()
@@ -39,7 +45,7 @@ const linkLoginPage = () => {
 
 <template>
     <div class="items-center space-x-1 rounded-[12px] p-1 transition-colors 2xl:space-x-2 duration-400 bg-white delay-500"
-        :class="[$device.isMobile ? 'relative bottom-0 p-10 w-full bg-transparent flex flex-col justify-center gap-2' : 'fixed hidden bottom-[52px] -m-1 left-16 xl:flex']">
+        :class="[browserEnv == BROWSER_ENV.mobile ? 'relative bottom-0 p-10 w-full bg-transparent flex flex-col justify-center gap-2' : 'fixed hidden bottom-[52px] -m-1 left-16 xl:flex']">
         <el-button type="info" class="relative mr-3" @click="() => linkRegisterPage(path)">
             <img src="@/assets/images/logo_1.png" draggable="false" alt="" class="mr-2" style="width: 16px;">
             <span>{{ path ? '返回我的页面' : '注册专属便当' }}</span>

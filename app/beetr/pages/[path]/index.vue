@@ -19,9 +19,7 @@ const { postMessage } = useMessage()
 // hooks
 onMounted(() => {
     window.addEventListener("message", handleFrameMessage);
-    if (!checkBrowserEnv()) {
-        window.addEventListener("resize", debounce(handleWindowResize, 300));
-    }
+    window.addEventListener("resize", debounce(handleWindowResize, 300));
     // 主动触发一次
     handleWindowResize(null);
 });
@@ -30,6 +28,7 @@ onMounted(() => {
 
 // 环境处理
 const handleFrameMessage = (e: MessageEvent) => {
+
     const { query, eventType } = e.data;
     // console.log(query,eventType)
     const params = query ? JSON.parse(query) : ''
@@ -77,7 +76,10 @@ const handleWindowResize = (e: UIEvent | null) => {
     if ((e.target as Window).innerWidth > 1280) {
         browserEnv.value = BROWSER_ENV.desktop;
         deviceEnv.value = BROWSER_ENV.desktop;
-    } else {
+    } else if ((e.target as Window).innerWidth <= 1280 && checkBrowserEnv()){
+        browserEnv.value = BROWSER_ENV.mobile;
+        deviceEnv.value = BROWSER_ENV.mobile;
+    }else {
         browserEnv.value = BROWSER_ENV.desktop;
         deviceEnv.value = BROWSER_ENV.mobile;
     }
@@ -107,26 +109,36 @@ const prepareDrawData = (widget: IModule) => {
 }
 
 const logout = () => {
+    userStore.setInfo({
+        url: userStore.urlInfo,
+        user: null
+    })
+    postMessage(iframeRef.value!.contentWindow!, MESSAGE_EVENT_TYPE.logout)
     // userStore.logout()
+}
+
+const onSetEnv = (env: keyof typeof BROWSER_ENV) => {
+    deviceEnv.value = env
+    postEnv()
 }
 </script>
 
 <template>
     <div :class="[
         'min-h-screen flex flex-col items-center bg-[#F8F8F8]',
-        $device.isMobile
+        browserEnv == BROWSER_ENV.mobile
             ? 'browser-mobile justify-between'
             : 'browser-desktop justify-center',
     ]">
         <div class="frame_container flex" :class="[
-            $device.isMobile ? 'realmobile' : '',
+            browserEnv == BROWSER_ENV.mobile ? 'realmobile' : '',
             deviceEnv == BROWSER_ENV.mobile ? 'frame_container-mobile' : '',
         ]">
             <iframe ref="iframeRef" :data-editor-iframe="true" class="frame_container-iframe backgroundColor"
                 :style="'visibility: visible'" :src="`/main?path=${route.params.path}`">
             </iframe>
             <ModuleActionBar ref="actionRef" :deviceEnv="deviceEnv!" :browserEnv="browserEnv!" :isEditorRef="false"
-                @on-add="addItem" @on-prepare="prepareDrawData" @on-logout="logout">
+                @on-add="addItem" @on-prepare="prepareDrawData" @on-logout="logout" @on-set-env="onSetEnv">
             </ModuleActionBar>
         </div>
     </div>

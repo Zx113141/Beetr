@@ -25,9 +25,11 @@
 <script setup lang="ts">
 
 
-import { inject, PropType, provide, } from 'vue'
+import { inject, PropType, provide, watch} from 'vue'
 import { type IUserAppItem, } from '@beetr/constant'
+ 
 const isEdit = inject('editStatus',)
+ 
 defineProps({
     /** 当前激活的item */
     item: {

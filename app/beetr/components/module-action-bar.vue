@@ -7,7 +7,7 @@
         </ModuleFooterActionBar>
 
         <!-- 用户登录状态下的操作栏，含登出、修改用户名 -->
-        <ModuleLeftActionOnline :isEditorRef="isEditorRef" v-if="isEdit && isOnboared" @logout="logout">
+        <ModuleLeftActionOnline :isEditorRef="isEditorRef" v-if="isEdit && isOnboared" @logout="logout" :browserEnv="browserEnv">
         </ModuleLeftActionOnline>
 
         <!-- 手机端设置弹窗 -->

@@ -14,10 +14,10 @@
       <grid-item v-for="item in userAppList" :item="item" :key="item.id" :env="deviceEnv"
         :isWidgetEdit="editObject.isEditing" @mouseHover="onHover">
         <div class="wiget_size_item_container">
-          <component :is="ComponentsReflect[item.type].module" :item="item" @onEdit="onModuleEdit"
+          <component :is="ComponentsReflect[item.type].module" :item="item" @onEdit="onModuleEdit" :key="item.id"
             :hover="editObject.visibleActionId == item.id"></component>
           <component :is="ComponentsReflect[item.type].Handler" :visible-action-id="editObject.visibleActionId"
-            :item="item" @onEdit="onWidgetEdit" @onEditing="onEditing">
+            :key="item.id" :item="item" @onEdit="onWidgetEdit" @onEditing="onEditing">
           </component>
           <grid-delete v-if="editStatus" :visible-action-id="editObject.visibleActionId" :item="item"
             @remove="onRemove">
@@ -90,6 +90,7 @@ const editObject = reactive({
 const gridRef = ref<InstanceType<typeof GridContainer> | null>(null);
 
 provide<boolean>("editStatus", props.editStatus);
+console.log(props.editStatus)
 provide<keyof typeof BROWSER_ENV>("deviceEnv", props.deviceEnv);
 provide<keyof typeof BROWSER_ENV>("browserEnv", props.browserEnv);
 provide('containerRef', gridRef);
@@ -203,11 +204,11 @@ const onGridUpdateWidgets = async (updateList: GridStackNode[]) => {
 
 const columnChange = (newEnv: keyof typeof BROWSER_ENV) => {
   // 更新 marginconst gridMargin = computed(() => {
-  const margin = props.browserEnv === BROWSER_ENV.mobile ? '10px' : '15px'
+  const margin = newEnv === BROWSER_ENV.mobile ? '10px' : '15px'
   const width = window.parent.document.documentElement.clientWidth
-  let cellHeight = props.deviceEnv === BROWSER_ENV.mobile ? width / 4 : 105
+  let cellHeight = newEnv === BROWSER_ENV.mobile ? width / 4 : 105
 
-  if (props.deviceEnv == BROWSER_ENV.mobile && props.browserEnv == BROWSER_ENV.desktop) {
+  if (newEnv == BROWSER_ENV.mobile && props.browserEnv == BROWSER_ENV.desktop) {
     cellHeight = 411 / 4
   }
 
@@ -225,6 +226,7 @@ const columnChange = (newEnv: keyof typeof BROWSER_ENV) => {
       nodes.push(item)
 
     })
+   
 
     oldNodes.length = 0;
 
@@ -243,7 +245,7 @@ const columnChange = (newEnv: keyof typeof BROWSER_ENV) => {
 
     oldNodes.length = 0;
   })
-
+  console.log(1123)
   flag = false
 
 }
@@ -254,14 +256,20 @@ const removeWidgetList = (prepareDeleteList: IUserAppItem[]) => {
   })
 }
 
+watch(() => props.editStatus, (newStatus) => {
+  if (gridRef.value) {
+    gridRef.value.grid && gridRef.value.grid?.enableMove(newStatus)
+  }
+}, {
 
+})
 
 
 watch(
   () => userAppList,
   async (newList) => {
     await render(newList.value)
-   
+
   },
   {
     deep: true,
