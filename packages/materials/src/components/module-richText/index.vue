@@ -16,7 +16,7 @@
                 <div class="rich_wrap-cont"
                     :class="{ mobile: deviceEnv == BROWSER_ENV.mobile, isEditing: isFocusing, noEdit: !isEdit, }"
                     :style="`justify-content: ${item.halign?.[deviceEnv]};text-align: ${TEXT_ALIGN[item.halign?.[deviceEnv] as keyof typeof TEXT_ALIGN || 'flex-start']
-                        };align-items: ${item.valign?.[deviceEnv]}${computedStyle(item.bgColor)}`"
+                        };align-items: ${item.valign?.[deviceEnv]};${computedStyle(item.bgColor)}`"
                     @click="onSetBlur(true, isFocusing)" @dragover="imgDragover($event)">
                     <editor-content :editor="content" class="w-full" />
                 </div>
@@ -71,7 +71,6 @@ const TEXT_ALIGN = {
     center: 'center',
     'flex-end': 'right',
 }
-console.log(props.hover);
 /** 是否正在编辑 */
 const isFocusing = ref(false)
 var timer: any = null
@@ -176,6 +175,7 @@ const visitJump = () => {
 const computedStyle = computed(() => {
     return (colo?: string) => {
         const primaryColor = colorList.find(col => col.bgColor == colo)
+       
         let bgColor: string = ''
         if (!colo) [
             colo = '#FFFFFF'

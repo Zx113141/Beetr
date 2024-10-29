@@ -261,9 +261,7 @@ watch(
   () => userAppList,
   async (newList) => {
     await render(newList.value)
-    await nextTick(() => {
-      console.log(gridRef.value);
-    })
+   
   },
   {
     deep: true,
