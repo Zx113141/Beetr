@@ -5,7 +5,7 @@ import { getAppConfigList } from '~~/api/widget/widget'
 import { _userStore } from '@/store/user'
 import { _widgetStore } from '@/store/widget'
 import { _envStore } from '@/store/env'
-import { WIDGET_TYPE, BROWSER_ENV, LINK_TYPE, type IAppConfigItem, type Style } from '@beetr/constant'
+import { WIDGET_TYPE, BROWSER_ENV, LINK_TYPE, type IAppConfigItem, type Style, type IUserAppItem } from '@beetr/constant'
 
 interface IAppConfigItemLeftEdit extends IAppConfigItem {
     _completed: boolean
@@ -33,11 +33,16 @@ const editConfigList = ref<IAppConfigItemLeftEdit[]>([])
 
 /** 生成可编辑的app列表，由originConfigList和userAppList结合生成 */
 const getEditConfigList = () => {
-    console.log(1)
     const list = userAppList.value
     editConfigList.value = originConfigList.value.map((x: any) => {
         // 非临时且type是WIDGET_TYPE.link
-        const resItem = list.find((k) => k.title === x.appName && k.url === x.url && !k.temType && k.type == WIDGET_TYPE.link)
+        const resItem = list.find((k) => {
+            if (k.title === x.appName && !k.temType && k.type == WIDGET_TYPE.link) {
+                return k
+            } else {
+                return undefined
+            }
+        })
         return {
             ...x,
             nickName: resItem?.nickName,
@@ -73,24 +78,23 @@ const getPaste = async (item: IAppConfigItemLeftEdit) => {
 const onSetComplete = (item: IAppConfigItemLeftEdit) => {
     if (!item.nickName) return
     item._completed = true
-    const INIT_STYLE: Style = {
-        mobile: { w: 1, h: 2 },
-        desktop: { w: 1, h: 2 },
-    }
-    emit('add', item, INIT_STYLE)
+
+    emit('add', item)
 }
 
 /** 点击差清除内容 */
-const onClear = async (item: IAppConfigItemLeftEdit) => {
-    await widgetStore.onDelete(item.id!)
-    getEditConfigList()
+const onClear = async (item: IUserAppItem) => {
+    emit('remove', item)
+    // await widgetStore.onDelete(item.id!)
+    // getEditConfigList()
 }
 
 /** 定义触发父组件的事件 */
 const emit = defineEmits<{
     (e: 'last'): void
     (e: 'next'): void
-    (e: 'add', params: IAppConfigItemLeftEdit, cusStyle: Style): void
+    (e: 'add', params: IAppConfigItemLeftEdit): void
+    (e: 'remove', item: IUserAppItem): void
 }>()
 
 /** 初始化数据 */
@@ -157,7 +161,7 @@ defineExpose({
                                 <CircleCheckFilled />
                             </el-icon>
                             <p>{{ item.nickName }}</p>
-                            <div class="complete_status-close" @click="onClear(item)">
+                            <div class="complete_status-close" @click="() => onClear(item)">
                                 <el-icon size="1.125rem" color="#ffffff">
                                     <Close />
                                 </el-icon>

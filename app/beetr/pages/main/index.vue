@@ -108,7 +108,7 @@ const queryUserInfo = async () => {
 
 const handleWidgetAdd = (query: {
     name: string,
-    data: Partial<IUserAppItem>
+    data: string
 }) => {
 
     const { name, data } = query
@@ -182,7 +182,8 @@ provide('loading', Loading)
         :class="['relative flex min-h-screen w-full flex-1 flex-col items-center', `browser-${browserEnv || 'desktop'}`, `device-${deviceEnv || 'desktop'}`]">
         <div
             class="user-aside flex h-full w-full max-w-[428px] items-center justify-center p-6 pt-12 pb-0 xl:absolute xl:top-0 xl:max-w-[min(100vw,1728px)] xl:items-stretch xl:justify-start xl:p-16">
-            <ModuleNavbar v-model:mextType="mextType"></ModuleNavbar>
+            <ModuleNavbar v-model:mextType="mextType" :handleAdd="handleWidgetAdd"
+                :remove="containerRef?.removeWidgetList"></ModuleNavbar>
         </div>
         <!-- grid网格 - 手机端初始化的时候不显示，mextType > 0 的时候才 -->
         <div class="xl:flex h-full w-full max-w-[428px] flex-1 flex-col pt-0 xl:max-w-[1728px] xl:flex-row xl:p-16 xl:overflow-hidden"

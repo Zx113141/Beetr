@@ -1,4 +1,4 @@
-import { IUserAppItem, BROWSER_ENV_GRID_COLUMN, BROWSER_ENV } from "@beetr/constant"
+import { type IUserAppItem, BROWSER_ENV_GRID_COLUMN, BROWSER_ENV } from "@beetr/constant"
 // 节流函数 规定时间内只触发一次
 export const throttle = (fn: Function, delay = 5000, immediate = false) => {
     // 利用闭包保存定时器

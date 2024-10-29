@@ -17,6 +17,7 @@ import {
   GridStack,
   type GridStackNode,
   type GridStackWidget,
+  type GridStackOptions
 } from "gridstack";
 import useDrag from "../../../service/grid";
 import "../../assets/style/grid-item.scss";
@@ -38,22 +39,10 @@ const deviceEnv = inject<keyof typeof BROWSER_ENV>("deviceEnv")!;
 
 /** 必须先初始化好数据，才能初始化grid.否则样式会出问题 */
 let grid = ref<GridStack | null>(null);
-const init = () => {
+const init = (options: GridStackOptions) => {
 
-  const width = document.documentElement.clientWidth;
-  grid.value = GridStack.init(
-    {
-      animate: true,
-      disableDrag: false,
-      cellHeight: deviceEnv === ENV_ENUM.mobile ? width / 4 + "px" : "105px",
-      column: BROWSER_ENV_GRID_COLUMN[deviceEnv],
-      margin: GridMargin[deviceEnv],
-      disableResize: true,
-      float: false,
-      // disableOneColumnMode: true,
-      acceptWidgets: true,
-      alwaysShowResizeHandle: "mobile",
-    },
+
+  grid.value = GridStack.init(options,
     ".grid-stack-layout"
   );
   /** 小组件-移动开始 */
@@ -104,8 +93,8 @@ const updateAnimateByClassNames = (
   }, delay);
 };
 
-const disable = () => {
-  grid.value && grid.value.disable();
+const disable = (flag: boolean) => {
+  grid.value && grid.value.disable(flag);
 };
 
 const dispose = () => {

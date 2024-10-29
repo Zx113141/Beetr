@@ -14,6 +14,7 @@ export const defaultEditorConfigs = (props?: Partial<IUserAppItem>): Partial<IUs
         variant: LINK_TYPE.social,
         position: INIT_POSITION,
         cusStyle,
+        url: '',
         ...props,
     }
     return {

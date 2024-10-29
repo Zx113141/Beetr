@@ -18,7 +18,7 @@ onMounted(() => {
 /** 更新onload 1-已设置完成 0-未设置完成 */
 const updateOnboarded = async () => {
     userStore.userInfo!.onboarded = 1
-    await updateUserInfo(userStore.userInfo!)
+    await userStore.updateUser(userStore.userInfo!)
 }
 /** 定义触发父组件的事件 */
 const emit = defineEmits<{

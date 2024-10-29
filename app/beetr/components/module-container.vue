@@ -18,7 +18,8 @@
           <component :is="ComponentsReflect[item.type].Handler" :visible-action-id="editObject.visibleActionId"
             :item="item" @onEdit="onWidgetEdit" @onEditing="onEditing">
           </component>
-          <grid-delete :visible-action-id="editObject.visibleActionId" :item="item" @remove="onRemove">
+          <grid-delete v-if="editStatus" :visible-action-id="editObject.visibleActionId" :item="item"
+            @remove="onRemove">
           </grid-delete>
         </div>
       </grid-item>
@@ -30,19 +31,19 @@
 import { storeToRefs } from "pinia";
 import {
   type IUserAppItem,
-  type ENV_ENUM,
+  GridMargin,
   STEP_PROCESS,
   BROWSER_ENV,
   EDIT_TYPE,
   BROWSER_ENV_GRID_COLUMN,
   MESSAGE_TYPE,
+  ENV_ENUM,
 } from "@beetr/constant";
 import {
   GridContainer,
   GridItem,
   GridDelete,
   type GridStackNode,
-  type GridStackWidget,
 } from "@beetr/engine";
 import { BeetrModules } from "@beetr/materials";
 import { findEmptyPosition } from '@beetr/hooks'
@@ -109,13 +110,28 @@ const render = async (newList: IUserAppItem[]) => {
   if (newList.length && gridRef.value) {
     await nextTick(() => {
       if (gridRef.value && !gridRef.value?.grid) {
-        gridRef.value.init();
+        console.log(123123);
+        const width = document.documentElement.clientWidth;
+        const options = {
+          animate: true,
+          disableDrag: !props.editStatus,
+          cellHeight: props.deviceEnv === ENV_ENUM.mobile ? width / 4 + "px" : "105px",
+          column: BROWSER_ENV_GRID_COLUMN[props.deviceEnv],
+          margin: GridMargin[props.deviceEnv],
+          disableResize: true,
+          float: false,
+          // disableOneColumnMode: true,
+          acceptWidgets: true,
+          alwaysShowResizeHandle: 'mobile' as 'mobile',
+        }
+        console.log(options);
+        gridRef.value.init(options);
       }
     });
   }
 };
 const onRemove = async (id: string) => {
-  gridRef!.value!.remove(`w_${id}`, true);
+  gridRef!.value!.remove(id, false);
   await widgetStore.onDelete(id);
 };
 const onWidgetResize = (item: IUserAppItem) => {
@@ -177,6 +193,7 @@ const onGridUpdateWidgets = async (updateList: GridStackNode[]) => {
     const item = userAppList.value.find(
       (i: IUserAppItem) => `w_${i.id}` == widget.id
     ) as IUserAppItem;
+    console.log(item, widget);
     item.cusStyle[props.deviceEnv].w = widget.w!;
     item.cusStyle[props.deviceEnv].h = widget.h!;
     item.position[props.deviceEnv].x = widget.x!;
@@ -246,7 +263,10 @@ const removeWidgetList = (prepareDeleteList: IUserAppItem[]) => {
 watch(
   () => userAppList,
   async (newList) => {
-    render(newList.value)
+    await render(newList.value)
+    await nextTick(() => {
+      console.log(gridRef.value);
+    })
   },
   {
     deep: true,
@@ -284,6 +304,7 @@ watch(() => props.currentStep, (step) => {
 }, {
   immediate: true
 })
+
 
 onUnmounted(() => {
   gridRef.value!.dispose();

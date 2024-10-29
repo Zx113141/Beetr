@@ -1,5 +1,5 @@
 <template>
-    <transition name="fade" v-if="visibleActionId == item.id">
+    <transition name="fade" v-if="visibleActionId == item.id && isEdit">
         <div class="widget_resize cursor-default">
             <slot name="content"></slot>
 
@@ -25,9 +25,10 @@
 <script setup lang="ts">
 
 
-import { PropType, provide, } from 'vue'
+import { inject, PropType, provide, } from 'vue'
 import { type IUserAppItem, } from '@beetr/constant'
-const props = defineProps({
+const isEdit = inject('editStatus',)
+defineProps({
     /** 当前激活的item */
     item: {
         type: Object as PropType<IUserAppItem>,

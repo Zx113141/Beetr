@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { type IUserInfoRes, getUserInfoByToKen, getUserInfoByUrl } from '@/api/user/user'
+import { type IUserInfoRes, getUserInfoByToKen, getUserInfoByUrl, updateUserInfo } from '@/api/user/user'
 import { STEP_PROCESS, BROWSER_ENV } from '@beetr/constant'
 export const _userStore = defineStore('user', () => {
   /** 用户信息 */
@@ -70,6 +70,10 @@ export const _userStore = defineStore('user', () => {
     urlInfo.value = url
   }
 
+  const updateUser = async (userInfo: IUserInfoRes) => {
+    await updateUserInfo(userInfo)
+  }
+
   return {
     userInfo,
     urlInfo,
@@ -81,7 +85,8 @@ export const _userStore = defineStore('user', () => {
     timestamp,
     currentStep,
     isScreenLock,
-    setInfo
+    setInfo,
+    updateUser
   }
 }, {
   // persist: {

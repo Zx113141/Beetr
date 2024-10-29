@@ -51,8 +51,6 @@ const emits = defineEmits<{
     (e: 'onPrepare', params: IModule): void,
 }>()
 const {
-    userInfo,
-    urlInfo,
     isOnboared,
     isEdit,
     currentStep,
