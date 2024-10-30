@@ -3,26 +3,26 @@
   <grid-container ref="gridRef" @update="onGridUpdateWidgets">
     <template #top>
       <div v-if="(!userStore.isOnboared || STEP_PROCESS.congratulations === currentStep) &&
-        userStore.isEdit
-      " class="flex items-center toptotle" style="opacity: 1; height: 44px; margin-bottom: 32px">
+    userStore.isEdit
+    " class="flex items-center toptotle" style="opacity: 1; height: 44px; margin-bottom: 32px">
         <div class="h-[2px] flex-1 bg-[#F8F8F8]"></div>
         <div class="typography-title-3 mx-4">您的主页</div>
         <div class="h-[2px] flex-1 bg-[#F8F8F8]"></div>
       </div>
     </template>
     <template #default>
-      <grid-item v-for="item in userAppList" :item="item" :key="item.id" :env="deviceEnv"
-        :isWidgetEdit="editObject.isEditing" @mouseHover="onHover">
+      <grid-item v-for="item in userAppList" :item="item" :key="item.id" :showHanlder="showHandler(item)"
+        @hover="onHover" :handlerEditing="editObject.isEditing">
         <div class="wiget_size_item_container">
           <component :is="ComponentsReflect[item.type].module" :item="item" @onEdit="onModuleEdit" :key="item.id"
-            :hover="editObject.visibleActionId == item.id"></component>
-          <component :is="ComponentsReflect[item.type].Handler" :visible-action-id="editObject.visibleActionId"
-            :key="item.id" :item="item" @onEdit="onWidgetEdit" @onEditing="onEditing">
+            :hover="editObject.visibleActionId == item.id">
           </component>
-          <grid-delete v-if="editStatus" :visible-action-id="editObject.visibleActionId" :item="item"
-            @remove="onRemove">
-          </grid-delete>
         </div>
+        <template #handler>
+          <component :is="ComponentsReflect[item.type].Handler" :key="item.id" :item="item" @onEdit="onWidgetEdit"
+            @onEditing="onEditing">
+          </component>
+        </template>
       </grid-item>
     </template>
   </grid-container>
@@ -46,23 +46,18 @@ import {
   GridDelete,
   type GridStackNode,
 } from "@beetr/engine";
-import { BeetrModules } from "@beetr/materials";
+import { BeetrModules, type IModule } from "@beetr/materials";
 import { findEmptyPosition } from '@beetr/hooks'
 import { _userStore } from "~/store/user";
 import { _widgetStore } from "~/store/widget";
-import type { DefineComponent, VueElement } from "vue";
 let flag = false
 // 注册Component
 const ComponentsReflect: {
-  [key: string]: {
-    module: DefineComponent<{}, {}, any> | null;
-    name: string;
-    Handler: DefineComponent<{}, {}, any> | null;
-    Drawer: DefineComponent<{}, {}, any> | null;
-  }
+  [key: string]: IModule
 } = {}
 BeetrModules.forEach((item: any) => {
   ComponentsReflect[item.name] = item
+  // ComponentsReflect.Handler = item.switchHandler(props.browserEnv)
 });
 
 
@@ -84,29 +79,33 @@ const emit = defineEmits<{
 // TODO
 const editObject = reactive({
   visibleActionId: "", // 激活widget id
-  isEditing: false, // 是否正在编辑
+  isEditing: false, // 是否正在编辑,
 });
 // grid instance
 const gridRef = ref<InstanceType<typeof GridContainer> | null>(null);
 
 provide<boolean>("editStatus", props.editStatus);
-console.log(props.editStatus)
+
 provide<keyof typeof BROWSER_ENV>("deviceEnv", props.deviceEnv);
 provide<keyof typeof BROWSER_ENV>("browserEnv", props.browserEnv);
 provide('containerRef', gridRef);
+onMounted(async () => {
+  await render(userAppList.value)
+})
+
+
+const showHandler = computed(() => {
+  return (item: IUserAppItem) => props.editStatus && editObject.visibleActionId == item.id
+})
 
 const onEditing = (isEdit: boolean) => {
   editObject.isEditing = isEdit;
 };
 
 const onHover = (id: string) => {
-  editObject.visibleActionId = id
-};
+  editObject.visibleActionId = id;
+}
 
-
-onMounted(async () => {
-  await render(userAppList.value)
-})
 
 const render = async (newList: IUserAppItem[]) => {
   if (newList.length && gridRef.value) {
@@ -226,7 +225,7 @@ const columnChange = (newEnv: keyof typeof BROWSER_ENV) => {
       nodes.push(item)
 
     })
-   
+
 
     oldNodes.length = 0;
 

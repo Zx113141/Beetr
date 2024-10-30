@@ -1,54 +1,19 @@
 <template>
-    <transition name="fade" v-if="visibleActionId == item.id && isEdit">
+    <transition name="fade">
         <div class="widget_resize cursor-default">
             <slot name="content"></slot>
-
-            <!-- <module-reize @onResize="onEdit" :item="item"></module-reize> -->
-
-            <!-- 富文本 -->
-            <!-- <template v-if="item.type == WIDGET_TYPE.richText">
-               
-            </template> -->
-            <!-- 链接 -->
-            <!-- <template v-if="item.type == WIDGET_TYPE.link">
-                <el-divider direction="vertical" class="!mx-2" />
-                <module-link :item="item" @onLinkEdit="protoToFrame"></module-link>
-            </template> -->
-            <!-- 媒体 -->
-            <!-- <template v-if="item.type == WIDGET_TYPE.media">
-                <module-font-style @onEditing="onEditing" :item="item"></module-font-style>
-            </template> -->
         </div>
     </transition>
 </template>
 
 <script setup lang="ts">
 
-
-import { inject, PropType, provide, watch} from 'vue'
-import { type IUserAppItem, } from '@beetr/constant'
- 
-const isEdit = inject('editStatus',)
- 
-defineProps({
-    /** 当前激活的item */
-    item: {
-        type: Object as PropType<IUserAppItem>,
-        required: true,
-    },
-    /** 当前激活的id */
-    visibleActionId: {
-        type: String,
-        required: true,
-    },
-})
-
 </script>
 
 <style lang="scss" scoped>
 .fade-enter-active,
 .fade-leave-active {
-    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .fade-enter-from,

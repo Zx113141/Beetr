@@ -7,11 +7,6 @@ defineProps({
         type: Object as PropType<IUserAppItem>,
         required: true,
     },
-    /** 当前激活的id */
-    visibleActionId: {
-        type: String,
-        required: true,
-    },
 
 })
 
@@ -21,7 +16,7 @@ const emit = defineEmits<{
 </script>
 
 <template>
-    <div class="widget_delete absolute -left-2.5 -top-2.5 z-30" v-if="visibleActionId == item.id">
+    <div class="widget_delete absolute -left-2.5 -top-2.5 z-30">
         <el-button circle class="el-button--delete" @click="emit('remove', item.id)">
             <SvgDelete />
         </el-button>

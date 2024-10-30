@@ -1,5 +1,5 @@
 <template>
-    <ModuleHander :item="item" :visible-action-id="visibleActionId">
+    <ModuleHander :item="item">
         <template #content>
             <ModuleResize @onResize="onEdit" :item="item"></ModuleResize>
             <el-divider direction="vertical" class="!mx-2" />
@@ -25,11 +25,7 @@ defineProps({
         type: Object as PropType<IUserAppItem>,
         required: true,
     },
-    /** 当前激活的id */
-    visibleActionId: {
-        type: String,
-        required: true,
-    },
+
 })
 
 const emit = defineEmits<{

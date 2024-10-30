@@ -25,6 +25,8 @@ import SvgTheme from './svg-theme.vue'
 import SvgCopyLink from './svg-copyLink.vue'
 import SvgCrop from './svg-crop.vue'
 import SvgSectionTitle from './svg-sectionTitle.vue'
+import SvgMove from './svg-move.vue'
+import SvgSuccess from './svg-success.vue'
 
 export {
     SvgControl,
@@ -44,5 +46,7 @@ export {
     SvgTheme,
     SvgCopyLink,
     SvgCrop,
-    SvgSectionTitle
+    SvgSectionTitle,
+    SvgMove,
+    SvgSuccess
 }

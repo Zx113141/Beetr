@@ -27,18 +27,66 @@ import {
   GridMargin,
   BROWSER_ENV,
 } from "@beetr/constant";
-import { onMounted, ref, provide, inject, nextTick } from "vue";
+import { onMounted, ref, provide, inject, nextTick, isRef } from "vue";
+
+const usePath = (defaultValue: any) => {
+  const paths = ref<string[]>([])
+  let originValue: any
+  if (isRef(defaultValue)) {
+    originValue = defaultValue
+  } else {
+    originValue = ref(defaultValue)
+  }
+  // const originValue =
+  const getPath = () => {
+    return paths.value
+  }
+
+  const setPath = (path: string | string[]) => {
+    try {
+      if (Array.isArray(path)) {
+        paths.value = path
+      } else {
+        paths.value = path.split(".")
+      }
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const getPathObject = () => {
+    let obj = originValue.value
+    for (let i = 0; i < paths.value.length; i++) {
+      const path = paths.value[i];
+      if (obj[path]) {
+        obj = obj[path]
+      } else {
+        return null
+      }
+    }
+    return obj
+  }
+
+  return {
+    setPath,
+    getPath,
+    getPathObject
+  }
+
+}
 
 const emits = defineEmits(["update"]);
 const [drag, dragstart, dragstop, isMovingWidget] = useDrag();
 
 
-provide("movingWidgetId", isMovingWidget);
-
-const deviceEnv = inject<keyof typeof BROWSER_ENV>("deviceEnv")!;
 
 /** 必须先初始化好数据，才能初始化grid.否则样式会出问题 */
 let grid = ref<GridStack | null>(null);
+
+const { setPath, getPath, getPathObject } = usePath(grid)
+
+const deviceEnv = inject<keyof typeof BROWSER_ENV>("deviceEnv")!;
 const init = (options: GridStackOptions) => {
 
 
@@ -119,6 +167,13 @@ const remove = (id: string, flag = true) => {
   grid.value && grid.value.removeWidget("w_" + id, flag);
 };
 
+const onEmit = (path: string, query: any) => {
+  // console.log(path, query);
+  grid.value && grid.value[path](query);
+}
+
+provide("movingWidgetId", isMovingWidget);
+provide("onEmit", onEmit);
 
 defineExpose({
   updateWidget,
