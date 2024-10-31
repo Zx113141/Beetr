@@ -1,7 +1,7 @@
 <template>
-    <div :id="`w_${item.id}`" :key="`w_${item.id}`" :gs-id="`w_${item.id}`" :gs-w="item.cusStyle[browserEnv].w"
-        :gs-h="item.cusStyle[browserEnv].h" :gs-x="item.position[browserEnv].x" :gs-y="item.position[browserEnv].y"
-        :class="{
+    <div v-for="item in list" :key="item.id" :id="`w_${item.id}`" :gs-id="`w_${item.id}`"
+        :gs-w="item.cusStyle[browserEnv].w" :gs-h="item.cusStyle[browserEnv].h" :gs-x="item.position[browserEnv].x"
+        :gs-y="item.position[browserEnv].y" :class="{
             'grid-stack-item': true,
             'pointer-events-none': id == item.id
         }" :style="item.temType == 'addLink' ? 'z-index:11111' : ''">
@@ -10,22 +10,31 @@
             active: showHandler && browserEnv == BROWSER_ENV.mobile,
         }" @mouseenter="() => onMouseEnter(item)" @mouseleave="onMouseleave"
             @touchstart.capture="($event: TouchEvent) => onTouchStart($event, item)" @touchmove.capture="onTouchMove"
-            @touchend.capture="($event: TouchEvent) => onTouchEnd(item)">
+            @touchend.capture="($event: TouchEvent) => onTouchEnd(item)" id="grid-stack-item-content">
             <div class="thisarea" :id="`m_${item.id}`">
-                <slot name="default"></slot>
+                <div class="wiget_size_item_container">
+                    <component :is="ComponentsReflect[item.type].module" :item="item" @onEdit="onModuleEdit"
+                        :key="item.id" :hover="visibleActionId == item.id">
+                    </component>
+                </div>
+
                 <div class="grid-item-action" v-if="showHandler" :key="browserEnv">
                     <template v-if="browserEnv == BROWSER_ENV.desktop">
-                        <GridItemRemove :item="props.item" @remove="remove" />
+                        <GridItemRemove :item="item" @remove="() => remove(item)" />
                         <teleport :to="teleportId">
-                            <slot name="handler"></slot>
+                            <component :is="ComponentsReflect[item.type].Handler" :key="item.id" :item="item"
+                                @onEdit="onWidgetEdit" @onEditing="onEditing">
+                            </component>
                         </teleport>
                     </template>
                     <template v-if="browserEnv == BROWSER_ENV.mobile">
-                        <GridItemRemove :item="props.item" @remove="remove" />
+                        <GridItemRemove :item="item" @remove="() => remove(item)" />
                         <teleport :to="teleportId">
-                            <slot name="handler"></slot>
+                            <component :is="ComponentsReflect[item.type].Handler" :key="item.id" :item="item"
+                                @onEdit="onWidgetEdit" @onEditing="onEditing">
+                            </component>
                         </teleport>
-                        <GridItemEdit :item="props.item" @edit="handleEdit" :edit="edit" />
+                        <GridItemEdit :item="item" @edit="() => handleEdit(item)" :edit="edit" />
                     </template>
                 </div>
             </div>
@@ -35,19 +44,28 @@
 </template>
 
 <script setup lang="ts">
-import { ref, inject, reactive, computed, watch, onMounted } from 'vue'
+import { ref, inject, reactive, computed, watch, onMounted, Fragment } from 'vue'
 import { type IUserAppItem, BROWSER_ENV, EDIT_TYPE } from '@beetr/constant';
 import GridItemEdit from '../grid-item-edit/index.vue'
 import { BeetrModules, type IModule } from '@beetr/materials';
 import GridItemRemove from '../grid-item-remove/index.vue'
-
+const ComponentsReflect: {
+    [key: string]: IModule
+} = {}
+BeetrModules.forEach((item: any) => {
+    ComponentsReflect[item.name] = item
+    // ComponentsReflect.Handler = item.switchHandler(props.browserEnv)
+});
 
 const props = defineProps<{
-    item: IUserAppItem,
+    list: IUserAppItem[],
     showHandler: boolean
     handlerEditing: boolean
-    // isWidgetEdit: boolean
+    activeWidgetId: string
 }>()
+
+
+
 
 const emits = defineEmits(['hover', 'handlerEdit', 'select', 'remove'])
 const id = inject('movingWidgetId')
@@ -55,30 +73,25 @@ const isEdit = inject('editStatus')
 const browserEnv = inject('browserEnv')! as keyof typeof BROWSER_ENV
 const onEmit = inject('onEmit') as (path: string, query: any) => void
 
-onMounted(() => {
-    window.addEventListener('click', onGrdiContainerClick)
 
-})
-const onGrdiContainerClick = (e: MouseEvent) => {
-    const container = document.getElementById('layoutAddani')!
-    const target = e.target! as HTMLElement
-    if (target.id == 'layoutAddani' || !container.contains(target)) {
-        visibleActionId.value = ''
-        edit.value = false
-        emits('hover', visibleActionId.value)
-        emits('select', false, EDIT_TYPE.select)
-    }
+
+const onGrdiContainerClick = () => {
+    visibleActionId.value = ''
+    edit.value = false
+    emits('hover', visibleActionId.value)
+    emits('select', false, EDIT_TYPE.select)
 }
 
+
 const teleportId = computed(() => {
-    return browserEnv == BROWSER_ENV.mobile ? '#dragUpload' : '#m_' + props.item.id
+    return browserEnv == BROWSER_ENV.mobile ? '#layoutAddani' : '#layoutAddani'//'#m_' + item.id
 })
 const edit = ref<boolean>(false)
-const handleEdit = () => {
+const handleEdit = (item) => {
     edit.value = !edit.value
-    const handler = BeetrModules.find((it: IModule) => it.name == props.item.type)
+    const handler = BeetrModules.find((it: IModule) => it.name == item.type)
     if (handler && handler.drawer) {
-        emits('handlerEdit', props.item, EDIT_TYPE.edit)
+        emits('handlerEdit', item, EDIT_TYPE.edit)
         return
     }
 }
@@ -162,10 +175,13 @@ const onTouchEnd = (item: any) => {
     touchState.isMoving = false;
 }
 
-const remove = () => {
-    emits('remove', props.item.id)
+const remove = (item) => {
+    emits('remove', item.id)
 }
 
+defineExpose({
+    onGrdiContainerClick
+})
 
 </script>
 

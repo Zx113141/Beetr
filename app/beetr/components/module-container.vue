@@ -1,6 +1,6 @@
 <template>
   <!-- grid网格 - 手机端初始化的时候不显示，mextType > 0 的时候才 -->
-  <grid-container ref="gridRef" @update="onGridUpdateWidgets">
+  <grid-container ref="gridRef" @update="onGridUpdateWidgets" :list="userAppList">
     <template #top>
       <div v-if="(!userStore.isOnboared || STEP_PROCESS.congratulations === currentStep) &&
         userStore.isEdit
@@ -11,10 +11,10 @@
       </div>
     </template>
     <template #default>
-      <grid-item v-for="item in userAppList" :item="item" :key="item.id" :showHandler="handlerShow(item)"
+      <!-- <grid-item v-for="item in userAppList" :item="item" :key="item.id" :showHandler="handlerShow(item)"
         @remove="onRemove" @handlerEdit="onWidgetEdit" @select="onWidgetEdit" @hover="onHover"
-        :handlerEditing="editObject.isEditing">
-        <div class="wiget_size_item_container">
+        :handlerEditing="editObject.isEditing"> -->
+      <!-- <div class="wiget_size_item_container">
           <component :is="ComponentsReflect[item.type].module" :item="item" @onEdit="onModuleEdit" :key="item.id"
             :hover="editObject.visibleActionId == item.id">
           </component>
@@ -23,8 +23,8 @@
           <component :is="ComponentsReflect[item.type].Handler" :key="item.id" :item="item" @onEdit="onWidgetEdit"
             @onEditing="onEditing">
           </component>
-        </template>
-      </grid-item>
+        </template> -->
+      <!-- </grid-item> -->
     </template>
   </grid-container>
 </template>
@@ -52,14 +52,7 @@ import { findEmptyPosition } from '@beetr/hooks'
 import { _userStore } from "~/store/user";
 import { _widgetStore } from "~/store/widget";
 let flag = false
-// 注册Component
-const ComponentsReflect: {
-  [key: string]: IModule
-} = {}
-BeetrModules.forEach((item: any) => {
-  ComponentsReflect[item.name] = item
-  // ComponentsReflect.Handler = item.switchHandler(props.browserEnv)
-});
+
 
 
 const props = defineProps<{
@@ -93,7 +86,11 @@ provide('containerRef', gridRef);
 onMounted(async () => {
 
   await render(userAppList.value)
+
+
 })
+
+
 
 
 

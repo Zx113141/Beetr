@@ -4,7 +4,12 @@
 
     <!-- 用于渲染动画 -->
     <div :class="['grid-stack-layout', 'xl:w-[840px]']" id="layoutAddani" ref="layoutAddani">
-      <slot name="default"></slot>
+
+      <!-- <slot name="default" @select="select"></slot> -->
+      <GridItemVNode>
+        <!-- <slot></slot> -->
+      </GridItemVNode>
+      <!-- <slots></slots> -->
     </div>
   </div>
 </template>
@@ -21,72 +26,50 @@ import {
 } from "gridstack";
 import useDrag from "../../../service/grid";
 import "../../assets/style/grid-item.scss";
-import {
-  BROWSER_ENV_GRID_COLUMN,
-  ENV_ENUM,
-  GridMargin,
-  BROWSER_ENV,
-} from "@beetr/constant";
-import { onMounted, ref, provide, inject, nextTick, isRef } from "vue";
 
-const usePath = (defaultValue: any) => {
-  const paths = ref<string[]>([])
-  let originValue: any
-  if (isRef(defaultValue)) {
-    originValue = defaultValue
-  } else {
-    originValue = ref(defaultValue)
-  }
-  // const originValue =
-  const getPath = () => {
-    return paths.value
-  }
-
-  const setPath = (path: string | string[]) => {
-    try {
-      if (Array.isArray(path)) {
-        paths.value = path
-      } else {
-        paths.value = path.split(".")
-      }
-
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  const getPathObject = () => {
-    let obj = originValue.value
-    for (let i = 0; i < paths.value.length; i++) {
-      const path = paths.value[i];
-      if (obj[path]) {
-        obj = obj[path]
-      } else {
-        return null
-      }
-    }
-    return obj
-  }
-
-  return {
-    setPath,
-    getPath,
-    getPathObject
-  }
-
-}
-
+import { onMounted, ref, provide, nextTick, useSlots, Fragment, createVNode } from "vue";
+import { GridItem } from "..";
+import GridItemModal from '../grid-item-modal/index.vue'
 const emits = defineEmits(["update"]);
 const [drag, dragstart, dragstop, isMovingWidget] = useDrag();
+
+const props = defineProps<{
+  list: any[]
+}>()
+
+const select = () => {
+  console.log(1213123);
+}
+
+
+const GridItemVNode = createVNode(GridItem, {
+  // showHandler: true,
+  list: props.list,
+  select: select,
+
+}, {
+  $stable: false
+})
 
 
 
 /** 必须先初始化好数据，才能初始化grid.否则样式会出问题 */
 let grid = ref<GridStack | null>(null);
 
-const { setPath, getPath, getPathObject } = usePath(grid)
 
-const deviceEnv = inject<keyof typeof BROWSER_ENV>("deviceEnv")!;
+onMounted(() => {
+  window.addEventListener('click', onGrdiContainerClick)
+})
+
+const onGrdiContainerClick = (e: MouseEvent) => {
+  const container = document.getElementById('layoutAddani')!
+  const target = e.target! as HTMLElement
+  if (target.id == 'layoutAddani' || !container.contains(target)) {
+    return true
+  }
+  return false
+}
+
 const init = (options: GridStackOptions) => {
 
 
