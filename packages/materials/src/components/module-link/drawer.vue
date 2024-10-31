@@ -90,6 +90,9 @@ const onSuccess = (response: { code: number; message: string }, uploadFile: Uplo
     }
 }
 
+defineExpose({
+    data: nowEditData.value,
+})
 
 </script>
 <style lang="scss" scoped>

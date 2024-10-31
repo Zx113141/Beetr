@@ -62,7 +62,21 @@ export const _widgetStore = defineStore('widget', () => {
 
     // }
     // console.log(list);
-    await updateBatchUserApp(updateList)
+    try {
+      const res = await updateBatchUserApp(updateList)
+      updateList.forEach((it) => {
+        const index = userAppList.value.findIndex((x) => x.id === it.id)!
+        if (index !== -1) {
+          //@ts-ignore
+          userAppList.value[index] = it
+        }
+      })
+      // console.log(userAppList.value);
+      // triggerRef()
+    } catch (err) {
+
+    }
+
     // if (window.parent.window) {
     //   postMessage(window.parent.window, MESSAGE_EVENT_TYPE.widgetStatus, {
     //     query: {

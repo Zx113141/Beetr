@@ -24,7 +24,7 @@
         <!-- <themeDraw @closeLoading="closeLoading" @openLoading="openLoading"></themeDraw> -->
         <ModuleWidgetAddDrawer @on-select="onAddGrid">
         </ModuleWidgetAddDrawer>
-        <ModuleWidgetDrawer>
+        <ModuleWidgetDrawer @close="close">
             <template #content>
                 <component :is="widgetDrawer" :prop="widgetDrawerData.prop" :browserEnv="browserEnv"
                     :key="widgetDrawerData.data.id" :deviceEnv="deviceEnv" :data="widgetDrawerData.data"
@@ -90,8 +90,12 @@ const logout = () => {
 }
 
 const finish = (data: Partial<IUserAppItem>) => {
+    emits('onAdd', widgetDrawerData.params, isRef<Partial<IUserAppItem>>(data) ? data.value : data)
     _tempFn && _tempFn(data)
-    emits('onAdd', widgetDrawerData.params, data)
+}
+
+const close = () => {
+    _tempFn && _tempFn()
 }
 
 const back = () => {
@@ -101,6 +105,7 @@ const back = () => {
     widgetDrawerData.params = null
 
     addDrawData.show = true
+    _tempFn && _tempFn()
 }
 
 defineExpose({

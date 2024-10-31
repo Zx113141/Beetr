@@ -18,12 +18,15 @@ import { _userStore } from '~~/store/user'
 import { _envStore } from '~/store/env'
 const envStore = _envStore()
 const { browserEnv } = storeToRefs(envStore)
+
+const emit = defineEmits(['close'])
 const direction = computed(() => {
     return browserEnv.value == BROWSER_ENV.mobile ? 'btt' : 'rtl'
 })
 
 
 const close = () => {
+    emit('close')
     widgetDrawerData.show = false
 }
 

@@ -5,8 +5,7 @@
                 <img :src="backL" loading="lazy" class="back" @click="back" width="30" height="30" />
                 <!-- <span v-if="false">添加社交账号</span> -->
             </div>
-            <el-button type="success" style="width:90px" class="relative greenBtn"
-                @click="() => nowEditData ? addNEwLink() : closeDrawer()">
+            <el-button type="success" style="width:90px" class="relative greenBtn" @click="beforeClose">
                 <span>{{ browserEnv == BROWSER_ENV.desktop ? '完成' : '保存' }}</span>
             </el-button>
         </div>
@@ -30,28 +29,28 @@ const props = defineProps<{
 }>()
 const emit = defineEmits(['finish', 'close'])
 const { prop, browserEnv, data } = toRefs(props)
-const dynamicRef = ref(null)
-const nowEditData = ref<any>(null)
+const dynamicRef = ref<InstanceType<typeof ModuleLinkDrawer | typeof ModuleSocialDrawer> | null>(null)
+
 const customComp = {
     [LINK_TYPE.normal]: ModuleLinkDrawer,
     [LINK_TYPE.social]: ModuleSocialDrawer,
 }
 
-const addNEwLink = () => {
-    console.log(dynamicRef.value);
+const beforeClose = () => {
+    console.log(dynamicRef.value!.data);
+    emit('finish', data)
+    // if (nowEditData.value && !nowEditData.value.id) {
+    //     nowEditData.value = null
+    //     return
+    // } else {
+    //     closeDrawer()
+    // }
 }
+
+
 
 const closeDrawer = () => {
     emit('close')
-}
-
-const back = () => {
-    if (nowEditData.value) {
-        nowEditData.value = null
-        return
-    } else {
-        closeDrawer()
-    }
 }
 
 

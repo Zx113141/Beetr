@@ -11,8 +11,9 @@
       </div>
     </template>
     <template #default>
-      <grid-item v-for="item in userAppList" :item="item" :key="item.id" :showHanlder="showHandler(item)"
-        @handlerEdit="onWidgetEdit" @select="onWidgetEdit" @hover="onHover" :handlerEditing="editObject.isEditing">
+      <grid-item v-for="item in userAppList" :item="item" :key="item.id" :showHandler="handlerShow(item)"
+        @remove="onRemove" @handlerEdit="onWidgetEdit" @select="onWidgetEdit" @hover="onHover"
+        :handlerEditing="editObject.isEditing">
         <div class="wiget_size_item_container">
           <component :is="ComponentsReflect[item.type].module" :item="item" @onEdit="onModuleEdit" :key="item.id"
             :hover="editObject.visibleActionId == item.id">
@@ -90,11 +91,13 @@ provide<keyof typeof BROWSER_ENV>("deviceEnv", props.deviceEnv);
 provide<keyof typeof BROWSER_ENV>("browserEnv", props.browserEnv);
 provide('containerRef', gridRef);
 onMounted(async () => {
+
   await render(userAppList.value)
 })
 
 
-const showHandler = computed(() => {
+
+const handlerShow = computed(() => {
   return (item: IUserAppItem) => props.editStatus && editObject.visibleActionId == item.id
 })
 
@@ -172,7 +175,7 @@ const onModuleEdit = (item: IUserAppItem) => {
   onWidgetUpdate([item]);
 };
 // hanlder 触发
-const onWidgetEdit = (item: IUserAppItem, type: keyof typeof EDIT_TYPE,) => {
+const onWidgetEdit = (item: any, type: keyof typeof EDIT_TYPE,) => {
   switch (type) {
     case "resize":
       onWidgetResize(item);
@@ -321,7 +324,8 @@ onUnmounted(() => {
 
 defineExpose({
   onGrdiAddWidget,
-  removeWidgetList
+  removeWidgetList,
+  onModuleEdit
 })
 </script>
 

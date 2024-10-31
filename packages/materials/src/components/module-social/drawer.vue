@@ -64,6 +64,9 @@ const addNEwLink = () => {
 const activeLinkData = (v: any) => {
     nowEditData.value = v
 }
+defineExpose({
+    data: nowEditData.value,
+})
 
 </script>
 

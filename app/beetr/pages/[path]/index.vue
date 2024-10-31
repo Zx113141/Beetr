@@ -51,7 +51,7 @@ const handleFrameMessage = (e: MessageEvent) => {
             widgetDrawerData.prop.appConfigList = params
             break;
         case MESSAGE_EVENT_TYPE.select:
-            onModuleSelect()
+            onModuleSelect(params)
             break;
         case MESSAGE_EVENT_TYPE.edit:
             handleEdit(params)
@@ -63,19 +63,24 @@ const handleFrameMessage = (e: MessageEvent) => {
         //     break
     }
 };
-const onModuleSelect = () => {
+const onModuleSelect = (params: boolean) => {
     if (browserEnv.value == BROWSER_ENV.mobile) {
-        showHandler.value = !showHandler.value
+        showHandler.value = params
     }
 }
 
-const handleEdit = (params: IUserAppItem) => {
+const handleEdit = async (params: IUserAppItem) => {
     const bModule = BeetrModules.find(i => (i.name == params.type)) as IModule
-    nextTick(() => {
-        if (bModule.drawer) {
-            actionRef.value!.onAddGrid(bModule, params,)
-        }
-    })
+
+    if (bModule.drawer) {
+        showHandler.value = false
+        await nextTick(() => {
+            actionRef.value!.onAddGrid(bModule, params, () => {
+                showHandler.value = true
+            })
+        })
+    }
+
 }
 
 const checkBrowserEnv = () => {
@@ -114,8 +119,10 @@ const postEnv = () => {
 // 物料处理
 
 const addItem = (param: any, lastParams?: Partial<IUserAppItem>) => {
+    const type = lastParams && lastParams.id ? MESSAGE_EVENT_TYPE.edit : MESSAGE_EVENT_TYPE.addWidget
     const { name } = param
-    postMessage(iframeRef.value!.contentWindow!, MESSAGE_EVENT_TYPE.addWidget, {
+    console.log(lastParams);
+    postMessage(iframeRef.value!.contentWindow!, type, {
         name,
         data: JSON.stringify(param.defaultEditorConfigs(lastParams)),
     })
@@ -156,7 +163,7 @@ const onSetEnv = (env: keyof typeof BROWSER_ENV) => {
             <iframe ref="iframeRef" :data-editor-iframe="true" class="frame_container-iframe backgroundColor"
                 :style="'visibility: visible'" :src="`/main?path=${route.params.path}`">
             </iframe>
-            <ModuleActionBar v-show="!showHandler" ref="actionRef" :deviceEnv="deviceEnv!" :browserEnv="browserEnv!"
+            <ModuleActionBar v-if="!showHandler" ref="actionRef" :deviceEnv="deviceEnv!" :browserEnv="browserEnv!"
                 :isEditorRef="false" @on-add="addItem" @on-prepare="prepareDrawData" @on-logout="logout"
                 @on-set-env="onSetEnv">
             </ModuleActionBar>

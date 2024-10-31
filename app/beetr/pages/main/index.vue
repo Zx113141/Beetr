@@ -11,7 +11,7 @@ import {
 import { _widgetStore } from '~/store/widget';
 import { _userStore } from '~/store/user';
 import { _envStore } from '~/store/env';
-import { SvgWeixin, SvgControl, WIDGET_TYPE, type Style, randomList,TOKEN_CREDENTIALS } from '@beetr/constant';
+import { SvgWeixin, SvgControl, WIDGET_TYPE, type Style, randomList, TOKEN_CREDENTIALS } from '@beetr/constant';
 import ModuleContainer from '~/components/module-container.vue';
 import ModuleNavbar from '~/components/module-navbar.vue';
 import { BeetrModules, type IModule } from '@beetr/materials';
@@ -89,6 +89,9 @@ const handleMessage = (event: MessageEvent) => {
         case MESSAGE_EVENT_TYPE.addWidget:
             handleWidgetAdd(query)
             break;
+        case MESSAGE_EVENT_TYPE.edit:
+            handleWidgetEdit(query)
+            break;
         case MESSAGE_EVENT_TYPE.logout:
             hanldeLogout()
             break;
@@ -116,6 +119,15 @@ const handleWidgetAdd = (query: {
     // TODO 可以处理query config
 
     containerRef.value!.onGrdiAddWidget(config)
+}
+
+const handleWidgetEdit = (query: {
+    name: string,
+    data: string
+}) => {
+    const { name, data } = query
+    const config = JSON.parse(data as string) as IUserAppItem
+    containerRef.value!.onModuleEdit(config)
 }
 
 // 获取随机形状
