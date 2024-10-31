@@ -21,12 +21,15 @@ export enum EDIT_TYPE {
     resize = 'resize',
     normal = 'normal',
     messagge = 'messagge',
+    edit = 'edit',
+    select = 'select'
 }
 
 
-export enum MESSAGE_TYPE {
-    edit = 'edit'
-}
+// export enum MESSAGE_TYPE {
+//     edit = 'edit',
+//     updateHandler = 'updateHandler'
+// }
 
 
 /** 小组件类型

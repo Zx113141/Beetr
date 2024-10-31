@@ -4,7 +4,7 @@ import { type FormInstance } from 'element-plus'
 import { Close } from '@element-plus/icons-vue'
 import {
     SvgChecked, SvgSetting,
-    SvgExplore, SvgCommunity,
+    SvgExplore, SvgSuccess,
     TOKEN_CREDENTIALS,
     VISIT_CREDENTIALS,
     SvgWeixin, LOAD_STATUS, BROWSER_ENV, VIEW_PWD_TYPE_LIST

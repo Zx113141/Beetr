@@ -2,30 +2,34 @@
     <div :id="`w_${item.id}`" :key="`w_${item.id}`" :gs-id="`w_${item.id}`" :gs-w="item.cusStyle[browserEnv].w"
         :gs-h="item.cusStyle[browserEnv].h" :gs-x="item.position[browserEnv].x" :gs-y="item.position[browserEnv].y"
         :class="{
-        'grid-stack-item': true,
-        'pointer-events-none': id == item.id
-    }" :style="item.temType == 'addLink' ? 'z-index:11111' : ''">
+            'grid-stack-item': true,
+            'pointer-events-none': id == item.id
+        }" :style="item.temType == 'addLink' ? 'z-index:11111' : ''">
         <div :class="{
-        'grid-stack-item-content': true,
-        active: isEdit && visibleActionId == item.id && browserEnv == BROWSER_ENV.mobile,
-    }" @mouseenter="() => onMouseEnter(item)" @mouseleave="onMouseleave"
+            'grid-stack-item-content': true,
+            active: isEdit && visibleActionId == item.id && browserEnv == BROWSER_ENV.mobile,
+        }" @mouseenter="() => onMouseEnter(item)" @mouseleave="onMouseleave"
             @touchstart.capture="($event: TouchEvent) => onTouchStart($event, item)" @touchmove.capture="onTouchMove"
             @touchend.capture="($event: TouchEvent) => onTouchEnd(item)">
             <div class="thisarea" :id="`m_${item.id}`">
                 <slot name="default"></slot>
                 <div class="grid-item-action" v-if="showHanlder" :key="browserEnv">
-                    <template v-if="browserEnv == BROWSER_ENV.desktop">
-                        <GridItemRemove :item="props.item" :visibleActionId="visibleActionId" />
-                        <teleport :to="teleportId">
-                            <slot name="handler"></slot>
-                        </teleport>
+                    <template>
+                        <div v-if="browserEnv == BROWSER_ENV.desktop">
+                            <GridItemRemove :item="props.item" :visibleActionId="visibleActionId" />
+                            <teleport :to="teleportId">
+                                <slot name="handler"></slot>
+                            </teleport>
+                        </div>
                     </template>
-                    <template v-if="browserEnv == BROWSER_ENV.mobile">
-                        <GridItemRemove :item="props.item" />
-                        <teleport :to="teleportId">
-                            <slot name="handler"></slot>
-                        </teleport>
-                        <GridItemEdit :item="props.item" @edit="handleEdit" :edit="edit"/>
+                    <template>
+                        <div v-if="browserEnv == BROWSER_ENV.mobile">
+                            <GridItemRemove :item="props.item" />
+                            <teleport :to="teleportId">
+                                <slot name="handler" :c="12"></slot>
+                            </teleport>
+                            <GridItemEdit :item="props.item" @edit="handleEdit" :edit="edit" />
+                        </div>
                     </template>
                 </div>
             </div>
@@ -35,10 +39,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, inject, reactive } from 'vue'
-import { type IUserAppItem, BROWSER_ENV } from '@beetr/constant';
-import GridItemEdit  from '../grid-item-edit/index.vue'
-import GridItemRemove  from '../grid-item-remove/index.vue'
+import { ref, inject, reactive, computed, watch } from 'vue'
+import { type IUserAppItem, BROWSER_ENV, EDIT_TYPE } from '@beetr/constant';
+import GridItemEdit from '../grid-item-edit/index.vue'
+import { BeetrModules, type IModule } from '@beetr/materials';
+import GridItemRemove from '../grid-item-remove/index.vue'
 
 
 const props = defineProps<{
@@ -48,11 +53,10 @@ const props = defineProps<{
     // isWidgetEdit: boolean
 }>()
 
-const emits = defineEmits(['hover'])
+const emits = defineEmits(['hover', 'handlerEdit', 'select'])
 const id = inject('movingWidgetId')
 const isEdit = inject('editStatus')
-const browserEnv = inject('browserEnv')
-const deviceEnv = inject('deviceEnv')
+const browserEnv = inject('browserEnv')! as keyof typeof BROWSER_ENV
 const onEmit = inject('onEmit') as (path: string, query: any) => void
 
 
@@ -62,8 +66,14 @@ const teleportId = computed(() => {
 })
 const edit = ref<boolean>(false)
 const handleEdit = () => {
-    edit.value =!edit.value
-    emit('handlerEdit', edit.value)
+    edit.value = !edit.value
+    const handler = BeetrModules.find((it: IModule) => it.name == props.item.type)
+    if (handler && handler.drawer) {
+        emits('handlerEdit', props.item, EDIT_TYPE.edit)
+        return
+    }
+
+
 }
 
 // 操作前检查
@@ -131,8 +141,9 @@ const onTouchMove = (event: any) => {
 const onTouchEnd = (item: any) => {
     // 根据 isSwiping 变量来判断用户是滑动还是点击
     if (!touchState.isMoving) {
+        visibleActionId.value = item.id
         // 执行点击操作
-        // onTouchGrid(item);
+        emits('select', item, EDIT_TYPE.select)
     }
     // 重置 isMoving 变量
     touchState.isMoving = false;

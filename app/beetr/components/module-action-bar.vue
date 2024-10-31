@@ -7,7 +7,8 @@
         </ModuleFooterActionBar>
 
         <!-- 用户登录状态下的操作栏，含登出、修改用户名 -->
-        <ModuleLeftActionOnline :isEditorRef="isEditorRef" v-if="isEdit && isOnboared" @logout="logout" :browserEnv="browserEnv">
+        <ModuleLeftActionOnline :isEditorRef="isEditorRef" v-if="isEdit && isOnboared" @logout="logout"
+            :browserEnv="browserEnv">
         </ModuleLeftActionOnline>
 
         <!-- 手机端设置弹窗 -->
@@ -42,6 +43,7 @@ import { widgetDrawerData, addDrawData } from '~~/store/isLoading'
 import type { IModule } from '@beetr/materials';
 let widgetDrawer: any = null
 const userStore = _userStore()
+let _tempFn: Function | undefined = void 0
 
 const emits = defineEmits<{
     (e: 'onEdit', params: any): void,
@@ -64,12 +66,12 @@ defineProps<{
 
 const loading = inject('loading', false)
 
-const onAddGrid = (params: IModule, data?: IUserAppItem) => {
+const onAddGrid = (params: IModule, data?: IUserAppItem, fn?: Function) => {
+    _tempFn = fn
     if (!params.drawer) {
         emits('onAdd', params)
     } else {
         emits('onPrepare', params)
-        console.log(widgetDrawer);
         widgetDrawer = params.drawer
         widgetDrawerData.data = params.defaultEditorConfigs(data)
         widgetDrawerData.params = params
@@ -88,6 +90,7 @@ const logout = () => {
 }
 
 const finish = (data: Partial<IUserAppItem>) => {
+    _tempFn && _tempFn(data)
     emits('onAdd', widgetDrawerData.params, data)
 }
 

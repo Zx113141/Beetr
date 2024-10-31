@@ -3,8 +3,8 @@
   <grid-container ref="gridRef" @update="onGridUpdateWidgets">
     <template #top>
       <div v-if="(!userStore.isOnboared || STEP_PROCESS.congratulations === currentStep) &&
-    userStore.isEdit
-    " class="flex items-center toptotle" style="opacity: 1; height: 44px; margin-bottom: 32px">
+        userStore.isEdit
+      " class="flex items-center toptotle" style="opacity: 1; height: 44px; margin-bottom: 32px">
         <div class="h-[2px] flex-1 bg-[#F8F8F8]"></div>
         <div class="typography-title-3 mx-4">您的主页</div>
         <div class="h-[2px] flex-1 bg-[#F8F8F8]"></div>
@@ -12,7 +12,7 @@
     </template>
     <template #default>
       <grid-item v-for="item in userAppList" :item="item" :key="item.id" :showHanlder="showHandler(item)"
-        @hover="onHover" :handlerEditing="editObject.isEditing">
+        @handlerEdit="onWidgetEdit" @select="onWidgetEdit" @hover="onHover" :handlerEditing="editObject.isEditing">
         <div class="wiget_size_item_container">
           <component :is="ComponentsReflect[item.type].module" :item="item" @onEdit="onModuleEdit" :key="item.id"
             :hover="editObject.visibleActionId == item.id">
@@ -37,7 +37,7 @@ import {
   BROWSER_ENV,
   EDIT_TYPE,
   BROWSER_ENV_GRID_COLUMN,
-  MESSAGE_TYPE,
+  // MESSAGE_TYPE,
   ENV_ENUM,
 } from "@beetr/constant";
 import {
@@ -73,7 +73,7 @@ const { userAppList } = storeToRefs(widgetStore);
 
 
 const emit = defineEmits<{
-  (e: "postMessage", params: IUserAppItem, messageType: keyof typeof MESSAGE_TYPE): void
+  (e: "postMessage", params: IUserAppItem, type: keyof typeof EDIT_TYPE): void
 }>()
 
 // TODO
@@ -164,12 +164,15 @@ const onGrdiAddWidget = (widgetConfig: Partial<IUserAppItem>) => {
   })
 
 }
+
+
+
 // 物料更新
 const onModuleEdit = (item: IUserAppItem) => {
   onWidgetUpdate([item]);
 };
 // hanlder 触发
-const onWidgetEdit = (item: IUserAppItem, type: keyof typeof EDIT_TYPE, messaggeType?: keyof typeof MESSAGE_TYPE) => {
+const onWidgetEdit = (item: IUserAppItem, type: keyof typeof EDIT_TYPE,) => {
   switch (type) {
     case "resize":
       onWidgetResize(item);
@@ -177,8 +180,10 @@ const onWidgetEdit = (item: IUserAppItem, type: keyof typeof EDIT_TYPE, messagge
     case "normal":
       onWidgetUpdate([item]);
       break;
-    case "messagge":
-      emit('postMessage', item, messaggeType!)
+    case 'select':
+    case "edit":
+      emit('postMessage', item, type)
+      break
   }
 };
 const onWidgetUpdate = (widgets: IUserAppItem[]) => {

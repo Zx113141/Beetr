@@ -2,7 +2,7 @@
 import { type FormInstance, type FormRules } from 'element-plus'
 import { Back, Loading } from '@element-plus/icons-vue'
 import { type InternalRuleItem } from 'async-validator'
-import { LOAD_STATUS, REG_EMAIL_NUMBER, TOKEN_CREDENTIALS } from '@beetr/constant'
+import { LOAD_STATUS, REG_EMAIL_NUMBER, TOKEN_CREDENTIALS, SvgSuccess } from '@beetr/constant'
 import {
   exitEmailFlag, register, onLoginByUrl,
 

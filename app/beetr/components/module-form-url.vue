@@ -2,7 +2,7 @@
 import { type FormInstance, type FormRules } from 'element-plus'
 import { Close, Loading } from '@element-plus/icons-vue'
 import { debounce } from '@beetr/hooks'
-import { LOAD_STATUS } from '@beetr/constant'
+import { LOAD_STATUS, SvgSuccess } from '@beetr/constant'
 import { exitUrlFlag } from '@/api/user/user'
 
 /** 接口加载状态 */
@@ -88,8 +88,8 @@ defineExpose({
         <el-form-item style="margin-bottom: 0">
           <el-input v-model="form.baseUrl" autofocus class="init_input" placeholder="your-name" @keyup="onKeyDown"
             @input="(val) => {
-                form.baseUrl = val.replace(/[^a-zA-Z0-9-]/g, '')
-              }
+              form.baseUrl = val.replace(/[^a-zA-Z0-9-]/g, '')
+            }
               ">
             <template #prepend>beetr.cc/</template>
             <template #suffix>

@@ -2,6 +2,7 @@
 import confetti from 'canvas-confetti'
 import { updateUserInfo } from '~~/api/user/user'
 import { _userStore } from '@/store/user'
+import { SvgSuccess } from '@beetr/constant';
 
 const userStore = _userStore()
 

@@ -16,6 +16,7 @@ const userStore = _userStore()
 const env = _envStore()
 const { browserEnv, deviceEnv } = storeToRefs(env)
 const { postMessage } = useMessage()
+const showHandler = ref(false)
 // hooks
 onMounted(() => {
     window.addEventListener("message", handleFrameMessage);
@@ -30,7 +31,7 @@ onMounted(() => {
 const handleFrameMessage = (e: MessageEvent) => {
 
     const { query, eventType } = e.data;
-    // console.log(query,eventType)
+    // console.log(query, eventType)
     const params = query ? JSON.parse(query) : ''
     switch (eventType) {
         case MESSAGE_EVENT_TYPE.iframeLoaded:
@@ -49,15 +50,33 @@ const handleFrameMessage = (e: MessageEvent) => {
         case MESSAGE_EVENT_TYPE.appConfigList:
             widgetDrawerData.prop.appConfigList = params
             break;
-        case MESSAGE_EVENT_TYPE.edit:
-            const bModule = BeetrModules.find(i => (i.name == params.type)) as IModule
-            actionRef.value!.onAddGrid(bModule, params)
+        case MESSAGE_EVENT_TYPE.select:
+            onModuleSelect()
             break;
+        case MESSAGE_EVENT_TYPE.edit:
+            handleEdit(params)
+            break;
+        // case MESSAGE_EVENT_TYPE.removeWidget:
+        //     break;
         // case MESSAGE_EVENT_TYPE.widgetStatus:
         //     console.log(query);
         //     break
     }
 };
+const onModuleSelect = () => {
+    if (browserEnv.value == BROWSER_ENV.mobile) {
+        showHandler.value = !showHandler.value
+    }
+}
+
+const handleEdit = (params: IUserAppItem) => {
+    const bModule = BeetrModules.find(i => (i.name == params.type)) as IModule
+    nextTick(() => {
+        if (bModule.drawer) {
+            actionRef.value!.onAddGrid(bModule, params,)
+        }
+    })
+}
 
 const checkBrowserEnv = () => {
     return /iPhone|Android/.test(window.navigator.userAgent);
@@ -76,10 +95,10 @@ const handleWindowResize = (e: UIEvent | null) => {
     if ((e.target as Window).innerWidth > 1280) {
         browserEnv.value = BROWSER_ENV.desktop;
         deviceEnv.value = BROWSER_ENV.desktop;
-    } else if ((e.target as Window).innerWidth <= 1280 && checkBrowserEnv()){
+    } else if ((e.target as Window).innerWidth <= 1280 && checkBrowserEnv()) {
         browserEnv.value = BROWSER_ENV.mobile;
         deviceEnv.value = BROWSER_ENV.mobile;
-    }else {
+    } else {
         browserEnv.value = BROWSER_ENV.desktop;
         deviceEnv.value = BROWSER_ENV.mobile;
     }
@@ -137,8 +156,9 @@ const onSetEnv = (env: keyof typeof BROWSER_ENV) => {
             <iframe ref="iframeRef" :data-editor-iframe="true" class="frame_container-iframe backgroundColor"
                 :style="'visibility: visible'" :src="`/main?path=${route.params.path}`">
             </iframe>
-            <ModuleActionBar ref="actionRef" :deviceEnv="deviceEnv!" :browserEnv="browserEnv!" :isEditorRef="false"
-                @on-add="addItem" @on-prepare="prepareDrawData" @on-logout="logout" @on-set-env="onSetEnv">
+            <ModuleActionBar v-show="!showHandler" ref="actionRef" :deviceEnv="deviceEnv!" :browserEnv="browserEnv!"
+                :isEditorRef="false" @on-add="addItem" @on-prepare="prepareDrawData" @on-logout="logout"
+                @on-set-env="onSetEnv">
             </ModuleActionBar>
         </div>
     </div>
