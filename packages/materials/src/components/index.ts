@@ -17,7 +17,10 @@ interface IModule {
     name: WIDGET_TYPE
     module: any;
     Handler: any;
-    drawer: any;
+    Drawer: {
+        desktop?: any;
+        mobile: any
+    };
     icon: any
     title: string
     type: string
@@ -41,7 +44,10 @@ const BeetrModules: IModule[] = [
         name: WIDGET_TYPE.richText,
         module: ModuleNote,
         Handler: ModuleNoteHandler,
-        drawer: null,
+        Drawer: {
+            desktop: null,
+            mobile: null,
+        },
         icon: richText,
         title: '笔记',
         type: 'module',
@@ -53,7 +59,10 @@ const BeetrModules: IModule[] = [
         name: WIDGET_TYPE.link,
         module: ModuleHref,
         Handler: ModuleHrefHandler,
-        drawer: ModuleHrefDrawer,
+        Drawer: {
+            desktop: ModuleHrefDrawer,
+            mobile: ModuleHrefDrawer,
+        },
         icon: link,
         title: '链接',
         type: 'module',
@@ -71,7 +80,10 @@ const BeetrModules: IModule[] = [
         name: WIDGET_TYPE.social,
         module: ModuleHref,
         Handler: ModuleHrefHandler,
-        drawer: ModuleHrefDrawer,
+        Drawer: {
+            desktop: ModuleHrefDrawer,
+            mobile: ModuleHrefDrawer,
+        },
         icon: social,
         title: '社交',
         type: 'module',
@@ -89,7 +101,10 @@ const BeetrModules: IModule[] = [
         name: WIDGET_TYPE.media,
         module: ModuleMedia,
         Handler: ModuleMediaHandler,
-        drawer: null,
+        Drawer: {
+            desktop: null,
+            mobile: null,
+        },
         icon: image,
         title: '图片',
         type: 'module',
@@ -101,7 +116,10 @@ const BeetrModules: IModule[] = [
         name: WIDGET_TYPE.media,
         module: ModuleMedia,
         Handler: ModuleMediaHandler,
-        drawer: null,
+        Drawer: {
+            desktop: null,
+            mobile: null,
+        },
         icon: video,
         title: '视频',
         type: 'module',
@@ -113,7 +131,9 @@ const BeetrModules: IModule[] = [
         name: WIDGET_TYPE.sectionHeader,
         module: ModuleSectionTitle,
         Handler: null,
-        drawer: null,
+        Drawer: {
+            desktop: null, mobile: null,
+        },
         icon: sectionTitle,
         title: '标题',
         type: 'module',

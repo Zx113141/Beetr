@@ -58,7 +58,7 @@ const {
     currentStep,
     isScreenLock,
 } = toRefs(userStore)
-defineProps<{
+const props = defineProps<{
     isEditorRef: boolean,
     browserEnv: keyof typeof BROWSER_ENV,
     deviceEnv: keyof typeof BROWSER_ENV,
@@ -68,11 +68,11 @@ const loading = inject('loading', false)
 
 const onAddGrid = (params: IModule, data?: IUserAppItem, fn?: Function) => {
     _tempFn = fn
-    if (!params.drawer) {
+    if (!params.Drawer[props.browserEnv]) {
         emits('onAdd', params)
     } else {
         emits('onPrepare', params)
-        widgetDrawer = params.drawer
+        widgetDrawer = params.Drawer[props.browserEnv]
         widgetDrawerData.data = params.defaultEditorConfigs(data)
         widgetDrawerData.params = params
         widgetDrawerData.show = true

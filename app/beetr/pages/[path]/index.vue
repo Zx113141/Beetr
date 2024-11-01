@@ -72,7 +72,7 @@ const onModuleSelect = (params: boolean) => {
 const handleEdit = async (params: IUserAppItem) => {
     const bModule = BeetrModules.find(i => (i.name == params.type)) as IModule
 
-    if (bModule.drawer) {
+    if (bModule.Drawer[browserEnv.value!]) {
         showHandler.value = false
         await nextTick(() => {
             actionRef.value!.onAddGrid(bModule, params, () => {

@@ -9,8 +9,9 @@
             'grid-stack-item-content': true,
             active: showHandler(item) && browserEnv == BROWSER_ENV.mobile,
         }" @mouseenter="() => onMouseEnter(item)"
-            @touchstart.capture="($event: TouchEvent) => onTouchStart($event, item)" @touchmove.capture="onTouchMove"
-            @touchend.capture="($event: TouchEvent) => onTouchEnd(item)" id="grid-stack-item-content">
+            @touchstart.capture="($event: TouchEvent) => onTouchStart($event, item)"
+            @touchmove.capture="($event: TouchEvent) => onTouchMove($event, item)"
+            @touchend.capture="($event: TouchEvent) => onTouchEnd($event, item)" id="grid-stack-item-content">
             <div class="thisarea" :id="`m_${item.id}`">
                 <div class="wiget_size_item_container">
                     <component :is="ComponentsReflect[item.type].module" :item="item"
@@ -32,9 +33,12 @@
                         <GridItemRemove :item="item" @remove="() => remove(item)" />
                         <teleport :to="teleportId(item)">
                             <component :is="ComponentsReflect[item.type].Handler" :key="item.id" :item="item"
-                                @onEdit="onWidgetEdit">
+                                @onEdit="onWidgetEdit" :touchEdit="props.edit">
                             </component>
                         </teleport>
+                        <GridItemMove :item="item" @on-start="(e) => onTouchStart(e, item)"
+                            @on-move="(e) => onTouchMove(e, item)" @on-end="(e) => onTouchEnd(e, item)">
+                        </GridItemMove>
                         <GridItemEdit :item="item" @edit="() => handleEdit(item)" :edit="edit" />
                     </template>
                 </div>
@@ -50,6 +54,7 @@ import { type IUserAppItem, BROWSER_ENV, EDIT_TYPE } from '@beetr/constant';
 import GridItemEdit from '../grid-item-edit/index.vue'
 import { BeetrModules, type IModule } from '@beetr/materials';
 import GridItemRemove from '../grid-item-remove/index.vue'
+import GridItemMove from '../grid-item-move/index.vue'
 const ComponentsReflect: {
     [key: string]: IModule
 } = {}
@@ -85,15 +90,23 @@ const teleportId = computed(() => {
     return (item: IUserAppItem) => browserEnv == BROWSER_ENV.mobile ? '#layoutAddani' : '#m_' + item.id
 })
 
+
+
 const handleEdit = (item) => {
     // edit.value = !edit.value
-    emits('switch-edit', !props.edit)
-    const handler = BeetrModules.find((it: IModule) => it.name == item.type)
-    if (handler && handler.drawer) {
+
+    const widget = BeetrModules.find((it: IModule) => it.name == item.type) as IModule
+    if (widget && widget.Drawer[browserEnv]) {
         emits('widget-edit', item, EDIT_TYPE.edit)
         return
+    } else {
+        emits('switch-edit', !props.edit)
     }
+
+
 }
+
+
 
 // 操作前检查
 const touchState = reactive({
@@ -128,7 +141,7 @@ const onTouchStart = (event: any, item: any) => {
     }
 }
 
-const onTouchMove = (event: any) => {
+const onTouchMove = (event: any, item) => {
     // 如果触摸移动距离超过一定阈值，则认为是滑动
     const threshold = 10; // 阈值，根据实际需求调整
     const deltaX = Math.abs(event.touches[0].clientX - touchState.startX);
@@ -144,7 +157,7 @@ const onTouchMove = (event: any) => {
     }
 }
 
-const onTouchEnd = (item: any) => {
+const onTouchEnd = (e, item: any) => {
     // 根据 isSwiping 变量来判断用户是滑动还是点击
     if (!touchState.isMoving) {
         // 执行点击操作
@@ -158,7 +171,11 @@ const remove = (item) => {
     emits('widget-edit', item, EDIT_TYPE.remove)
 }
 
-const onWidgetEdit = (item, type) => {
+const onWidgetEdit = (item, type: keyof typeof EDIT_TYPE) => {
+    if (type == EDIT_TYPE.select) {
+        emits('select', false, EDIT_TYPE.select)
+        return
+    }
     emits('widget-edit', item, type)
 }
 
