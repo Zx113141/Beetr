@@ -1,8 +1,8 @@
 <!-- v-if="item.type === WIDGET_TYPE.richText" -->
 <template>
-    <el-popover v-model:visible="activeRichTextOpera" trigger="click" popper-style="background-color:#000 !important;"
-        popper-class="!p-[6px] !bg-black !rounded-[10px] !border-none" width="auto" @before-enter="onHideRichText"
-        :teleported="false">
+    <el-popover v-if="browserEnv === BROWSER_ENV.desktop" v-model:visible="activeRichTextOpera" trigger="click"
+        popper-style="background-color:#000 !important;" popper-class="!p-[6px] !bg-black !rounded-[10px] !border-none"
+        width="auto" @before-enter="onHideRichText" :teleported="false">
         <div class="flex items-center cursor-auto media_opera">
             <!-- 水平方向 -->
             <button v-for="(child, index) in xList" :key="index"
@@ -36,7 +36,7 @@
     `"></div>
             </button>
         </div>
-        <div v-if="activeBgColor" class="submenu-colors">
+        <div v-if="activeBgColor" class="colors desktop-colors">
             <!-- 颜色列表 -->
             <button v-for="color in colorList" :key="color.bgColor"
                 class="rounded-[4px] outline-none disabled:text-white disabled:text-opacity-40 active:scale-90"
@@ -64,19 +64,69 @@
             </button>
         </template>
     </el-popover>
+
+    <div class="widget_resize_block flex-1 flex items-center richText" v-else>
+        <div class="flex items-center cursor-auto direction_opera">
+            <!-- 水平方向 -->
+            <button v-for="(child, index) in xList" :key="index"
+                class="rounded-[4px] outline-none disabled:text-white disabled:text-opacity-40 active:scale-90" :class="(item.halign?.[deviceEnv] || xList[0].justifyContent) === child.justifyContent
+                    ? `active`
+                    : ``
+                    " @click.stop="updatePositionX(child.justifyContent)">
+                <component :is="child.component"></component>
+            </button>
+            <!-- 垂直方向 -->
+            <button v-for="(child, index) in yList" :key="index"
+                class="rounded-[4px] outline-none disabled:text-white disabled:text-opacity-40 active:scale-90" :class="(item.valign?.[deviceEnv] || yList[0].alignItems) === child.alignItems
+                    ? `active`
+                    : ``
+                    " @click.stop="updatePositionY(child.alignItems)">
+                <component :is="child.component"></component>
+            </button>
+        </div>
+        <!-- 分隔 -->
+        <el-divider direction="vertical" class="!mx-2" />
+        <div class="flex items-center cursor-auto  colors mobile-colors">
+            <!-- 颜色列表 -->
+            <button v-for="color in colorList" :key="color.bgColor"
+                class="rounded-[4px] outline-none disabled:text-white disabled:text-opacity-40 active:scale-90"
+                :class="item.bgColor === color.bgColor ? `active` : ``" @click.stop="updateColor(color.bgColor)">
+                <div class="rounded-full w-[18px] h-[18px]" :style="`background: ${color.bgColor || WHITE_COLOR[0]};
+                  border: 1px solid ${WHITE_COLOR.includes(
+                    item.bgColor ||
+                    WHITE_COLOR[0]
+                )
+                        ? 'rgba(0, 0, 0, 0.12)'
+                        : 'rgba(255, 255, 255, 0.2)'
+                    }
+                  `"></div>
+            </button>
+        </div>
+        <!-- 分隔 -->
+        <el-divider direction="vertical" class="!mx-2" />
+        <div class="flex items-center cursor-auto cursor-input">
+            <el-input v-model="activeColor" size="small" class="init_link-input" placeholder="#768CFF" clearable
+                @click.stop @change="updateColorByInput"></el-input>
+        </div>
+        <div class="flex items-center cursor-auto cursor-input link px-1.5">
+            <el-input v-model="item.url" size="small" class="init_link-input" placeholder="输入链接" clearable @click.stop
+                @change="updateUrl"></el-input>
+        </div>
+    </div>
 </template>
 
 <script setup lang="ts">
 
 import { ref, toRefs, watch, inject } from 'vue'
 
-import { ElIcon } from 'element-plus'
+import { ElIcon, ElInput, ElDivider, ElPopover } from 'element-plus'
 import {
     SvgXLeft,
     SvgXCenter, SvgXRight, SvgYTop, SvgYMiddle, SvgYBottom,
     WHITE_COLOR, colorList, EXG_COLOR,
     type IUserAppItem, ENV_ENUM,
-    EDIT_TYPE
+    EDIT_TYPE,
+    BROWSER_ENV,
 } from '@beetr/constant'
 
 import { MoreFilled } from '@element-plus/icons-vue'
@@ -86,7 +136,8 @@ const props = defineProps<{
     item: IUserAppItem,
 
 }>()
-const deviceEnv = inject<keyof typeof ENV_ENUM>('deviceEnv') as keyof typeof ENV_ENUM
+const deviceEnv = inject<keyof typeof BROWSER_ENV>('deviceEnv') as keyof typeof BROWSER_ENV
+const browserEnv = inject<keyof typeof BROWSER_ENV>('deviceEnv') as keyof typeof BROWSER_ENV
 const emit = defineEmits<{
     (e: 'onEdit', item: IUserAppItem, type: keyof typeof EDIT_TYPE): void
 }>()
@@ -166,6 +217,11 @@ const updateColorByInput = (value: string) => {
     // widgetStore.onUpdate([item.value])
 }
 
+const updateUrl = (value: string) => {
+    item.value.url = value
+    emit('onEdit', item.value, EDIT_TYPE.normal)
+}
+
 /** rich-text 操作弹窗关闭 */
 const onHideRichText = () => {
     activeBgColor.value = false
@@ -197,15 +253,55 @@ button {
     }
 }
 
-.submenu-colors {
+.colors {
+    pointer-events: auto;
+    gap: 0.125rem;
+    padding: 0.375rem;
+    justify-items: center;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.mobile-colors {
+    display: inline-flex;
+    //width: 100%;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+}
+
+
+.desktop-colors {
     display: grid;
     width: 100%;
     grid-template-columns: repeat(8, minmax(0, 1fr));
-    align-items: flex-start;
-    justify-content: space-between;
-    justify-items: center;
-    gap: 0.125rem;
-    padding: 0.375rem;
-    pointer-events: auto;
+}
+
+.init_link-input {
+    background-color: hsla(0, 0%, 100%, 0.2);
+    border-radius: 4px;
+
+    :deep(.el-input__wrapper) {
+        background-color: transparent;
+        box-shadow: none;
+    }
+
+    :deep(input) {
+        background-color: transparent;
+        color: #fff;
+    }
+}
+
+.widget_resize_block.richText {
+    overflow: hidden;
+    overflow-x: auto;
+}
+
+.cursor-auto.cursor-input {
+    .el-input {
+        width: 109px;
+
+        &.link {
+            width: 138px;
+        }
+    }
 }
 </style>

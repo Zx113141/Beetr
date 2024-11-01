@@ -9,8 +9,8 @@ const emit = defineEmits<{
 </script>
 
 <template>
-    <div class="widget_delete absolute -left-2.5 -top-2.5 z-30">
-        <el-button circle class="el-button--delete" @click="emit('remove',)">
+    <div class="widget_delete absolute -left-2.5 -top-2.5 z-30" @click.stop="emit('remove',)">
+        <el-button circle class="el-button--delete">
             <SvgDelete />
         </el-button>
     </div>

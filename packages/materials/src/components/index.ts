@@ -11,7 +11,7 @@ import { ModuleMedia, ModuleMediaHandler } from './module-media'
 import { image, defaultImageConfigs } from './module-image'
 import { video, defaultVideoConfigs } from './module-video'
 
-import { defaultTitleConfigs, sectionTitle, ModuleSectionTitle } from './module-title'
+import { defaultTitleConfigs, sectionTitle, ModuleSectionTitle, ModuleSectionTitleHandler } from './module-title'
 
 interface IModule {
     name: WIDGET_TYPE
@@ -130,7 +130,7 @@ const BeetrModules: IModule[] = [
     {
         name: WIDGET_TYPE.sectionHeader,
         module: ModuleSectionTitle,
-        Handler: null,
+        Handler: ModuleSectionTitleHandler,
         Drawer: {
             desktop: null, mobile: null,
         },

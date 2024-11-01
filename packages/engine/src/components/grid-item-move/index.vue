@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { SvgMove, type IUserAppItem } from '@beetr/constant'
+import { ElButton } from 'element-plus';
 
 
 const emits = defineEmits<{

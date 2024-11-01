@@ -1,15 +1,13 @@
 <template>
-    <ModuleHander :item="item" v-if="browserEnv === BROWSER_ENV.desktop">
-        <template #content>
-            <ModuleResize @onResize="onEdit" :item="item"></ModuleResize>
-            <el-divider direction="vertical" class="!mx-2" />
-            <ModuleCrop @onEdit="onEdit" :item="item"></ModuleCrop>
-        </template>
-    </ModuleHander>
+    <div :item="item" v-if="browserEnv === BROWSER_ENV.desktop">
+
+    </div>
     <ModuleHander :item="item" v-if="browserEnv === BROWSER_ENV.mobile">
         <template #content>
             <MoudleMobileBase @onOk="(type: EDIT_TYPE.select) => onEdit(item, type)">
-                <ModuleResize @onResize="onEdit" :item="item"></ModuleResize>
+                <div class=" flex-1 flex items-center">
+                    <p class="ml-4 text-base text-white">分组标题</p>
+                </div>
             </MoudleMobileBase>
         </template>
     </ModuleHander>
@@ -17,10 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import { ElDivider } from 'element-plus'
 import ModuleHander from '../module-handler/index.vue'
-import ModuleResize from '../module-handler/resize/index.vue'
-import ModuleCrop from '../module-handler/crop/index.vue'
 import MoudleMobileBase from '../module-handler/mobile-base/index.vue'
 import { PropType, inject } from 'vue'
 import { type IUserAppItem, EDIT_TYPE, BROWSER_ENV } from '@beetr/constant'

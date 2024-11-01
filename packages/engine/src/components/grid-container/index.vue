@@ -9,8 +9,8 @@
         @widget-edit="(item, type) => emits('widgetEdit', item, type)" -->
       <!-- <slot name="default" @select="select"></slot> -->
       <GridItem :active-widget-id="editObject.visibleActionId" :list="list" @select="select" @hover="onHover"
-        @switch-edit="(edit) => editObject.edit = edit" :edit="editObject.edit" @editing="onEditing"
-        :editStatus="editStatus" @widget-edit="(item, type) => emits('widgetEdit', item, type)">
+        @switch-edit="switchEdit" :edit="editObject.edit" :editStatus="editStatus"
+        @widget-edit="(item, type) => emits('widgetEdit', item, type)">
       </GridItem>
     </div>
   </div>
@@ -29,7 +29,7 @@ import {
 import useDrag from "../../../service/grid";
 import "../../assets/style/grid-item.scss";
 import { EDIT_TYPE, IUserAppItem } from "@beetr/constant";
-import { onMounted, ref, provide, nextTick, reactive, computed, createVNode } from "vue";
+import { onMounted, ref, provide, nextTick, reactive, watch, createVNode } from "vue";
 import { GridItem } from "..";
 const emits = defineEmits(["update", "select", "widgetEdit"]);
 const [drag, dragstart, dragstop, isMovingWidget] = useDrag();
@@ -52,10 +52,10 @@ onMounted(() => {
   window.addEventListener('click', onGrdiContainerClick)
 })
 
+
 const onGrdiContainerClick = (e: MouseEvent) => {
   const container = document.getElementById('layoutAddani')!
   const target = e.target! as HTMLElement
-  console.log(e);
   if (target.id == 'layoutAddani' || !container.contains(target)) {
     onHover('')
     select(false, EDIT_TYPE.select)
@@ -65,15 +65,17 @@ const onGrdiContainerClick = (e: MouseEvent) => {
 }
 const select = (flag: boolean, type) => {
   editObject.edit = false
+
   emits("select", flag, type);
 }
 
-const onEditing = (isEdit: boolean) => {
-  editObject.isEditing = isEdit;
-};
-
 const onHover = (id: string) => {
   editObject.visibleActionId = id;
+}
+
+
+const switchEdit = () => {
+  editObject.edit = !editObject.edit
 }
 
 

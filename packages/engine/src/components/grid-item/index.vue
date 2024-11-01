@@ -75,38 +75,24 @@ const showHandler = computed(() => {
 })
 
 
-
-
-const emits = defineEmits(['hover', 'widget-edit', 'select', 'editing', 'switch-edit'])
+const emits = defineEmits(['hover', 'widget-edit', 'select', 'switch-edit'])
 const movingWidgetId = inject('movingWidgetId')
-const isEdit = inject('editStatus')
 const browserEnv = inject('browserEnv')! as keyof typeof BROWSER_ENV
 const onEmit = inject('onEmit') as (path: string, query: any) => void
-
-// const edit = ref<boolean>(false)
-
 
 const teleportId = computed(() => {
     return (item: IUserAppItem) => browserEnv == BROWSER_ENV.mobile ? '#layoutAddani' : '#m_' + item.id
 })
 
-
-
 const handleEdit = (item) => {
-    // edit.value = !edit.value
-
     const widget = BeetrModules.find((it: IModule) => it.name == item.type) as IModule
     if (widget && widget.Drawer[browserEnv]) {
         emits('widget-edit', item, EDIT_TYPE.edit)
         return
     } else {
-        emits('switch-edit', !props.edit)
+        emits('switch-edit',)
     }
-
-
 }
-
-
 
 // 操作前检查
 const touchState = reactive({
@@ -157,11 +143,12 @@ const onTouchMove = (event: any, item) => {
     }
 }
 
-const onTouchEnd = (e, item: any) => {
-    // 根据 isSwiping 变量来判断用户是滑动还是点击
+const onTouchEnd = (e: TouchEvent, item: any) => {
+    console.log(e);
     if (!touchState.isMoving) {
-        // 执行点击操作
         emits('select', true, EDIT_TYPE.select)
+        // 执行点击操作
+
     }
     // 重置 isMoving 变量
     touchState.isMoving = false;
@@ -173,6 +160,7 @@ const remove = (item) => {
 
 const onWidgetEdit = (item, type: keyof typeof EDIT_TYPE) => {
     if (type == EDIT_TYPE.select) {
+        emits('hover', '')
         emits('select', false, EDIT_TYPE.select)
         return
     }

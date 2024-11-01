@@ -8,26 +8,24 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
-    /** 对应的对象 */
-    item: {
-        type: Object as PropType<IUserAppItem>,
-        required: true,
-    },
+
 
 })
-const { item, } = toRefs<any>(props)
 
 const emit = defineEmits<{
-    (e: 'edit', item: any): void
+    (e: 'edit',): void
 }>()
+
+const touchEnd = (e) => {
+    emit('edit',)
+}
 </script>
 
 <template>
     <transition name="fade">
         <div>
-            <div class="widget_edit absolute -right-2.5 -top-2.5 z-30">
-                <el-button type="success" circle class="relative" :class="[edit ? 'greenBtn' : 'blackBtn']"
-                    @click.stop="emit('edit', item)">
+            <div class="widget_edit absolute -right-2.5 -top-2.5 z-30 w-[35px] h-[35px]" @click="touchEnd">
+                <el-button circle class="relative" :class="[edit ? 'greenBtn' : 'blackBtn']">
                     <SvgSuccess v-if="edit" />
                     <SvgEdit v-else />
                 </el-button>
