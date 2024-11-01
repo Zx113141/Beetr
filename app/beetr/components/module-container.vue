@@ -1,6 +1,7 @@
 <template>
   <!-- grid网格 - 手机端初始化的时候不显示，mextType > 0 的时候才 -->
-  <grid-container ref="gridRef" @update="onGridUpdateWidgets" :list="userAppList">
+  <grid-container ref="gridRef" @update="onGridUpdateWidgets" :list="userAppList" :editStatus="editStatus"
+    @select="onWidgetEdit" @widget-edit="onWidgetEdit">
     <template #top>
       <div v-if="(!userStore.isOnboared || STEP_PROCESS.congratulations === currentStep) &&
         userStore.isEdit
@@ -47,7 +48,6 @@ import {
   GridDelete,
   type GridStackNode,
 } from "@beetr/engine";
-import { BeetrModules, type IModule } from "@beetr/materials";
 import { findEmptyPosition } from '@beetr/hooks'
 import { _userStore } from "~/store/user";
 import { _widgetStore } from "~/store/widget";
@@ -71,10 +71,7 @@ const emit = defineEmits<{
 }>()
 
 // TODO
-const editObject = reactive({
-  visibleActionId: "", // 激活widget id
-  isEditing: false, // 是否正在编辑,
-});
+
 // grid instance
 const gridRef = ref<InstanceType<typeof GridContainer> | null>(null);
 
@@ -89,22 +86,6 @@ onMounted(async () => {
 
 
 })
-
-
-
-
-
-const handlerShow = computed(() => {
-  return (item: IUserAppItem) => props.editStatus && editObject.visibleActionId == item.id
-})
-
-const onEditing = (isEdit: boolean) => {
-  editObject.isEditing = isEdit;
-};
-
-const onHover = (id: string) => {
-  editObject.visibleActionId = id;
-}
 
 
 const render = async (newList: IUserAppItem[]) => {
@@ -179,6 +160,9 @@ const onWidgetEdit = (item: any, type: keyof typeof EDIT_TYPE,) => {
       break;
     case "normal":
       onWidgetUpdate([item]);
+      break;
+    case "remove":
+      onRemove(item.id);
       break;
     case 'select':
     case "edit":

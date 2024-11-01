@@ -6,7 +6,7 @@
         <SvgEdit></SvgEdit>
     </button>
     <el-popover v-else v-model:visible="activeLink" trigger="click" placement="bottom" popper-class="!p-[6px] !bg-black"
-        :width="240" popper-style="background-color:#000 !important;">
+        :width="240" popper-style="background-color:#000 !important;" :teleported="false">
         <el-input v-model="item.url" size="small" class="init_link-input" placeholder="输入链接"
             @change="() => updateUrl(EDIT_TYPE.normal)" @keyup.enter="() => updateUrl(EDIT_TYPE.normal)"></el-input>
         <template #reference>
@@ -26,8 +26,6 @@ import { toRefs, ref, watch } from 'vue'
 
 const emit = defineEmits<{
     (e: 'onEdit', item: IUserAppItem, type: keyof typeof EDIT_TYPE): void
-    (e: 'onEditing', activeLink: boolean): void
-    (e: 'onProtocol', type: string): void
 }>()
 const props = defineProps<{
     item: IUserAppItem,
@@ -42,12 +40,7 @@ const updateUrl = (type: keyof typeof EDIT_TYPE) => {
     emit('onEdit', item.value, type)
 }
 
-watch(activeLink, (newval) => {
 
-    emit('onEditing', newval)
-}, {
-    immediate: true
-})
 
 
 

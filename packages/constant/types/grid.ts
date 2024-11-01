@@ -22,7 +22,8 @@ export enum EDIT_TYPE {
     normal = 'normal',
     messagge = 'messagge',
     edit = 'edit',
-    select = 'select'
+    select = 'select',
+    remove = 'remove'
 }
 
 

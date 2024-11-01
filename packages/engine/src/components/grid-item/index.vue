@@ -3,35 +3,36 @@
         :gs-w="item.cusStyle[browserEnv].w" :gs-h="item.cusStyle[browserEnv].h" :gs-x="item.position[browserEnv].x"
         :gs-y="item.position[browserEnv].y" :class="{
             'grid-stack-item': true,
-            'pointer-events-none': id == item.id
+            'pointer-events-none': movingWidgetId == item.id
         }" :style="item.temType == 'addLink' ? 'z-index:11111' : ''">
         <div :class="{
             'grid-stack-item-content': true,
-            active: showHandler && browserEnv == BROWSER_ENV.mobile,
-        }" @mouseenter="() => onMouseEnter(item)" @mouseleave="onMouseleave"
+            active: showHandler(item) && browserEnv == BROWSER_ENV.mobile,
+        }" @mouseenter="() => onMouseEnter(item)"
             @touchstart.capture="($event: TouchEvent) => onTouchStart($event, item)" @touchmove.capture="onTouchMove"
             @touchend.capture="($event: TouchEvent) => onTouchEnd(item)" id="grid-stack-item-content">
             <div class="thisarea" :id="`m_${item.id}`">
                 <div class="wiget_size_item_container">
-                    <component :is="ComponentsReflect[item.type].module" :item="item" @onEdit="onModuleEdit"
-                        :key="item.id" :hover="visibleActionId == item.id">
+                    <component :is="ComponentsReflect[item.type].module" :item="item"
+                        @onEdit="(item: IUserAppItem) => onWidgetEdit(item, EDIT_TYPE.normal)" :key="item.id"
+                        :hover="activeWidgetId == item.id">
                     </component>
                 </div>
 
-                <div class="grid-item-action" v-if="showHandler" :key="browserEnv">
+                <div class="grid-item-action" v-if="showHandler(item)" :key="browserEnv">
                     <template v-if="browserEnv == BROWSER_ENV.desktop">
                         <GridItemRemove :item="item" @remove="() => remove(item)" />
-                        <teleport :to="teleportId">
+                        <teleport :to="teleportId(item)">
                             <component :is="ComponentsReflect[item.type].Handler" :key="item.id" :item="item"
-                                @onEdit="onWidgetEdit" @onEditing="onEditing">
+                                @onEdit="onWidgetEdit">
                             </component>
                         </teleport>
                     </template>
                     <template v-if="browserEnv == BROWSER_ENV.mobile">
                         <GridItemRemove :item="item" @remove="() => remove(item)" />
-                        <teleport :to="teleportId">
+                        <teleport :to="teleportId(item)">
                             <component :is="ComponentsReflect[item.type].Handler" :key="item.id" :item="item"
-                                @onEdit="onWidgetEdit" @onEditing="onEditing">
+                                @onEdit="onWidgetEdit">
                             </component>
                         </teleport>
                         <GridItemEdit :item="item" @edit="() => handleEdit(item)" :edit="edit" />
@@ -59,39 +60,37 @@ BeetrModules.forEach((item: any) => {
 
 const props = defineProps<{
     list: IUserAppItem[],
-    showHandler: boolean
-    handlerEditing: boolean
     activeWidgetId: string
+    editStatus: boolean
+    edit: boolean
 }>()
 
+const showHandler = computed(() => {
+    return (item: IUserAppItem) => props.editStatus && item.id == props.activeWidgetId
+})
 
 
 
-const emits = defineEmits(['hover', 'handlerEdit', 'select', 'remove'])
-const id = inject('movingWidgetId')
+
+const emits = defineEmits(['hover', 'widget-edit', 'select', 'editing', 'switch-edit'])
+const movingWidgetId = inject('movingWidgetId')
 const isEdit = inject('editStatus')
 const browserEnv = inject('browserEnv')! as keyof typeof BROWSER_ENV
 const onEmit = inject('onEmit') as (path: string, query: any) => void
 
-
-
-const onGrdiContainerClick = () => {
-    visibleActionId.value = ''
-    edit.value = false
-    emits('hover', visibleActionId.value)
-    emits('select', false, EDIT_TYPE.select)
-}
+// const edit = ref<boolean>(false)
 
 
 const teleportId = computed(() => {
-    return browserEnv == BROWSER_ENV.mobile ? '#layoutAddani' : '#layoutAddani'//'#m_' + item.id
+    return (item: IUserAppItem) => browserEnv == BROWSER_ENV.mobile ? '#layoutAddani' : '#m_' + item.id
 })
-const edit = ref<boolean>(false)
+
 const handleEdit = (item) => {
-    edit.value = !edit.value
+    // edit.value = !edit.value
+    emits('switch-edit', !props.edit)
     const handler = BeetrModules.find((it: IModule) => it.name == item.type)
     if (handler && handler.drawer) {
-        emits('handlerEdit', item, EDIT_TYPE.edit)
+        emits('widget-edit', item, EDIT_TYPE.edit)
         return
     }
 }
@@ -104,43 +103,23 @@ const touchState = reactive({
 })
 
 
-/** 是否显示操作栏 */
-const visibleActionId = ref('')
+
 /** 鼠标移入，仅触发一次 */
 const onMouseEnter = (item: any) => {
     if (browserEnv == BROWSER_ENV.mobile) return;
-    visibleActionId.value = item.id
     // 编辑的时候不重置
-    if (props.handlerEditing) {
-        return
-    }
-    // if (browserEnv.value == BROWSER_ENV.mobile || widgetEditor.value) return;
-    visibleActionId.value = item.id
-    emits('hover', visibleActionId.value)
-}
-/** 鼠标移除，仅触发一次 */
-const onMouseleave = () => {
-    if (browserEnv == BROWSER_ENV.mobile) return;
-    // 编辑的时候不取消
-    if (props.handlerEditing) {
-        return
-    }
-    // if (browserEnv.value == BROWSER_ENV.mobile || widgetEditor.value) return;
-    visibleActionId.value = ''
-    emits('hover', visibleActionId.value)
+    emits('hover', item.id)
 }
 
 
 const onTouchStart = (event: any, item: any) => {
-    visibleActionId.value = item.id
-    emits('hover', visibleActionId.value)
+    emits('hover', item.id)
     if (event.target.classList.contains('widget_move')) {
         // 记录触摸起始位置
         touchState.startX = event.touches[0].clientX;
         touchState.startY = event.touches[0].clientY;
         // 存在激活id且相等的时候激活移动
-        onEmit('enableMove', visibleActionId.value != '' && visibleActionId.value == item.id)
-        // grid.enableMove(visibleActionId.value != '' && visibleActionId.value == item.id)
+        onEmit('enableMove', props.activeWidgetId != '' && props.activeWidgetId == item.id)
         if (event.preventDefault) event.preventDefault()
         return false
     } else {
@@ -157,7 +136,7 @@ const onTouchMove = (event: any) => {
     if (deltaX > threshold || deltaY > threshold) {
         touchState.isMoving = true;
         // 移动中说明没变动
-        if (visibleActionId.value != '') {
+        if (props.activeWidgetId != '') {
 
             // grid.enableMove(true)
             onEmit('enableMove', true)
@@ -176,12 +155,15 @@ const onTouchEnd = (item: any) => {
 }
 
 const remove = (item) => {
-    emits('remove', item.id)
+    emits('widget-edit', item, EDIT_TYPE.remove)
 }
 
-defineExpose({
-    onGrdiContainerClick
-})
+const onWidgetEdit = (item, type) => {
+    emits('widget-edit', item, type)
+}
+
+
+
 
 </script>
 
@@ -211,6 +193,10 @@ defineExpose({
         border: 1px solid #eee;
         border-radius: 20px;
 
+    }
+
+    .wiget_size_item_container {
+        height: 100%;
     }
 
 }

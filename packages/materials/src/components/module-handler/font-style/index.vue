@@ -1,7 +1,8 @@
 <!-- v-if="item.type === WIDGET_TYPE.richText" -->
 <template>
-    <el-popover v-model:visible="activeRichTextOpera" trigger="click" popper-style="background-color:#000 !important;" v
-        popper-class="!p-[6px] !bg-black !rounded-[10px] !border-none" width="auto" @before-enter="onHideRichText">
+    <el-popover v-model:visible="activeRichTextOpera" trigger="click" popper-style="background-color:#000 !important;"
+        popper-class="!p-[6px] !bg-black !rounded-[10px] !border-none" width="auto" @before-enter="onHideRichText"
+        :teleported="false">
         <div class="flex items-center cursor-auto media_opera">
             <!-- 水平方向 -->
             <button v-for="(child, index) in xList" :key="index"
@@ -87,7 +88,6 @@ const props = defineProps<{
 }>()
 const deviceEnv = inject<keyof typeof ENV_ENUM>('deviceEnv') as keyof typeof ENV_ENUM
 const emit = defineEmits<{
-    (e: 'onEditing', isEditing: boolean): void
     (e: 'onEdit', item: IUserAppItem, type: keyof typeof EDIT_TYPE): void
 }>()
 
@@ -177,12 +177,6 @@ const onShowColorPanel = () => {
     activeColor.value = ''
 }
 
-watch(activeRichTextOpera, (newval) => {
-    emit('onEditing', newval)
-}, {
-    immediate: true
-}
-);
 
 
 </script>

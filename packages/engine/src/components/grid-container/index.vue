@@ -4,12 +4,14 @@
 
     <!-- 用于渲染动画 -->
     <div :class="['grid-stack-layout', 'xl:w-[840px]']" id="layoutAddani" ref="layoutAddani">
-
+      <!-- @remove=""
+        @handler-edit="(item, type) => emits('widgetEdit', item, type)"
+        @widget-edit="(item, type) => emits('widgetEdit', item, type)" -->
       <!-- <slot name="default" @select="select"></slot> -->
-      <GridItemVNode>
-        <!-- <slot></slot> -->
-      </GridItemVNode>
-      <!-- <slots></slots> -->
+      <GridItem :active-widget-id="editObject.visibleActionId" :list="list" @select="select" @hover="onHover"
+        @switch-edit="(edit) => editObject.edit = edit" :edit="editObject.edit" @editing="onEditing"
+        :editStatus="editStatus" @widget-edit="(item, type) => emits('widgetEdit', item, type)">
+      </GridItem>
     </div>
   </div>
 </template>
@@ -26,32 +28,21 @@ import {
 } from "gridstack";
 import useDrag from "../../../service/grid";
 import "../../assets/style/grid-item.scss";
-
-import { onMounted, ref, provide, nextTick, useSlots, Fragment, createVNode } from "vue";
+import { EDIT_TYPE, IUserAppItem } from "@beetr/constant";
+import { onMounted, ref, provide, nextTick, reactive, computed, createVNode } from "vue";
 import { GridItem } from "..";
-import GridItemModal from '../grid-item-modal/index.vue'
-const emits = defineEmits(["update"]);
+const emits = defineEmits(["update", "select", "widgetEdit"]);
 const [drag, dragstart, dragstop, isMovingWidget] = useDrag();
 
+
 const props = defineProps<{
-  list: any[]
+  list: IUserAppItem[]
+  editStatus: boolean
 }>()
-
-const select = () => {
-  console.log(1213123);
-}
-
-
-const GridItemVNode = createVNode(GridItem, {
-  // showHandler: true,
-  list: props.list,
-  select: select,
-
-}, {
-  $stable: false
-})
-
-
+const editObject = reactive({
+  visibleActionId: "", // 激活widget id
+  edit: false
+});
 
 /** 必须先初始化好数据，才能初始化grid.否则样式会出问题 */
 let grid = ref<GridStack | null>(null);
@@ -64,11 +55,27 @@ onMounted(() => {
 const onGrdiContainerClick = (e: MouseEvent) => {
   const container = document.getElementById('layoutAddani')!
   const target = e.target! as HTMLElement
+  console.log(e);
   if (target.id == 'layoutAddani' || !container.contains(target)) {
+    onHover('')
+    select(false, EDIT_TYPE.select)
     return true
   }
   return false
 }
+const select = (flag: boolean, type) => {
+  editObject.edit = false
+  emits("select", flag, type);
+}
+
+const onEditing = (isEdit: boolean) => {
+  editObject.isEditing = isEdit;
+};
+
+const onHover = (id: string) => {
+  editObject.visibleActionId = id;
+}
+
 
 const init = (options: GridStackOptions) => {
 

@@ -3,9 +3,9 @@
         <template #content>
             <ModuleResize @onResize="onEdit" :item="item"></ModuleResize>
             <el-divider direction="vertical" class="!mx-2" />
-            <module-font-style @onEditing="onEditing" :item="item" @onEdit="onEdit"></module-font-style>
+            <module-font-style :item="item" @onEdit="onEdit"></module-font-style>
             <el-divider direction="vertical" class="!mx-2" />
-            <ModuleAddLink :item="item" @onEditing="onEditing" @onEdit="onEdit"></ModuleAddLink>
+            <ModuleAddLink :item="item" @onEdit="onEdit"></ModuleAddLink>
         </template>
     </ModuleHander>
 
@@ -30,17 +30,12 @@ defineProps({
 
 const emit = defineEmits<{
     (e: 'onEdit', item: IUserAppItem, type: keyof typeof EDIT_TYPE): void
-    (e: 'onEditing', isEditing: boolean): void
 }>()
 
 
 
 const onEdit = (item: IUserAppItem, type: keyof typeof EDIT_TYPE) => {
     emit('onEdit', item, type)
-}
-
-const onEditing = (isEditing: boolean) => {
-    emit('onEditing', isEditing)
 }
 
 
