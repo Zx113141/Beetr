@@ -1,4 +1,12 @@
-import { IUserAppItem, WIDGET_TYPE, type Style } from '@beetr/constant'
+
+import { IUserAppItem, WIDGET_TYPE, type Style, BROWSER_ENV, } from '@beetr/constant'
+
+interface IController {
+    browserEnv: BROWSER_ENV,
+    deviceEnv: BROWSER_ENV,
+    userInfo: any,
+    urlInfo: any
+}
 
 export const defaultTitleConfigs = (props: any): Partial<IUserAppItem> => {
     const INIT_POSITION = {
@@ -19,4 +27,11 @@ export const defaultTitleConfigs = (props: any): Partial<IUserAppItem> => {
     return {
         ...item
     }
+}
+
+export const controlEditor = (controller: any) => {
+
+    const editor = controller()
+
+    return
 }

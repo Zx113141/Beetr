@@ -65,7 +65,7 @@
         </template>
     </el-popover>
 
-    <div class="widget_resize_block flex-1 flex items-center richText" v-else>
+    <div class="widget_resize_block flex-1 flex items-center richText" v-if="browserEnv == BROWSER_ENV.mobile">
         <div class="flex items-center cursor-auto direction_opera">
             <!-- 水平方向 -->
             <button v-for="(child, index) in xList" :key="index"
