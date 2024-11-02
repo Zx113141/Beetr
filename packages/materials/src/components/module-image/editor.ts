@@ -14,12 +14,12 @@ export const defaultImageConfigs = (props: any): Partial<IUserAppItem> => {
         type: WIDGET_TYPE.media,
         position: INIT_POSITION,
         cusStyle,
-        ...props,
         screenshotUrl: 'undefined',
         cut: {
             desktop: 0,
             mobile: 0
-        }
+        },
+        ...props,
     }
     return {
         ...item

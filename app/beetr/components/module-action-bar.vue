@@ -19,19 +19,21 @@
         <!-- <ModuleFooterLogo></ModuleFooterLogo> -->
 
         <!-- 非登录状态下的操作栏，登录、创建个人链接 -->
-        <!-- <ModuleLeftActionOffline v-if="!isEdit && browserEnv == BROWSER_ENV.desktop"
-            :path="userInfo?.url"></ModuleLeftActionOffline> -->
+        <ModuleLeftActionOffline v-if="!isEdit && browserEnv == BROWSER_ENV.desktop" :path="url">
+        </ModuleLeftActionOffline>
         <!-- <themeDraw @closeLoading="closeLoading" @openLoading="openLoading"></themeDraw> -->
         <ModuleWidgetAddDrawer @on-select="onAddGrid">
         </ModuleWidgetAddDrawer>
-        <ModuleWidgetDrawer @close="close">
-            <template #content>
-                <component :is="widgetDrawer" :prop="widgetDrawerData.prop" :browserEnv="browserEnv"
-                    :key="widgetDrawerData.data.id" :deviceEnv="deviceEnv" :data="widgetDrawerData.data"
+        <el-drawer :scoped="false" v-model="widgetDrawerData.show" :direction="direction" modal-class="editdrawer"
+            @close="() => back(widgetDrawerData.data?.id ? false : true)" :with-header="false" size="323">
+            <template #default>
+                <component ref="dynamicRef" :is="widgetDrawer" :prop="widgetDrawerData.prop" :browserEnv="browserEnv"
+                    :key="widgetDrawerData.data?.id" :deviceEnv="deviceEnv" :data="widgetDrawerData.data"
                     @finish="finish" @close="back">
                 </component>
             </template>
-        </ModuleWidgetDrawer>
+        </el-drawer>
+
     </client-only>
 
 </template>
@@ -41,9 +43,12 @@ import { BROWSER_ENV, STEP_PROCESS, type IUserAppItem } from '@beetr/constant';
 import { _userStore } from '~/store/user';
 import { widgetDrawerData, addDrawData } from '~~/store/isLoading'
 import type { IModule } from '@beetr/materials';
+import { computed, toRefs, ref, triggerRef, inject, isRef } from 'vue'
+
 let widgetDrawer: any = null
 const userStore = _userStore()
 let _tempFn: Function | undefined = void 0
+const dynamicRef = ref(null)
 
 const emits = defineEmits<{
     (e: 'onEdit', params: any): void,
@@ -57,13 +62,16 @@ const {
     isEdit,
     currentStep,
     isScreenLock,
+    url
 } = toRefs(userStore)
 const props = defineProps<{
     isEditorRef: boolean,
     browserEnv: keyof typeof BROWSER_ENV,
     deviceEnv: keyof typeof BROWSER_ENV,
 }>()
-
+const direction = computed(() => {
+    return props.browserEnv == BROWSER_ENV.mobile ? 'btt' : 'rtl'
+})
 const loading = inject('loading', false)
 
 const onAddGrid = (params: IModule, data?: IUserAppItem, fn?: Function) => {
@@ -72,10 +80,13 @@ const onAddGrid = (params: IModule, data?: IUserAppItem, fn?: Function) => {
         emits('onAdd', params)
     } else {
         emits('onPrepare', params)
+
         widgetDrawer = params.Drawer[props.browserEnv]
-        widgetDrawerData.data = params.defaultEditorConfigs(data)
-        widgetDrawerData.params = params
-        widgetDrawerData.show = true
+        if (widgetDrawer) {
+            widgetDrawerData.data = params.defaultEditorConfigs(data)
+            widgetDrawerData.params = params
+            widgetDrawerData.show = true
+        }
 
         triggerRef(widgetDrawerData.data)
     }
@@ -94,17 +105,17 @@ const finish = (data: Partial<IUserAppItem>) => {
     _tempFn && _tempFn(data)
 }
 
-const close = () => {
-    _tempFn && _tempFn()
-}
 
-const back = () => {
-    widgetDrawer = null
+
+const back = (openAdd: boolean) => {
     widgetDrawerData.show = false
+    widgetDrawer = null
     widgetDrawerData.data = null
     widgetDrawerData.params = null
+    if (openAdd) {
+        addDrawData.show = true
+    }
 
-    addDrawData.show = true
     _tempFn && _tempFn()
 }
 

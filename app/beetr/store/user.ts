@@ -86,7 +86,8 @@ export const _userStore = defineStore('user', () => {
     currentStep,
     isScreenLock,
     setInfo,
-    updateUser
+    updateUser,
+    url:userInfo.value?.url
   }
 }, {
   // persist: {

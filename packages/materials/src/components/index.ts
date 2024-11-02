@@ -7,11 +7,11 @@ import { link, defaultEditorConfigs as linkConfigs, } from './module-link'
 import { ModuleHref, ModuleHrefHandler, ModuleHrefDrawer } from './module-href'
 import { social, defaultEditorConfigs as socialConfigs, } from './module-social'
 
-import { ModuleMedia, ModuleMediaHandler } from './module-media'
+import { ModuleMedia, ModuleMediaHandler,ModuleMediaDrawer } from './module-media'
 import { image, defaultImageConfigs } from './module-image'
 import { video, defaultVideoConfigs } from './module-video'
 
-import { defaultTitleConfigs, sectionTitle, ModuleSectionTitle, ModuleSectionTitleHandler } from './module-title'
+import { defaultTitleConfigs, sectionTitle, ModuleSectionTitle, ModuleSectionTitleHandler, ModuleSectionTitleDrawer } from './module-title'
 
 interface IModule {
     name: WIDGET_TYPE
@@ -103,7 +103,7 @@ const BeetrModules: IModule[] = [
         Handler: ModuleMediaHandler,
         Drawer: {
             desktop: null,
-            mobile: null,
+            mobile: ModuleMediaDrawer,
         },
         icon: image,
         title: '图片',
@@ -118,7 +118,7 @@ const BeetrModules: IModule[] = [
         Handler: ModuleMediaHandler,
         Drawer: {
             desktop: null,
-            mobile: null,
+            mobile: ModuleMediaDrawer,
         },
         icon: video,
         title: '视频',
@@ -132,7 +132,7 @@ const BeetrModules: IModule[] = [
         module: ModuleSectionTitle,
         Handler: ModuleSectionTitleHandler,
         Drawer: {
-            desktop: null, mobile: null,
+            desktop: null, mobile: ModuleSectionTitleDrawer,
         },
         icon: sectionTitle,
         title: '标题',

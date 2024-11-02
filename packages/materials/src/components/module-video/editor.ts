@@ -21,6 +21,7 @@ export const defaultVideoConfigs = (props: any): Partial<IUserAppItem> => {
         },
         ...props,
     }
+
     return {
         ...item
     }
