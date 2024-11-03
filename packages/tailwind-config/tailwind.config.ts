@@ -2,6 +2,7 @@ import type { Config } from "tailwindcss";
 
 const config: Config = {
     mode: 'jit',
+ 
     purge: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}', "node_modules/@beetr/**/*.{vue,jsx,tsx}", "./pages/**/*.{vue,jsx,tsx}",
         "./components/*.{vue,jsx,tsx}",
         "./components/**/*.{vue,jsx,tsx}",

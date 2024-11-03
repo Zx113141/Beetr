@@ -31,7 +31,7 @@ nuxtApp.hook('page:finish', () => {
 //   resizeWrapHeight()
 // })
 </script>
-<!-- <style lang="scss">
+<style lang="scss">
 // @import './assets/theme/minxin/minxin.scss';
 
 /* 禁用点击高亮 */
@@ -41,4 +41,4 @@ nuxtApp.hook('page:finish', () => {
   outline: none;
   /* 去除可能的轮廓线 */
 }
-</style> -->
+</style>
