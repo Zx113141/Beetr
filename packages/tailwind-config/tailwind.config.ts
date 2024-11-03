@@ -1,8 +1,7 @@
 import type { Config } from "tailwindcss";
-
+import colors from 'tailwindcss/colors'
 const config: Config = {
     mode: 'jit',
- 
     purge: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}', "node_modules/@beetr/**/*.{vue,jsx,tsx}", "./pages/**/*.{vue,jsx,tsx}",
         "./components/*.{vue,jsx,tsx}",
         "./components/**/*.{vue,jsx,tsx}",
@@ -81,8 +80,19 @@ const config: Config = {
                     100: '#F6F8FA',
                     200: '#F3F4F6',
                 },
+                amber: colors.amber,
+                lime: colors.lime,
+                rose: colors.rose,
+                orange: colors.orange,
             },
         },
+        backgroundColor:{
+
+        },
+        textColor:{
+
+        },
+        
     },
     // ... 其他配置
 };
