@@ -55,13 +55,13 @@ const onShare = () => {
     <div :class="['action_bar', browserEnv == BROWSER_ENV.mobile ? 'mobile' : 'desktop', isEditorRef ? 'editor' : '']">
         <el-button type="success" :disabled="props.loadingRef" style="width:127px" class="relative greenBtn "
             @click="onShare">
-            <span v-if="!props.loadingRef">发给朋友</span>
+            <span v-if="!props.loadingRef" class="text-primary">发给朋友</span>
             <div class="animation__shine" style="animation-duration: 4000ms"></div>
             <el-icon class="is-loading" v-if="props.loadingRef">
                 <img src="./images/loading.png" alt="">
             </el-icon>
         </el-button>
- 
+
         <template v-if="browserEnv == BROWSER_ENV.mobile">
             <el-button type="success" style="width:89px;" class="relative blackBtn" @click="addDrawData.show = true">
                 <span>

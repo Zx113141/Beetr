@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full widget_base-description">
+    <div class="w-full widget_base-description module-base">
         <div v-if="`${item.cusStyle[deviceEnv].w * 2}x${item.cusStyle[deviceEnv].h}` === '4x4'"
             class="flex items-start w-full">
             <div class="description_icon">
@@ -81,6 +81,8 @@ const updateWidget = () => {
 
 
 <style scoped lang="scss">
+@use '../../../assets/themes/index.css';
+
 .widget_base-description {
     display: flex;
     max-height: 100%;

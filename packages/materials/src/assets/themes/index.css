@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-module-base: theme('colors.rose.500');
+    /* --color-text-base: theme('colors.black');
+    --color-off-base: theme('colors.gray.50');
+    --color-text-muted: theme('colors.gray.600');
+    --color-text-muted-hover: theme('colors.gray.500');
+    --color-primary: theme('colors.rose.600'); */
+  }
+
+}
