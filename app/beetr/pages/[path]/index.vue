@@ -151,7 +151,7 @@ const onSetEnv = (env: keyof typeof BROWSER_ENV) => {
 
 <template>
     <div :class="[
-        'min-h-screen flex flex-col items-center bg-[#F8F8F8]',
+        'min-h-screen flex flex-col items-center bg-[#F8F8F8] dark',
         browserEnv == BROWSER_ENV.mobile
             ? 'browser-mobile justify-between'
             : 'browser-desktop justify-center',

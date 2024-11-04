@@ -52,10 +52,11 @@ const onShare = () => {
 </script>
 
 <template>
-    <div :class="['action_bar', browserEnv == BROWSER_ENV.mobile ? 'mobile' : 'desktop', isEditorRef ? 'editor' : '']">
-        <el-button type="success" :disabled="props.loadingRef" style="width:127px" class="relative greenBtn "
-            @click="onShare">
-            <span v-if="!props.loadingRef" class="text-primary">发给朋友</span>
+    <div
+        :class="['action_bar', browserEnv == BROWSER_ENV.mobile ? 'mobile' : 'desktop', isEditorRef ? 'editor' : '', 'bg-container2']">
+        <el-button type="success" :disabled="props.loadingRef" style="width:127px"
+            class="relative greenBtn bg-primary2 " @click="onShare">
+            <span v-if="!props.loadingRef">发给朋友</span>
             <div class="animation__shine" style="animation-duration: 4000ms"></div>
             <el-icon class="is-loading" v-if="props.loadingRef">
                 <img src="./images/loading.png" alt="">
@@ -63,7 +64,8 @@ const onShare = () => {
         </el-button>
 
         <template v-if="browserEnv == BROWSER_ENV.mobile">
-            <el-button type="success" style="width:89px;" class="relative blackBtn" @click="addDrawData.show = true">
+            <el-button type="success" style="width:89px;" class="relative blackBtn bg-primary1 "
+                @click="addDrawData.show = true">
                 <span>
                     <SvgAdd></SvgAdd>
                     <!-- <img src="./add.svg" style="width: 11px;height: 11px;margin-right: 16px;" alt=""> -->
@@ -71,7 +73,8 @@ const onShare = () => {
                 <span>添加</span>
                 <!-- <div class="animation__shine" style="animation-duration: 4000ms"></div> -->
             </el-button>
-            <el-button type="success" style="width:89px;" class="relative blackBtn" @click="drawData.show = true">
+            <el-button type="success" style="width:89px;" class="relative blackBtn bg-primary1 "
+                @click="drawData.show = true">
                 <span>
                     <!-- <img src="./theme.svg" style="width: 11px;height: 11px;margin-right: 16px;" alt=""> -->
                     <SvgTheme></SvgTheme>
@@ -83,7 +86,7 @@ const onShare = () => {
         <template v-else>
             <el-divider direction="vertical" class="!mx-4" />
             <div class="flex items-center space-x-1">
-                <el-button type="success" style="width:89px;" class="relative blackBtn"
+                <el-button type="success" style="width:89px;" class="relative blackBtn bg-primary1 "
                     @click="addDrawData.show = true">
                     <span>
                         <SvgAdd></SvgAdd>
@@ -92,7 +95,8 @@ const onShare = () => {
                     <span>添加</span>
                     <!-- <div class="animation__shine" style="animation-duration: 4000ms"></div> -->
                 </el-button>
-                <el-button type="success" style="width:89px;" class="relative blackBtn" @click="drawData.show = true">
+                <el-button type="success" style="width:89px;" class="relative blackBtn bg-primary1 "
+                    @click="drawData.show = true">
                     <span>
                         <SvgTheme></SvgTheme>
                         <!-- <img src="./theme.svg" style="width: 11px;height: 11px;margin-right: 16px;" alt=""> -->

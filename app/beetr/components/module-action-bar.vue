@@ -24,7 +24,7 @@
         <!-- <themeDraw @closeLoading="closeLoading" @openLoading="openLoading"></themeDraw> -->
         <ModuleWidgetAddDrawer @on-select="onAddGrid">
         </ModuleWidgetAddDrawer>
-        <el-drawer :scoped="false" v-model="widgetDrawerData.show" :direction="direction" modal-class="editdrawer"
+        <el-drawer :scoped="false" v-model="widgetDrawerData.show" :direction="direction" modal-class="bg-container2"
             @close="() => back(widgetDrawerData.data?.id ? false : true)" :with-header="false" size="323">
             <template #default>
                 <component ref="dynamicRef" :is="widgetDrawer" :prop="widgetDrawerData.prop" :browserEnv="browserEnv"

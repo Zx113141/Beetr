@@ -19,19 +19,40 @@ const appConfig: Config = {
     theme: {
         extend: {
             colors: {
-                rose: colors.rose
+                rose: colors.rose,
+                neutral: colors.neutral
             },
-            backgroundColor: {
-                containerBgColor: 'var(--color-container-bgColor)',
+            borderColor: {
+                primary1: 'var(--br-color-primary1)',
+                primary2: 'var(--br-color-primary2)',
+                primary3: 'var(--br-color-primary3)',
+                primary4: 'var(--br-color-primary4)',
+                primary5: 'var(--br-color-primary5)',
             },
             textColor: {
-                //like `text-base` and `text-primary`
-                base: 'var(--color-text-base)',
-                muted: 'var(--color-text-muted)',
-                'muted-hover': 'var(--color-text-muted-hover)',
-                primary: 'var(--color-primary)',
-                secondary: 'var(--color-secondary)',
+                primary1: 'var(--br-color-primary1)',
+                primary2: 'var(--br-color-primary2)',
+                primary3: 'var(--br-color-primary3)',
+                primary4: 'var(--br-color-primary4)',
+                primary5: 'var(--br-color-primary5)',
             },
+            backgroundColor: {
+                container1: 'var(--br-color-container1)',
+                container2: 'var(--br-color-container2)',
+                primary1: 'var(--br-color-primary1)',
+                primary2: 'var(--br-color-primary2)',
+                primary3: 'var(--br-color-primary3)',
+                primary4: 'var(--br-color-primary4)',
+                primary5: 'var(--br-color-primary5)',
+            },
+            // textColor: {
+            //     //like `text-base` and `text-primary`
+            //     base: 'var(--br-color-text-base)',
+            //     muted: 'var(--br-color-text-muted)',
+            //     'muted-hover': 'var(--br-color-text-muted-hover)',
+            //     primary: 'var(--br-color-primary)',
+            //     secondary: 'var(--br-color-secondary)',
+            // },
         }
     }
 }

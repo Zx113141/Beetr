@@ -34,7 +34,7 @@ const { postMessage } = useMessage()
 // refs reactive here
 const { userInfo, urlInfo, currentStep, isScreenLock, isEdit } = storeToRefs(userStore)
 const { browserEnv, deviceEnv } = storeToRefs(envStore)
-const { appConfigList, userAppList } = storeToRefs(widgetStore)
+const { appConfigList, userAppList, userTheme } = storeToRefs(widgetStore)
 const mextType = ref<number>(0)
 const Loading = ref(false)
 // const skeltonLoading = ref(false)
@@ -64,7 +64,12 @@ onMounted(async () => {
         userInfo: userInfo.value!,
     })
     framePostMessagx(MESSAGE_EVENT_TYPE.appConfigList, appConfigList.value)
+    localStorage.setItem('theme', userTheme.value)
     // skeltonLoading.value = false
+    // 父级设置主题
+    window.parent.window.document.documentElement.classList.add('theme-' + userTheme.value || 'light')
+    // 当前iframe
+    window.document.documentElement.classList.add('theme-' + userTheme.value || 'light')
 })
 
 
@@ -199,7 +204,7 @@ provide('loading', Loading)
     <!-- 锁屏 -->
     <ModuleLock v-if="isScreenLock" />
     <div v-else
-        :class="['relative flex min-h-screen w-full flex-1 flex-col items-center', `browser-${browserEnv || 'desktop'}`, `device-${deviceEnv || 'desktop'}`]">
+        :class="['bg-container1 relative flex min-h-screen w-full flex-1 flex-col items-center', `browser-${browserEnv || 'desktop'}`, `device-${deviceEnv || 'desktop'}`,]">
         <div
             class="user-aside flex h-full w-full max-w-[428px] items-center justify-center p-6 pt-12 pb-0 xl:absolute xl:top-0 xl:max-w-[min(100vw,1728px)] xl:items-stretch xl:justify-start xl:p-16">
             <ModuleNavbar v-model:mextType="mextType" :handleAdd="handleWidgetAdd"

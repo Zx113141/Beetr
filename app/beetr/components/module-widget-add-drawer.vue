@@ -1,15 +1,15 @@
 <template>
     <client-only>
-        <el-drawer :scoped="false" v-model="addDrawData.show" :direction="direction" modal-class="editdrawer" title="编辑"
-            :with-header="false">
-            <div class="header">
+        <el-drawer :scoped="false" v-model="addDrawData.show" :direction="direction" modal-class="editdrawer "
+            title="编辑" :with-header="false">
+            <div class="header bg-container2 border-primary4">
                 <div class="left"></div>
-                <el-button type="success" style="width:90px" class="relative greenBtn"
+                <el-button type="success" style="width:90px" class="relative bg-primary1 text-primary5 "
                     @click="addDrawData.show = false">
                     <span>完成</span>
                 </el-button>
             </div>
-            <div class="content">
+            <div class="content bg-container2 text-primary5">
                 <div class="addItems" :key="item.name" @click="() => onSelectItem(item)" v-for="item in BeetrModules">
                     <img :src="item.icon" alt="">
                     <span>{{ item.title }}</span>

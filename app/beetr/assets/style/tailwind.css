@@ -4,7 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
+@layer html {
   @font-face {
     font-family: 'Inter variablefont slnt wght';
     font-weight: 400;
@@ -13,25 +13,34 @@
 
 
   :root {
-    .theme-light {
-      --color-container-bgColor: #0a0a0a;
-      /* --color-container-bgColor:#0a0a0a; */
-    }
 
-    .theme-dark {
-      --color-container-bgColor: #0a0a0a;
-    }
 
     /* .theme-dark {
-      --color-base: theme('colors.gray.900');
-      --color-text-base: theme('colors.gray.100');
-      --color-off-base: theme('colors.gray.800');
-      --color-text-muted: theme('colors.gray.300');
-      --color-text-muted-hover: theme('colors.gray.200');
-      --color-primary: theme('colors.blue.500');
-      --color-secondary: theme('colors.blue.200');
+      --br-color-base: theme('colors.gray.900');
+      --br-color-text-base: theme('colors.gray.100');
+      --br-color-off-base: theme('colors.gray.800');
+      --br-color-text-muted: theme('colors.gray.300');
+      --br-color-text-muted-hover: theme('colors.gray.200');
+      --br-color-primary: theme('colors.blue.500');
+      --br-color-secondary: theme('colors.blue.200');
     } */
   }
 
+  .theme-dark {
+    /* 容器bgColor */
+    --br-color-container1: theme('colors.neutral.950');
+    /* 子集容器bgColor */
+    --br-color-container2: theme('colors.neutral.800');
+    /* 组件主要背景颜色1 */
+    --br-color-primary1: theme('colors.neutral.700');
+    /* 组件主要背景颜色2 */
+    --br-color-primary2: theme('colors.neutral.600');
+    /* hover */
+    --br-color-primary3: theme('colors.neutral.500');
+    /* active  */
+    --br-color-primary4: theme('colors.neutral.400');
+    /* 文本颜色 */
+    --br-color-primary5: theme('colors.neutral.200');
+  }
 
 }
