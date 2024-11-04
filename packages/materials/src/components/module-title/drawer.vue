@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class=" bg-container2 text-primary5">
         <ModuleMobileDrawerHeader :browserEnv="browserEnv" @close="back" @finish="beforeClose">
         </ModuleMobileDrawerHeader>
         <div class="content">

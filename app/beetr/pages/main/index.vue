@@ -225,13 +225,15 @@ provide('loading', Loading)
             </ModuleContainer>
             <!-- skelton? -->
 
-            <div class="browser-mobile-action w-full p-[20px_25px] h-[130px]"
+            <div class="browser-mobile-action w-full p-[20px_25px] h-[130px] bg-primary2 text-primary5"
                 v-if="currentStep == STEP_PROCESS.userInfo && isEdit && browserEnv == BROWSER_ENV.mobile">
                 <div class="flex items-center justify-start">
-                    <el-button @click="onSetDraw" class="!p-2 !shadow-none relative !text-block !bg-[transparent]">
+                    <el-button @click="onSetDraw"
+                        class="!p-2 !shadow-none relative !text-block !bg-[transparent] text-primary4">
                         <SvgControl class="ctrl-icon" />
                     </el-button>
-                    <el-button class="ml-5 !p-2 !shadow-none relative !text-block !bg-[transparent]" @click="aboutUs">
+                    <el-button class="ml-5 !p-2 !shadow-none relative !text-block !bg-[transparent] text-primary4"
+                        @click="aboutUs">
                         <SvgWeixin class="wx-icon" />
                     </el-button>
                     <div class="ml-5 px-2 styles_foot-traffic-divider__EKk6W">

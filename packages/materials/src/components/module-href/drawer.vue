@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class=" bg-container2 text-primary5">
         <ModuleMobileDrawerHeader :browserEnv="browserEnv" @close="back" @finish="beforeClose">
             <img :src="backL" loading="lazy" class="back" @click="back" width="30" height="30" v-if="!data.id" />
         </ModuleMobileDrawerHeader>
@@ -17,7 +17,7 @@ import ModuleLinkDrawer from '../module-link/drawer.vue';
 import ModuleSocialDrawer from '../module-social/drawer.vue';
 import backL from './back2.png'
 import ModuleMobileDrawerHeader from '../module-mobile-drawer-header/index.vue'
-const props=  defineProps<{
+const props = defineProps<{
     prop: any,
     browserEnv: keyof typeof BROWSER_ENV | undefined,
     data: IUserAppItem,
@@ -37,7 +37,7 @@ const beforeClose = () => {
 }
 
 const back = () => {
-    emit('close',props.data.id?false:true)
+    emit('close', props.data.id ? false : true)
 }
 
 
@@ -46,7 +46,7 @@ const back = () => {
 
 <style lang="scss" scoped>
 .editdrawer {
-     
+
     .content {
         padding: 20px 30px 0 27px !important;
         // @include font_color('drawerBodyColor');

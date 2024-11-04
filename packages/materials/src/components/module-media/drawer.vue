@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class=" bg-container2 text-primary5">
         <ModuleMobileDrawerHeader :browserEnv="browserEnv" @close="back" @finish="beforeClose">
         </ModuleMobileDrawerHeader>
         <div class="content">
@@ -66,7 +66,7 @@
 
 <script setup lang="ts">
 import { toRefs, computed, ref, reactive } from 'vue'
-import { BROWSER_ENV, IUserAppItem, MEDIA_TYPE, UPLOAD_TYPE,SvgCrop,TOKEN_CREDENTIALS } from '@beetr/constant'
+import { BROWSER_ENV, IUserAppItem, MEDIA_TYPE, UPLOAD_TYPE, SvgCrop, TOKEN_CREDENTIALS } from '@beetr/constant'
 import ModuleMobileDrawerHeader from '../module-mobile-drawer-header/index.vue'
 import { useEditor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'

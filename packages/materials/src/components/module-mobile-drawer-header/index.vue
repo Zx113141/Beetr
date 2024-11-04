@@ -8,7 +8,8 @@
                 </el-button>
             </slot>
         </div>
-        <el-button type="success" style="width:90px" class="relative greenBtn" @click="beforeClose">
+        <el-button type="success" style="width:90px" class="relative greenBtn bg-primary1 text-primary5"
+            @click="beforeClose">
             <span>{{ browserEnv == BROWSER_ENV.desktop ? '完成' : '保存' }}</span>
         </el-button>
     </div>
