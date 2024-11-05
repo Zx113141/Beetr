@@ -28,19 +28,33 @@
 
   .theme-dark {
     /* 容器bgColor */
-    --br-color-container1: theme('colors.neutral.950');
-    /* 子集容器bgColor */
-    --br-color-container2: theme('colors.neutral.800');
-    /* 组件主要背景颜色1 */
-    --br-color-primary1: theme('colors.neutral.700');
-    /* 组件主要背景颜色2 */
-    --br-color-primary2: theme('colors.neutral.600');
-    /* hover */
-    --br-color-primary3: theme('colors.neutral.500');
-    /* active  */
-    --br-color-primary4: theme('colors.neutral.400');
-    /* 文本颜色 */
-    --br-color-primary5: theme('colors.neutral.200');
+    --br-bg-container1: theme('colors.neutral.950');
+    /* action bar */
+    --br-bg-container2: theme('colors.neutral.800');
+    /* online action bg color*/
+    --br-bg-container3: theme('colors.neutral.800');
+    /* item hover bg color */
+    --br-bg-container4: theme('colors.neutral.600');
+    /* 按钮主要背景颜色1 send*/
+    --br-btn-primary1: theme('colors.neutral.700');
+    /* 组件主要背景颜色2 add theme env*/
+    --br-btn-primary2: theme('colors.neutral.700');
+    /* 按钮主要背景颜色3 submit*/
+    --br-btn-primary3: theme('colors.neutral.700');
+    /* 按钮hover背景颜色4 cancel*/
+    --br-btn-primary4: theme('colors.neutral.600');
+    /* 组件主要背景颜色1 input*/
+    --br-input-primary1: theme('colors.neutral.500');
+    /* 组件hover背景颜色2 input*/
+    --br-input-primary3: theme('colors.neutral.600');
+    /* 文本颜色1 bg */
+    --br-text-color1: theme('colors.neutral.100');
+    /* 文本颜色2 btn*/
+    --br-text-color2: theme('colors.neutral.100');
+    /* 文本颜色3 input*/
+    --br-text-color3: theme('colors.neutral.100');
+    /* 文本颜色4 placeholder*/
+    --br-text-color4: theme('colors.neutral.50');
   }
 
 }

@@ -30,107 +30,11 @@ div[id^="el-popper-container-"] {
     --el-border-radius-base: 8px;
   }
   .el-button {
-    --el-button-bg-color: #ffffff;
-    --el-button-text-color: #000000;
-    --el-button-disabled-text-color: rgb(191 191 191);
-    --el-button-disabled-bg-color: rgb(255 255 255);
-    --el-button-hover-text-color: var(--el-button-text-color);
-    --el-button-hover-bg-color: rgb(250 250 250);
-    --el-button-active-text-color: var(--el-button-text-color);
-    --el-button-active-bg-color: rgb(235 235 235);
-    --el-button-font-weight: 600;
     padding: 0.5rem 0.625rem;
-    border: none !important;
-    transition: transform 0.1s cubic-bezier(0.427, 0.073, 0.105, 0.997),
-      color 0.1s cubic-bezier(0.427, 0.073, 0.105, 0.997);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
-    &.el-button--small {
-      padding: 5px 11px;
-    }
-    &:not(.is-disabled):active {
-      transform: scale(0.94, 0.94);
-      box-shadow: rgba(0, 0, 0, 0) 0 0 0 0, rgba(0, 0, 0, 0) 0 0 0 0,
-        rgba(0, 0, 0, 0) 0 0 0 0;
-    }
-    &.el-button--primary {
-      --el-button-bg-color: #000000;
-      --el-button-text-color: #ffffff;
-      --el-button-disabled-text-color: var(--el-button-text-color);
-      --el-button-disabled-bg-color: rgb(108 108 108);
-      --el-button-hover-text-color: var(--el-button-text-color);
-      --el-button-hover-bg-color: rgb(41 41 41);
-      --el-button-active-text-color: rgb(173 173 173);
-      --el-button-active-bg-color: var(--el-button-bg-color);
-      &:not(.is-disabled) {
-        box-shadow: 0 3px 2px rgba(0, 0, 0, 0.06);
-      }
-    }
-    &.el-button--success {
-      --el-button-bg-color: rgb(78 221 118);
-      --el-button-text-color: #ffffff;
-      --el-button-disabled-bg-color: rgba(78, 221, 118, 0.6);
-      --el-button-hover-bg-color: rgb(61 218 105);
-      --el-button-hover-text-color: var(--el-button-text-color);
-      --el-button-active-text-color: rgb(235 235 235);
-      --el-button-active-bg-color: rgb(44 214 91);
-      --el-button-disabled-text-color: #ffffff;
-      &:not(.is-disabled) {
-        box-shadow: 0 3px 2px rgba(0, 0, 0, 0.06);
-      }
-    }
-    &.el-button--info {
-      --el-button-bg-color: rgb(118 140 255);
-      --el-button-text-color: #ffffff;
-      --el-button-disabled-bg-color: rgba(118, 140, 255, 0.6);
-      --el-button-hover-bg-color: rgb(106 128 246);
-      --el-button-hover-text-color: var(--el-button-text-color);
-      --el-button-active-text-color: rgb(235 235 235);
-      --el-button-active-bg-color: rgb(102 125 245);
-      --el-button-disabled-text-color: #ffffff;
-      &:not(.is-disabled) {
-        box-shadow: 0 3px 2px rgba(0, 0, 0, 0.06);
-      }
-    }
-    &.el-button--delete {
-      --el-button-bg-color: #ffffff;
-      --el-button-text-color: #000000;
-      --el-button-disabled-text-color: rgb(191 191 191);
-      --el-button-disabled-bg-color: rgb(255 255 255);
-      --el-button-hover-text-color: var(--el-button-text-color);
-      --el-button-hover-bg-color: rgb(250 250 250);
-      --el-button-active-text-color: var(--el-button-text-color);
-      --el-button-active-bg-color: rgb(245 245 245);
-      height: 34px;
-      width: 34px;
-      box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.06), 0 9px 9px rgba(0, 0, 0, 0.04),
-        0 5.83333px 5.27083px rgba(0, 0, 0, 0.03),
-        0 3.46667px 2.86667px rgba(0, 0, 0, 0.024),
-        0 1.8px 1.4625px rgba(0, 0, 0, 0.02),
-        0 0.733333px 0.733333px rgba(0, 0, 0, 0.016),
-        0 0.166667px 0.354167px rgba(0, 0, 0, 0.01);
-      &:active {
-        transform: scale(0.9, 0.9);
-      }
-    }
-    &.is-link {
-      --el-button-bg-color: transparent;
-      --el-button-disabled-text-color: rgb(191 191 191);
-      --el-button-disabled-bg-color: var(--el-button-bg-color);
-      --el-button-hover-bg-color: #f0f0f0;
-      --el-button-hover-link-text-color: var(--el-button-text-color);
-      --el-button-active-bg-color: rgba(0, 0, 0, 0.1);
-      box-shadow: none;
-      &:hover,
-      &:focus {
-        background-color: var(--el-button-hover-bg-color);
-      }
-      &:active {
-        background-color: var(--el-button-active-bg-color);
-      }
-    }
   }
+  //
   .el-input.init_input {
-    background-color: #f7f7f7;
+    // background-color: #f7f7f7;
     padding: 0.375rem 0.75rem;
     outline: 2px solid transparent;
     outline-offset: 2px;
@@ -260,6 +164,7 @@ div[id^="el-popper-container-"] {
     // @include font_color('popoverColor');
     // @include border_color('actionBarBorderColor');
     --el-popover-border-radius: 18px;
+    @apply bg-container2 border-container2 text-color4;
   }
   .custom-tooltip-animation {
     background-color: transparent;
@@ -369,52 +274,6 @@ div[id^="el-popper-container-"] {
   }
 }
 
-.whiteBtn {
-  background: #fff;
-  &:hover {
-    background: rgba(250, 250, 250, 1);
-  }
-}
-
-.greenBtn {
-  // @include background_color("shareBtnBgColor");
-  background: rgba(78, 221, 118, 1);
-  &:hover {
-    // @include background_color("shareBtnHoverBgColor")
-    background: rgba(61, 218, 105, 1);
-  }
-}
-
-.purpleBtn {
-  background: #768cff;
-  &.is-disabled,
-  &:hover {
-    background: rgba(200, 209, 255, 1);
-  }
-}
-
-.grayBtn {
-  font-size: 14px;
-  background: #f7f7f7;
-  &.is-disabled,
-  &:hover {
-    background: rgba(247, 247, 247, 1);
-  }
-}
-
-.blackBtn {
-  background-color: #000;
-  cursor: pointer;
-  &:hover {
-    background: rgba(40, 40, 40, 1);
-  }
-}
-
-.settingBtn {
-  // @include background_color("settingButtonBgColor");
-  // @include font_color("settingButtonColor");
-}
-
 .editMask {
   width: 100%;
   height: 100%;
@@ -424,7 +283,11 @@ div[id^="el-popper-container-"] {
   .el-drawer {
     border-top-left-radius: 24px;
     border-bottom-left-radius: 24px;
-    background-color: #fff;
+    // background-color: #fff;
+    @apply bg-container2;
+    // .el-button {
+    //   @apply ;
+    // }
     width: 20% !important;
     // @include background_color("drawerBackgrouundColor");
     .el-drawer__body {
@@ -443,6 +306,12 @@ div[id^="el-popper-container-"] {
     }
   }
 }
+.el-tooltip__trigger {
+  .el-button {
+    @apply bg-btnPrimary1 text-color2 hover:bg-btnPrimary1;
+  }
+}
+
 .el-drawer {
   border-top-left-radius: 24px !important;
   border-bottom-left-radius: 24px !important;

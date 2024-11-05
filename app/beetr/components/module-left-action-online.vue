@@ -240,8 +240,9 @@ const isShowPopover = ref(false)
             :teleported="false" @hide="onPopoverHide">
             <div>
                 <!-- 修改url表单 -->
-                <div class="relative">
-                    <el-button link text class="w-full !justify-start " @click="showUrlForm">
+                <div class="relative ">
+                    <el-button link text class="w-full !justify-start  hover:bg-container4 text-color2"
+                        @click="showUrlForm">
                         <div class="flex flex-col font-normal text-left">
                             <div class="text-sm xl:text-xs popover-btn">修改用户名</div>
                             <div class="text-sm text-neutral-400 xl:text-xs">/{{ userInfo?.url }}</div>
@@ -250,15 +251,18 @@ const isShowPopover = ref(false)
                     <ModulePopWrap v-if="urlForm.visible">
                         <div class="flex flex-col gap-3 w-full">
                             <div class="mb-[2px]">
-                                <h3 class="text-2xl font-semibold xl:text-sm">修改用户名</h3>
-                                <p class="text-xs text-neutral-grey30">修改一个独一无二的名称</p>
+                                <h3 class="text-2xl font-semibold xl:text-sm text-color1">修改用户名</h3>
+                                <p class="text-xs text-neutral-grey30 text-color1">修改一个独一无二的名称</p>
                             </div>
 
-                            <el-input v-model="urlForm.url" class="init_input w-full" @keyup="onKeyDown" @input="(val: string) => {
-                                urlForm.url = val.replace(/[^a-zA-Z0-9-]/g, '')
-                            }
-                                ">
-                                <template #prepend>beetr.cc/</template>
+                            <el-input v-model="urlForm.url" class="init_input w-full bg-inputPrimary1 "
+                                @keyup="onKeyDown" @input="(val: string) => {
+                                    urlForm.url = val.replace(/[^a-zA-Z0-9-]/g, '')
+                                }
+                                    ">
+                                <template #prepend>
+                                    <span class="text-color3">beetr.cc/</span>
+                                </template>
                                 <template #suffix>
                                     <svg-success v-if="urlForm.url &&
                                         urlForm.loadStatus === LOAD_STATUS.none &&
@@ -293,7 +297,8 @@ const isShowPopover = ref(false)
                 </div>
                 <!-- 修改密码表单 -->
                 <div class="relative">
-                    <el-button link text class="w-full !justify-start" @click="showPasswordForm">
+                    <el-button link text class="w-full !justify-start hover:bg-container4 hover:text-color2"
+                        @click="showPasswordForm">
                         <div class="flex flex-col font-normal text-left">
                             <div class="text-sm xl:text-xs popover-btn">修改密码</div>
                             <div class="text-sm text-neutral-400 xl:text-xs tracking-widest">· · · · · · ·</div>
@@ -302,8 +307,8 @@ const isShowPopover = ref(false)
                     <ModulePopWrap v-if="passwordForm.visible">
                         <div v-if="passwordForm.loadStatus !== LOAD_STATUS.success" class="flex flex-col gap-3 w-full">
                             <div class="mb-[2px]">
-                                <h3 class="text-2xl font-semibold xl:text-sm ">修改密码</h3>
-                                <p class="text-xs text-neutral-grey30">更改登录beetr上的密码</p>
+                                <h3 class="text-2xl font-semibold xl:text-sm text-color1">修改密码</h3>
+                                <p class="text-xs text-neutral-grey30 text-color1">更改登录beetr上的密码</p>
                             </div>
 
                             <el-form ref="passwordFormRef" class="mb-4" :model="passwordForm" :label-width="0">
@@ -320,8 +325,8 @@ const isShowPopover = ref(false)
                                         trigger: 'blur',
                                     },
                                 ]">
-                                    <el-input v-model="passwordForm.password" placeholder="新密码" class="init_input"
-                                        type="password" show-password>
+                                    <el-input v-model="passwordForm.password" placeholder="新密码"
+                                        class="init_input bg-inputPrimary1" type="password" show-password>
                                     </el-input>
                                 </el-form-item>
                             </el-form>
@@ -340,9 +345,10 @@ const isShowPopover = ref(false)
                 </div>
                 <!-- 访问密码表单 -->
                 <div class="relative">
-                    <el-button link text class="w-full !justify-start" @click="showViewPasswordForm">
+                    <el-button link text class="w-full !justify-start hover:bg-container4 text-color2"
+                        @click="showViewPasswordForm">
                         <div class="flex flex-col font-normal text-left">
-                            <div class="text-sm xl:text-xs popover-btn">设置访问密码</div>
+                            <div class="text-sm xl:text-xs popover-btn ">设置访问密码</div>
                             <div class="text-sm text-neutral-400 xl:text-xs tracking-widest"
                                 v-if="urlInfo?.visitorType === 1">· · · ·
                                 · · ·
@@ -420,7 +426,8 @@ const isShowPopover = ref(false)
                 <div>
                     <el-tooltip content="设置" effect="light" placement="top" :show-after="300" :offset="7"
                         popper-class="custom-tooltip-animation">
-                        <el-button class="!rounded-full !p-2 !shadow-none relative settingBtn"
+                        <el-button
+                            class="!rounded-full !p-2 !shadow-none relative bg-btnPrimary2 text-color2 hover:bg-btnPrimary2 hover:border-btnPrimary2 border-btnPrimary2"
                             :class="isShowPopover ? '!text-block' : '!text-[#8E8E8E]'">
                             <SvgSetting />
                         </el-button>
@@ -431,7 +438,9 @@ const isShowPopover = ref(false)
 
         <el-tooltip content="关注我们" effect="light" placement="top" :show-after="300" :offset="7"
             popper-class="custom-tooltip-animation">
-            <el-button class="!rounded-full !p-2 !shadow-none settingBtn" @click="aboutUs">
+            <el-button
+                class="!rounded-full !p-2 !shadow-none bg-btnPrimary1 text-color2 hover:bg-btnPrimary1 hover:border-btnPrimary1 border-btnPrimary1"
+                @click="aboutUs">
                 <SvgWeixin class="wx-icon" />
             </el-button>
         </el-tooltip>
@@ -439,7 +448,7 @@ const isShowPopover = ref(false)
             <div class="h-[14px] w-[2px] rounded-[2px] bg-[#EBEBEB]"></div>
         </div>
         <div class="w-[150px]">
-            <div class="text-[#6C6C6C] text-[12px] flex">
+            <div class="text-[#6C6C6C] text-[12px] flex text-color1">
                 今日访问量：
 
                 <ModuleNumberScroll v-if="count > 0" :numm="count" :numLen="String(count).length" :noneDivide="true" />

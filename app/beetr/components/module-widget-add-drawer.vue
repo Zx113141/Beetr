@@ -2,15 +2,17 @@
     <client-only>
         <el-drawer :scoped="false" v-model="addDrawData.show" :direction="direction" modal-class="editdrawer "
             title="编辑" :with-header="false">
-            <div class="header bg-container2 border-primary4">
+            <div class="header bg-container2  ">
                 <div class="left"></div>
-                <el-button type="success" style="width:90px" class="relative bg-primary1 text-primary5 "
+                <el-button type="success" style="width:90px"
+                    class="relative bg-btnPrimary1 text-color2 hover:bg-btnPrimary1 hover:border-btnPrimary1 border-btnPrimary1 "
                     @click="addDrawData.show = false">
                     <span>完成</span>
                 </el-button>
             </div>
-            <div class="content bg-container2 text-primary5">
-                <div class="addItems" :key="item.name" @click="() => onSelectItem(item)" v-for="item in BeetrModules">
+            <div class="content bg-container2 text-color1 ">
+                <div class="addItems hover:bg-container4" :key="item.name" @click="() => onSelectItem(item)"
+                    v-for="item in BeetrModules">
                     <img :src="item.icon" alt="">
                     <span>{{ item.title }}</span>
                 </div>

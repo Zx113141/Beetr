@@ -23,36 +23,31 @@ const appConfig: Config = {
                 neutral: colors.neutral
             },
             borderColor: {
-                primary1: 'var(--br-color-primary1)',
-                primary2: 'var(--br-color-primary2)',
-                primary3: 'var(--br-color-primary3)',
-                primary4: 'var(--br-color-primary4)',
-                primary5: 'var(--br-color-primary5)',
-            },
-            textColor: {
-                primary1: 'var(--br-color-primary1)',
-                primary2: 'var(--br-color-primary2)',
-                primary3: 'var(--br-color-primary3)',
-                primary4: 'var(--br-color-primary4)',
-                primary5: 'var(--br-color-primary5)',
+                container1: 'var(--br-bg-container1)',
+                container2: 'var(--br-bg-container2)',
+                btnPrimary1: 'var(--br-btn-primary1)',
+                btnPrimary2: 'var(--br-btn-primary2)',
+                btnPrimary3: 'var(--br-btn-primary3)',
+                btnPrimary4: 'var(--br-btn-primary4)',
             },
             backgroundColor: {
-                container1: 'var(--br-color-container1)',
-                container2: 'var(--br-color-container2)',
-                primary1: 'var(--br-color-primary1)',
-                primary2: 'var(--br-color-primary2)',
-                primary3: 'var(--br-color-primary3)',
-                primary4: 'var(--br-color-primary4)',
-                primary5: 'var(--br-color-primary5)',
+                container1: 'var(--br-bg-container1)',
+                container2: 'var(--br-bg-container2)',
+                container3: 'var(--br-bg-container3)',
+                container4: 'var(--br-bg-container4)',
+                btnPrimary1: 'var(--br-btn-primary1)',
+                btnPrimary2: 'var(--br-btn-primary2)',
+                btnPrimary3: 'var(--br-btn-primary3)',
+                btnPrimary4: 'var(--br-btn-primary4)',
+                inputPrimary1: 'var(--br-input-primary1)',
+                inputPrimary2: 'var(--br-input-primary2)',
             },
-            // textColor: {
-            //     //like `text-base` and `text-primary`
-            //     base: 'var(--br-color-text-base)',
-            //     muted: 'var(--br-color-text-muted)',
-            //     'muted-hover': 'var(--br-color-text-muted-hover)',
-            //     primary: 'var(--br-color-primary)',
-            //     secondary: 'var(--br-color-secondary)',
-            // },
+            textColor: {
+                color1: 'var(--br-text-color1)',
+                color2: 'var(--br-text-color2)',
+                color3: 'var(--br-text-color3)',
+                color4: 'var(--br-text-color4)',
+            }
         }
     }
 }
