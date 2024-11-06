@@ -3,19 +3,12 @@ import { SvgMove, type IUserAppItem } from '@beetr/constant'
 import { ElButton } from 'element-plus';
 
 
-const emits = defineEmits<{
-    (e: 'on-start', event: any,): void
-    (e: 'on-move', event: any,): void
-    (e: 'on-end', event: any,): void
-}>()
 </script>
 
 <template>
     <transition name="fade">
         <div class="widget_move absolute left-1/2 transform -translate-x-1/2 bottom-0 translate-y-1/2 z-30">
-            <el-button type="success" circle class="relative blackBtn no-pointer-events"
-                @touchstart.stop="emits('on-start', $event,)" @touchmove.stop="emits('on-move', $event,)"
-                @touchend.stop="emits('on-end', $event,)">
+            <el-button type="success" circle class="relative blackBtn no-pointer-events">
                 <SvgMove />
             </el-button>
         </div>

@@ -70,6 +70,7 @@ const select = (flag: boolean, type) => {
 }
 
 const onHover = (id: string) => {
+  console.log(grid.value);
   editObject.visibleActionId = id;
 }
 
@@ -159,9 +160,10 @@ const remove = (id: string, flag = true) => {
   grid.value && grid.value.removeWidget("w_" + id, flag);
 };
 
-const onEmit = (path: string, query: any) => {
+const onEmit = (path: string, ...query: any) => {
   // console.log(path, query);
   grid.value && grid.value[path](query);
+  console.log(grid.value);
 }
 
 provide("movingWidgetId", isMovingWidget);

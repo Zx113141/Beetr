@@ -104,6 +104,11 @@ const render = async (newList: IUserAppItem[]) => {
           // disableOneColumnMode: true,
           acceptWidgets: true,
           alwaysShowResizeHandle: 'mobile' as 'mobile',
+          handle: props.browserEnv == BROWSER_ENV.mobile ? '.widget_move' : '.grid-stack-item-content',
+          handleClass: props.browserEnv == BROWSER_ENV.mobile ? 'widget_move' : 'grid-stack-item-content',
+          draggable: {
+            handle: props.browserEnv == BROWSER_ENV.mobile ? '.widget_move' : '.grid-stack-item-content',
+          }
         }
         gridRef.value.init(options);
       }

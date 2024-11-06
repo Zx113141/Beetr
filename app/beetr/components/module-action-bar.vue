@@ -75,6 +75,7 @@ const direction = computed(() => {
 const loading = inject('loading', false)
 
 const onAddGrid = (params: IModule, data?: IUserAppItem, fn?: Function) => {
+    console.log(1);
     _tempFn = fn
     if (!params.Drawer[props.browserEnv]) {
         emits('onAdd', params)

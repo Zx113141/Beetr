@@ -24,7 +24,7 @@ const touchEnd = (e) => {
 <template>
     <transition name="fade">
         <div>
-            <div class="widget_edit absolute -right-2.5 -top-2.5 z-30 w-[35px] h-[35px]" @click="touchEnd">
+            <div class="widget_edit absolute -right-2.5 -top-2.5 z-30 w-[35px] h-[35px]" @touchend.stop="touchEnd">
                 <el-button circle class="relative" :class="[edit ? 'greenBtn' : 'blackBtn']">
                     <SvgSuccess v-if="edit" />
                     <SvgEdit v-else />
