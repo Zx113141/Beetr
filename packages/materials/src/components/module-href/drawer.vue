@@ -45,11 +45,8 @@ const back = () => {
 </script>
 
 <style lang="scss" scoped>
-.editdrawer {
-
-    .content {
-        padding: 20px 30px 0 27px !important;
-        // @include font_color('drawerBodyColor');
-    }
+.content {
+    padding: 20px 30px 0 27px !important;
+    // @include font_color('drawerBodyColor');
 }
 </style>

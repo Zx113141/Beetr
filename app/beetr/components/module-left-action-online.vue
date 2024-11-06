@@ -28,6 +28,7 @@ const popover = ref<any>(null)
 
 defineProps<{
     isEditorRef: boolean
+    browserEnv: keyof typeof BROWSER_ENV
 }>()
 
 /**

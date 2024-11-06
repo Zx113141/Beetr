@@ -53,7 +53,7 @@ const appConfig: Config = {
 }
 
 const config: Pick<Config, 'presets'> = {
-    presets: [sharedConfig, appConfig, configs],
+    presets: [sharedConfig, configs],
 };
 
 export default config;

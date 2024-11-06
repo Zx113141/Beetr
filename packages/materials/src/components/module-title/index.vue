@@ -140,8 +140,7 @@ const touchState = reactive({
             <editor-content :editor="content" />
         </div>
         <Transition name="slide-fade">
-            <div class="prevent" v-if="item.temType" @drag.stop @touchstart.stop @mousedown.stop @click="preventMethod"
-                v-touch-move-end="preventMethod">
+            <div class="prevent" v-if="item.temType" @drag.stop @touchstart.stop @mousedown.stop @click="preventMethod">
                 <div>
                     <div class="icon">
                         <el-icon color="#000">

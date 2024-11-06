@@ -24,7 +24,7 @@
         <!-- <themeDraw @closeLoading="closeLoading" @openLoading="openLoading"></themeDraw> -->
         <ModuleWidgetAddDrawer @on-select="onAddGrid">
         </ModuleWidgetAddDrawer>
-        <el-drawer :scoped="false" v-model="widgetDrawerData.show" :direction="direction" modal-class=""
+        <el-drawer v-model="widgetDrawerData.show" :direction="direction" modal-class="editorDrawer"
             @close="() => back(widgetDrawerData.data?.id ? false : true)" :with-header="false" size="323">
             <template #default>
                 <component ref="dynamicRef" :is="widgetDrawer" :prop="widgetDrawerData.prop" :browserEnv="browserEnv"
@@ -33,7 +33,6 @@
                 </component>
             </template>
         </el-drawer>
-
     </client-only>
 
 </template>
@@ -44,8 +43,9 @@ import { _userStore } from '~/store/user';
 import { widgetDrawerData, addDrawData } from '~~/store/isLoading'
 import type { IModule } from '@beetr/materials';
 import { computed, toRefs, ref, triggerRef, inject, isRef } from 'vue'
+import { ElDrawer } from 'element-plus';
 
-let widgetDrawer: any = null
+let widgetDrawer = shallowRef(null)
 const userStore = _userStore()
 let _tempFn: Function | undefined = void 0
 const dynamicRef = ref(null)
@@ -75,21 +75,18 @@ const direction = computed(() => {
 const loading = inject('loading', false)
 
 const onAddGrid = (params: IModule, data?: IUserAppItem, fn?: Function) => {
-    console.log(1);
     _tempFn = fn
     if (!params.Drawer[props.browserEnv]) {
         emits('onAdd', params)
     } else {
         emits('onPrepare', params)
 
-        widgetDrawer = params.Drawer[props.browserEnv]
-        if (widgetDrawer) {
+        widgetDrawer.value = params.Drawer[props.browserEnv]
+        if (widgetDrawer.value) {
             widgetDrawerData.data = params.defaultEditorConfigs(data)
             widgetDrawerData.params = params
             widgetDrawerData.show = true
         }
-
-        triggerRef(widgetDrawerData.data)
     }
 }
 
@@ -110,7 +107,7 @@ const finish = (data: Partial<IUserAppItem>) => {
 
 const back = (openAdd: boolean) => {
     widgetDrawerData.show = false
-    widgetDrawer = null
+    widgetDrawer.value = null
     widgetDrawerData.data = null
     widgetDrawerData.params = null
     if (openAdd) {

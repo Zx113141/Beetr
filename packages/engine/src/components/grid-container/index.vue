@@ -49,7 +49,7 @@ let grid = ref<GridStack | null>(null);
 
 
 onMounted(() => {
-  window.addEventListener('click', onGrdiContainerClick)
+  window.parent.window.addEventListener('click', onGrdiContainerClick)
 })
 
 

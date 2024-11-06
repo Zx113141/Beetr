@@ -8,7 +8,7 @@
         <div :class="{
             'grid-stack-item-content': true,
             active: showHandler(item) && browserEnv == BROWSER_ENV.mobile,
-        }" @mouseenter="() => onMouseEnter(item)" @touchend="($event: any) => onTouchEnd($event, item)"
+        }" @mouseenter="() => onMouseEnter(item)" @click="($event: any) => onTouchEnd($event, item)"
             id="grid-stack-item-content">
             <div class="thisarea" :id="`m_${item.id}`">
                 <div class="wiget_size_item_container">
