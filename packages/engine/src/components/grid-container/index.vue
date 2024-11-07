@@ -86,7 +86,7 @@ const switchEdit = () => {
 }
 
 
-const init = (options: GridStackOptions) => {
+const init = (options: GridStackOptions, styleSheet?: number) => {
 
 
   grid.value = GridStack.init(options,
@@ -101,7 +101,13 @@ const init = (options: GridStackOptions) => {
   grid.value.on("dragstop", dragstop);
   /** 当小部件由于约束或直接更改而更改其位置/大小时发生 */
   grid.value.on("change", updateGridLayout);
-  console.log(grid.value);
+
+  /**
+   * 删除grid 多余className
+   * **/
+  console.log(styleSheet)
+  styleSheet && grid.value.el.classList.remove('gs-' + styleSheet)
+  console.log(grid.value.el!.classList);
 };
 
 /** 布局改变，更新数据 */

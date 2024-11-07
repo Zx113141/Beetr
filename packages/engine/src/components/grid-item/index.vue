@@ -5,7 +5,6 @@
             'grid-stack-item': true,
             'pointer-events-none': movingWidgetId == item.id
         }" :style="item.temType == 'addLink' ? 'z-index:11111' : ''">
-        {{ item.cusStyle[deviceEnv].w }}
         <div :class="{
             'grid-stack-item-content': true,
             active: showHandler(item) && browserEnv == BROWSER_ENV.mobile,

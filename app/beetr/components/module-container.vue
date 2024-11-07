@@ -84,13 +84,13 @@ provide<Ref<keyof typeof BROWSER_ENV>>("browserEnv", browserEnv!);
 provide('containerRef', gridRef);
 onMounted(async () => {
 
-  await render(userAppList.value)
+  await render(userAppList.value,)
 
 
 })
 
 
-const render = async (newList: IUserAppItem[]) => {
+const render = async (newList: IUserAppItem[], id?: number) => {
   if (newList.length && gridRef.value) {
     await nextTick(() => {
       if (gridRef.value && !gridRef.value?.grid) {
@@ -112,8 +112,8 @@ const render = async (newList: IUserAppItem[]) => {
             handle: browserEnv.value! == BROWSER_ENV.mobile ? '.widget_move' : '.grid-stack-item-content',
           }
         }
-        console.log(options);
-        gridRef.value.init(options);
+
+        gridRef.value.init(options, id);
       }
     });
   }
@@ -264,6 +264,7 @@ watch(() => props.editStatus, (newStatus) => {
 watch(
   () => userAppList,
   async (newList) => {
+
     await render(newList.value)
 
   },
@@ -275,7 +276,9 @@ watch(
 watch(
   () => deviceEnv.value!,
   (newEnv, oldEnv) => {
-
+    if (newEnv == browserEnv.value) {
+      return
+    }
     if (newEnv == oldEnv || !gridRef.value) return
     // grid.off('change', updateGridLayout)
     // 绕过gridstack 缓存机制
@@ -305,7 +308,14 @@ watch(() => props.currentStep, (step) => {
   immediate: true
 })
 
+watch(() => props.browserEnv, async (newEnv, oldEnv) => {
+  gridRef.value!.dispose()
+  const styleId = BROWSER_ENV_GRID_COLUMN[oldEnv]
+  await nextTick(async () => {
+    await render(userAppList.value, styleId)
+  })
 
+},)
 
 onUnmounted(() => {
   gridRef.value!.dispose();
