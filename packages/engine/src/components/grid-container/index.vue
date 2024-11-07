@@ -105,9 +105,9 @@ const init = (options: GridStackOptions, styleSheet?: number) => {
   /**
    * 删除grid 多余className
    * **/
-  console.log(styleSheet)
+
   styleSheet && grid.value.el.classList.remove('gs-' + styleSheet)
-  console.log(grid.value.el!.classList);
+  console.log(grid.value);
 };
 
 /** 布局改变，更新数据 */

@@ -19,7 +19,7 @@
                 </div>
 
                 <div class="grid-item-action" :key="browserEnv">
-                    <!-- <div v-show="browserEnv == BROWSER_ENV.desktop && showHandler(item)">
+                    <div v-show="browserEnv == BROWSER_ENV.desktop && showHandler(item)">
                         <GridItemRemove :item="item" @remove="() => remove(item)" />
                         <teleport :to="teleportId(item)" v-if="showHandler(item)">
                             <component :is="ComponentsReflect[item.type].Handler" :key="item.id" :item="item"
@@ -37,7 +37,7 @@
                         <GridItemMove :item="item">
                         </GridItemMove>
                         <GridItemEdit :item="item" @edit="() => handleEdit(item)" :edit="edit" />
-                    </div> -->
+                    </div>
                 </div>
             </div>
 

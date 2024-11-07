@@ -94,11 +94,11 @@ const render = async (newList: IUserAppItem[], id?: number) => {
   if (newList.length && gridRef.value) {
     await nextTick(() => {
       if (gridRef.value && !gridRef.value?.grid) {
-        const width = document.documentElement.clientWidth;
+        const width = browserEnv.value! == BROWSER_ENV.desktop ? 428 : document.documentElement.clientWidth;
         const options = {
           animate: true,
           disableDrag: !props.editStatus,
-          cellHeight: deviceEnv.value! === ENV_ENUM.mobile ? width / 4 + "px" : "105px",
+          cellHeight: deviceEnv.value! === BROWSER_ENV.mobile ? width / 4 + "px" : "105px",
           column: BROWSER_ENV_GRID_COLUMN[deviceEnv.value!],
           margin: GridMargin[deviceEnv.value!],
           disableResize: true,
@@ -198,57 +198,65 @@ const onGridUpdateWidgets = async (updateList: GridStackNode[]) => {
   await onWidgetUpdate(newList);
 };
 
-const columnChange = (newEnv: keyof typeof BROWSER_ENV) => {
-  // 更新 marginconst gridMargin = computed(() => {
-  const margin = newEnv === BROWSER_ENV.mobile ? '10px' : '15px'
-  const width = window.parent.document.documentElement.clientWidth
-  let cellHeight = newEnv === BROWSER_ENV.mobile ? width / 4 : 105
+// const columnChange = (newEnv: keyof typeof BROWSER_ENV) => {
+//   // 更新 marginconst gridMargin = computed(() => {
+//   const margin = newEnv === BROWSER_ENV.mobile ? '10px' : '15px'
+//   const width = window.parent.document.documentElement.clientWidth
+//   let cellHeight = newEnv === BROWSER_ENV.mobile ? width / 4 : 105
 
-  if (newEnv == BROWSER_ENV.mobile && browserEnv.value! == BROWSER_ENV.desktop) {
-    cellHeight = 411 / 4
-  }
+//   if (newEnv == BROWSER_ENV.mobile && browserEnv.value! == BROWSER_ENV.desktop) {
+//     cellHeight = 411 / 4
+//   }
 
-  flag = true
-  gridRef.value && gridRef.value.grid && gridRef.value.grid.cellHeight(cellHeight)
-  gridRef.value && gridRef.value.grid && gridRef.value.grid.margin(margin)
-  gridRef.value && gridRef.value.grid && gridRef.value.grid.column(12, (column: number, oldColumn: number, nodes: GridStackNode[], oldNodes: GridStackNode[]) => {
-    oldNodes.forEach((item, index) => {
-      // 1763123482314510338
-      const oldNode = userAppList.value.find((app: IUserAppItem) => 'w_' + app.id === item.id) as IUserAppItem
-      item.x = oldNode.position[newEnv].x
-      item.y = oldNode.position[newEnv].y
-      item.w = oldNode.cusStyle[newEnv].w
-      item.h = oldNode.cusStyle[newEnv].h
-      nodes.push(item)
+//   flag = true
+//   gridRef.value && gridRef.value.grid && gridRef.value.grid.cellHeight(cellHeight)
+//   gridRef.value && gridRef.value.grid && gridRef.value.grid.margin(margin)
+//   gridRef.value && gridRef.value.grid && gridRef.value.grid.column(12, (column: number, oldColumn: number, nodes: GridStackNode[], oldNodes: GridStackNode[]) => {
+//     oldNodes.forEach((item, index) => {
+//       // 1763123482314510338
+//       const oldNode = userAppList.value.find((app: IUserAppItem) => 'w_' + app.id === item.id) as IUserAppItem
+//       item.x = oldNode.position[newEnv].x
+//       item.y = oldNode.position[newEnv].y
+//       item.w = oldNode.cusStyle[newEnv].w
+//       item.h = oldNode.cusStyle[newEnv].h
+//       nodes.push(item)
 
-    })
+//     })
 
 
-    oldNodes.length = 0;
+//     oldNodes.length = 0;
 
-  })
-  gridRef.value && gridRef.value.grid && gridRef.value.grid.column(BROWSER_ENV_GRID_COLUMN[newEnv], (column: number, oldColumn: number, nodes: GridStackNode[], oldNodes: GridStackNode[]) => {
-    oldNodes.forEach((item, index) => {
-      // 1763123482314510338
-      const oldNode = userAppList.value.find((app: IUserAppItem) => 'w_' + app.id === item.id) as IUserAppItem
-      item.x = oldNode.position[newEnv].x
-      item.y = oldNode.position[newEnv].y
-      item.w = oldNode.cusStyle[newEnv].w
-      item.h = oldNode.cusStyle[newEnv].h
-      nodes.push(item)
+//   })
+//   gridRef.value && gridRef.value.grid && gridRef.value.grid.column(BROWSER_ENV_GRID_COLUMN[newEnv], (column: number, oldColumn: number, nodes: GridStackNode[], oldNodes: GridStackNode[]) => {
+//     oldNodes.forEach((item, index) => {
+//       // 1763123482314510338
+//       const oldNode = userAppList.value.find((app: IUserAppItem) => 'w_' + app.id === item.id) as IUserAppItem
+//       item.x = oldNode.position[newEnv].x
+//       item.y = oldNode.position[newEnv].y
+//       item.w = oldNode.cusStyle[newEnv].w
+//       item.h = oldNode.cusStyle[newEnv].h
+//       nodes.push(item)
 
-    })
+//     })
 
-    oldNodes.length = 0;
-  })
-  console.log(1123)
-  flag = false
+//     oldNodes.length = 0;
+//   })
+//   console.log(1123)
+//   flag = false
 
-}
+// }
 
 const removeWidgetList = (prepareDeleteList: IUserAppItem[]) => {
   prepareDeleteList.forEach(async (v) => {
     await onRemove(v.id)
+  })
+}
+
+const updateGridByEnv = (oldEnv: keyof typeof BROWSER_ENV) => {
+  gridRef.value!.dispose()
+  const styleId = BROWSER_ENV_GRID_COLUMN[oldEnv]
+  nextTick(async () => {
+    await render(userAppList.value, styleId)
   })
 }
 
@@ -276,16 +284,10 @@ watch(
 watch(
   () => deviceEnv.value!,
   (newEnv, oldEnv) => {
-    if (newEnv == browserEnv.value) {
-      return
-    }
     if (newEnv == oldEnv || !gridRef.value) return
     // grid.off('change', updateGridLayout)
     // 绕过gridstack 缓存机制
-    nextTick(() => {
-      columnChange(newEnv)
-      // console.log(gridRef.value?.grid?.getColumn())
-    })
+    updateGridByEnv(oldEnv)
   },
 );
 watch(() => props.currentStep, (step) => {
@@ -309,11 +311,7 @@ watch(() => props.currentStep, (step) => {
 })
 
 watch(() => props.browserEnv, async (newEnv, oldEnv) => {
-  gridRef.value!.dispose()
-  const styleId = BROWSER_ENV_GRID_COLUMN[oldEnv]
-  await nextTick(async () => {
-    await render(userAppList.value, styleId)
-  })
+  updateGridByEnv(oldEnv)
 
 },)
 
