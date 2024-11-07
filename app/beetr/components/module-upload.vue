@@ -54,7 +54,6 @@ const bytesToSize = (bytes: any) => {
 }
 const uploadRef = ref<any>('')
 const cancelUpload = () => {
-    console.log(uploadRef.value)
     uploadRef.value.abort()
 }
 
@@ -142,7 +141,6 @@ const onError = (res: any) => {
 
 /** 上传进度 */
 const onProgress = (evt: UploadProgressEvent, uploadFile: UploadFile) => {
-    console.log(blobUrl.value);
     emit('onProgress', evt, blobUrl.value)
 }
 
@@ -151,7 +149,6 @@ const submit = () => {
 }
 
 const change = (uploadFile: UploadFile,) => {
-    console.log('change', uploadFile);
     // 文件类型
     let variant = VIDEO_ACCEPT_FILES.includes(uploadFile.raw!.type) ? MEDIA_TYPE.video : MEDIA_TYPE.image
     // 如果不自动上传，则直接触发

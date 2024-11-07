@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import { toRefs, watch, ref } from 'vue'
+import { toRefs, watch, ref, toRaw, toValue } from 'vue'
 import { BROWSER_ENV, IUserAppItem } from '@beetr/constant'
 import ModuleMobileDrawerHeader from '../module-mobile-drawer-header/index.vue'
 import { useEditor, EditorContent } from '@tiptap/vue-3'
@@ -29,9 +29,10 @@ const props = defineProps<{
 }>()
 const emit = defineEmits(['finish', 'close'])
 const editData = ref(props.data)
+ 
 /** 编辑器 **/
 const content = useEditor({
-    content: props.data.content,
+    content: editData.value.content,
     editable: true,
     extensions: [
         StarterKit,
@@ -46,8 +47,8 @@ const content = useEditor({
 })
 
 const beforeClose = () => {
-
-    emit('finish', editData.value)
+ 
+    emit('finish',toRaw(editData.value))
 }
 
 const back = () => {

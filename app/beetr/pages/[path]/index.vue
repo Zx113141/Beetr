@@ -76,7 +76,6 @@ const handleEdit = async (params: IUserAppItem) => {
             showHandler.value = false
             await nextTick(() => {
                 actionRef.value!.onAddGrid(bModule, params, () => {
-                    console.log(999);
                     showHandler.value = true
                 })
             })

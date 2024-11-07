@@ -18,7 +18,6 @@ const isFullLoading = ref(true)
 
 nuxtApp.hook('page:finish', () => {
   setTimeout(() => {
-    console.log('page:finish');
     isFullLoading.value = false
   }, 2000)
 })
