@@ -1,6 +1,6 @@
 <template>
-    <div class="box" :key="item.id" :class="{ isCrop: item.cropStatus }" :id="`w_img${item.id}`" ref="mediaContent">
-        <video @touchstart="touchStart" @mousedown="startDrag"
+    <div class="box" :key="item.id" :class="{ isCrop: cropStatus }" :id="`w_img${item.id}`" ref="mediaContent">
+        <video @touchstart.stop="touchStart" @mousedown.stop="startDrag"
             v-if="(item._tempUrl || item.screenshotUrl) && item.variant === MEDIA_TYPE.video"
             :src="item._tempUrl || item.screenshotUrl" loop autoplay muted playsinline
             class="box_img rounded-[inherit] object-cover min-h-full min-w-full" :style="{
@@ -11,9 +11,9 @@
                 minHeight: '100%',
                 width: getImageWH?.w + 'px',
                 height: getImageWH?.h + 'px',
-                touchAction: item.cropStatus ? 'none' : 'auto'
+                touchAction: cropStatus ? 'none' : 'auto'
             }" ref="clipImage" draggable="false"></video>
-        <img @touchstart="touchStart" @mousedown="startDrag"
+        <img @touchstart.stop="touchStart" @mousedown.stop="startDrag"
             v-if="(item._tempUrl || item.screenshotUrl) && item.variant === MEDIA_TYPE.image"
             :src="item._tempUrl || item.screenshotUrl"
             class="box_img rounded-[inherit] object-cover min-h-full min-w-full" draggable="false" ref="clipImage"
@@ -25,11 +25,11 @@
                 minHeight: '100%',
                 width: getImageWH?.w + 'px',
                 height: getImageWH?.h + 'px',
-                touchAction: item.cropStatus ? 'none' : 'auto'
+                touchAction: cropStatus ? 'none' : 'auto'
             }" />
         <!-- transform: `translate(calc(-50% + ${position.x}px), calc(-50% + ${position.y}px))`,
           width: '100%', -->
-        <div v-show="item.cropStatus" class="box_mask" data-positioning-container="true" :style="{
+        <div v-show="cropStatus" class="box_mask" data-positioning-container="true" :style="{
             width: getImageWH?.w + 'px',
             height: getImageWH?.h + 'px',
             top: '50%',
@@ -43,10 +43,10 @@
             }" class="myCanvas" :width="getImageWH?.w" :height="getImageWH?.h"></canvas>
         </div>
 
-        <div class="box_border" v-if="item.cropStatus"></div>
+        <div class="box_border" v-if="cropStatus"></div>
 
-        <div class="pc_content_mask" v-if="item.cropStatus && deviceEnv == 'desktop'" @click="onFinish"></div>
-        <div class="mobile_content_mask" v-if="item.cropStatus && deviceEnv == 'mobile' && browserEnv == 'desktop'"
+        <div class="pc_content_mask" v-if="cropStatus && deviceEnv == 'desktop'" @click="onFinish"></div>
+        <div class="mobile_content_mask" v-if="cropStatus && deviceEnv == 'mobile' && browserEnv == 'desktop'"
             @click="onFinish"></div>
     </div>
 </template>
@@ -60,10 +60,11 @@ const emit = defineEmits(['isCrop', 'onFinish'])
 
 const deviceEnv = inject<Ref<keyof typeof BROWSER_ENV>>('deviceEnv',)!
 const browserEnv = inject<Ref<keyof typeof BROWSER_ENV>>('browserEnv',)!
-const onEmit = inject('onEmit') as (path: string, ...query: any) => void
+// const onEmit = inject('onEmit') as (path: string, ...query: any) => void
 const props = defineProps<{
     item: IUserAppItem,
     allowCrop: boolean,
+    cropStatus: boolean
 }>()
 const imgRect = reactive({
     width: 0,
@@ -148,7 +149,7 @@ const getBoxContent = () => {
     }
 }
 const touchStart = (event: TouchEvent) => {
-    if (!item.value.cropStatus) return
+    if (!props.cropStatus) return
     const payload = event.touches[0]
     isDragging = true
     initialMouseX.value = payload.clientX - position.x
@@ -199,7 +200,7 @@ const onDrag = (event: MouseEvent | Touch) => {
 }
 
 function startDrag(event: MouseEvent) {
-    if (!item.value.cropStatus) return
+    if (!props.cropStatus) return
     isDragging = true
     initialMouseX.value = event.clientX - position.x
     initialMouseY.value = event.clientY - position.y
@@ -318,7 +319,6 @@ const getParams = () => {
 }
 
 const onFinish = () => {
-    onEmit('enableMove', true);
     emit('onFinish', getParams(), false)
 }
 
@@ -407,14 +407,14 @@ watch(() => props.item.cut, () => {
     }
 )
 watch(
-    () => props.item.cropStatus,
+    () => props.cropStatus,
     async (status, old) => {
 
         if (!status && old) {
             await onFinish()
             return
         }
-        onEmit('enableMove', false)
+        // onEmit('enableMove', false)
         nextTick(() => {
             if (deviceEnv.value != BROWSER_ENV.mobile) {
                 excuteAnimation()

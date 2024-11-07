@@ -18,9 +18,9 @@
                         <img v-if="(editData.screenshotUrl) && editData.variant === MEDIA_TYPE.image"
                             :src="editData.screenshotUrl" class="rounded-[inherit] object-cover preview-media"
                             draggable="false" /> -->
-                        <MoudleWidgetCrop ref="moduleCrop" :item="editData" :env="browserEnv"
+                        <MoudleWidgetCrop :cropStatus="cropStatus" ref="moduleCrop" :item="editData" :env="browserEnv"
                             @isCrop="(e: boolean) => isAllowCrop = e"
-                            @onFinish="(item: IUserAppItem) => editData = item">
+                            @onFinish="(item: IUserAppItem) => editData = item" :allowCrop="isAllowCrop">
                         </MoudleWidgetCrop>
                     </div>
                 </div>
@@ -74,6 +74,7 @@ import StarterKit from '@tiptap/starter-kit'
 import Placeholder from '@tiptap/extension-placeholder'
 import { debounce } from '@beetr/hooks'
 import { UploadProgressEvent, UploadFile } from 'element-plus'
+import MoudleWidgetCrop from './module-crop/index.vue'
 
 import UploadMedia from '../module-media-upload/index.vue'
 const auth = useCookie(TOKEN_CREDENTIALS)
@@ -85,6 +86,7 @@ const props = defineProps<{
 }>()
 const emit = defineEmits(['finish', 'close'])
 const editData = ref(props.data)
+const cropStatus = ref(!!editData.value.cropStatus)
 const isAllowCrop = ref(true)
 const getImageWH = computed(() => {
     const base = 160
@@ -116,17 +118,17 @@ const content = useEditor({
 
 const beforeClose = () => {
 
-    emit('finish', editData.value)
+    emit('finish', {
+        ...editData.value,
+        cropStatus: !editData.value.cropStatus
+    })
 }
 
 const back = () => {
     emit('close', false)
 }
 const handleCrop = () => {
-    emit('finish', {
-        ...editData.value,
-        cropStatus: !editData.value.cropStatus
-    })
+    cropStatus.value = !cropStatus.value
     // editData.value.cropStatus = !editData.value.cropStatus
 }
 

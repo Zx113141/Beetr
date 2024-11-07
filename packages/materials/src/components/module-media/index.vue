@@ -25,6 +25,7 @@ const props = defineProps<{
     isLoading: boolean
 }>()
 let { item } = toRefs(props)
+const cropStatus = ref(!!item.value.cropStatus)
 
 const progress = reactive({
     show: false,
@@ -229,8 +230,8 @@ watch(
                 " :item="item" @on-before="onBefore" @on-success="onSuccess" @on-progress="onProgress"
             @on-start="onStart" @on-error="onError" :action="uploadFileUrl" :auth="auth">
             <div class="absolute inset-0 rounded-[inherit]" ref="triggerRef">
-                <module-widget-crop :item="item" :isLoading="props.isLoading" :allowCrop="allowCrop"
-                    @onFinish="(item) => emits('onEdit', item)"></module-widget-crop>
+                <module-widget-crop :cropStatus="cropStatus" :item="item" :isLoading="props.isLoading"
+                    :allowCrop="allowCrop" @onFinish="(item) => emits('onEdit', item)"></module-widget-crop>
             </div>
         </upload-media>
 

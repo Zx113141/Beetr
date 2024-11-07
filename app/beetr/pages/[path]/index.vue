@@ -151,6 +151,9 @@ const onSetEnv = (env: keyof typeof BROWSER_ENV) => {
     deviceEnv.value = env
     postEnv()
 }
+
+provide<Ref<keyof typeof BROWSER_ENV>>("deviceEnv", deviceEnv!);
+provide<Ref<keyof typeof BROWSER_ENV>>("browserEnv", browserEnv!);
 </script>
 
 <template>
