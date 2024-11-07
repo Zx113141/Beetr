@@ -1,7 +1,7 @@
 <template>
   <!-- grid网格 - 手机端初始化的时候不显示，mextType > 0 的时候才 -->
   <grid-container ref="gridRef" @update="onGridUpdateWidgets" :list="userAppList" :editStatus="editStatus"
-    @select="onWidgetEdit" @widget-edit="onWidgetEdit">
+    @select="onWidgetEdit" @widget-edit="onWidgetEdit" :browser-env="browserEnv!">
     <template #top>
       <div v-if="(!userStore.isOnboared || STEP_PROCESS.congratulations === currentStep) &&
         userStore.isEdit
@@ -51,6 +51,7 @@ import {
 import { findEmptyPosition } from '@beetr/hooks'
 import { _userStore } from "~/store/user";
 import { _widgetStore } from "~/store/widget";
+import { _envStore } from "~/store/env";
 let flag = false
 
 
@@ -65,6 +66,8 @@ const userStore = _userStore();
 const widgetStore = _widgetStore();
 const { userAppList } = storeToRefs(widgetStore);
 
+const { deviceEnv, editStatus, browserEnv } = toRefs(props)
+
 
 const emit = defineEmits<{
   (e: "postMessage", params: IUserAppItem, type: keyof typeof EDIT_TYPE): void
@@ -76,9 +79,8 @@ const emit = defineEmits<{
 const gridRef = ref<InstanceType<typeof GridContainer> | null>(null);
 
 provide<boolean>("editStatus", props.editStatus);
-
-provide<keyof typeof BROWSER_ENV>("deviceEnv", props.deviceEnv);
-provide<keyof typeof BROWSER_ENV>("browserEnv", props.browserEnv);
+provide<Ref<keyof typeof BROWSER_ENV>>("deviceEnv", deviceEnv!);
+provide<Ref<keyof typeof BROWSER_ENV>>("browserEnv", browserEnv!);
 provide('containerRef', gridRef);
 onMounted(async () => {
 
@@ -96,20 +98,21 @@ const render = async (newList: IUserAppItem[]) => {
         const options = {
           animate: true,
           disableDrag: !props.editStatus,
-          cellHeight: props.deviceEnv === ENV_ENUM.mobile ? width / 4 + "px" : "105px",
-          column: BROWSER_ENV_GRID_COLUMN[props.deviceEnv],
-          margin: GridMargin[props.deviceEnv],
+          cellHeight: deviceEnv.value! === ENV_ENUM.mobile ? width / 4 + "px" : "105px",
+          column: BROWSER_ENV_GRID_COLUMN[deviceEnv.value!],
+          margin: GridMargin[deviceEnv.value!],
           disableResize: true,
           float: false,
           // disableOneColumnMode: true,
           acceptWidgets: true,
           alwaysShowResizeHandle: 'mobile' as 'mobile',
-          handle: props.browserEnv == BROWSER_ENV.mobile ? '.widget_move' : '.grid-stack-item-content',
-          handleClass: props.browserEnv == BROWSER_ENV.mobile ? 'widget_move' : 'grid-stack-item-content',
+          handle: browserEnv.value! == BROWSER_ENV.mobile ? '.widget_move' : '.grid-stack-item-content',
+          handleClass: browserEnv.value! == BROWSER_ENV.mobile ? 'widget_move' : 'grid-stack-item-content',
           draggable: {
-            handle: props.browserEnv == BROWSER_ENV.mobile ? '.widget_move' : '.grid-stack-item-content',
+            handle: browserEnv.value! == BROWSER_ENV.mobile ? '.widget_move' : '.grid-stack-item-content',
           }
         }
+        console.log(options);
         gridRef.value.init(options);
       }
     });
@@ -123,15 +126,15 @@ const onWidgetResize = (item: IUserAppItem) => {
   const el = document.getElementById(`w_${item.id}`);
   gridRef!.value!.updateWidget({
     el,
-    width: item.cusStyle[props.deviceEnv].w,
-    height: item.cusStyle[props.deviceEnv].h,
+    width: item.cusStyle[deviceEnv.value!].w,
+    height: item.cusStyle[deviceEnv.value!].h,
     id: item.id,
   });
 };
 
 const beforeAdd = (widgetConfig: Partial<IUserAppItem>): Partial<IUserAppItem> => {
-  const otherEnv = props.deviceEnv == BROWSER_ENV.desktop ? BROWSER_ENV.mobile : BROWSER_ENV.desktop
-  findEmptyPosition(widgetConfig, userAppList.value, BROWSER_ENV_GRID_COLUMN[props.deviceEnv], props.deviceEnv)
+  const otherEnv = deviceEnv.value! == BROWSER_ENV.desktop ? BROWSER_ENV.mobile : BROWSER_ENV.desktop
+  findEmptyPosition(widgetConfig, userAppList.value, BROWSER_ENV_GRID_COLUMN[deviceEnv.value!], deviceEnv.value!)
   findEmptyPosition(widgetConfig, userAppList.value, BROWSER_ENV_GRID_COLUMN[otherEnv], otherEnv)
 
   return widgetConfig
@@ -186,10 +189,10 @@ const onGridUpdateWidgets = async (updateList: GridStackNode[]) => {
     const item = userAppList.value.find(
       (i: IUserAppItem) => `w_${i.id}` == widget.id
     ) as IUserAppItem;
-    item.cusStyle[props.deviceEnv].w = widget.w!;
-    item.cusStyle[props.deviceEnv].h = widget.h!;
-    item.position[props.deviceEnv].x = widget.x!;
-    item.position[props.deviceEnv].y = widget.y!;
+    item.cusStyle[deviceEnv.value!].w = widget.w!;
+    item.cusStyle[deviceEnv.value!].h = widget.h!;
+    item.position[deviceEnv.value!].x = widget.x!;
+    item.position[deviceEnv.value!].y = widget.y!;
     newList.push(item);
   });
   await onWidgetUpdate(newList);
@@ -201,7 +204,7 @@ const columnChange = (newEnv: keyof typeof BROWSER_ENV) => {
   const width = window.parent.document.documentElement.clientWidth
   let cellHeight = newEnv === BROWSER_ENV.mobile ? width / 4 : 105
 
-  if (newEnv == BROWSER_ENV.mobile && props.browserEnv == BROWSER_ENV.desktop) {
+  if (newEnv == BROWSER_ENV.mobile && browserEnv.value! == BROWSER_ENV.desktop) {
     cellHeight = 411 / 4
   }
 
@@ -270,8 +273,9 @@ watch(
 );
 
 watch(
-  () => props.deviceEnv,
+  () => deviceEnv.value!,
   (newEnv, oldEnv) => {
+
     if (newEnv == oldEnv || !gridRef.value) return
     // grid.off('change', updateGridLayout)
     // 绕过gridstack 缓存机制
@@ -300,6 +304,7 @@ watch(() => props.currentStep, (step) => {
 }, {
   immediate: true
 })
+
 
 
 onUnmounted(() => {

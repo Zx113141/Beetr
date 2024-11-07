@@ -90,6 +90,7 @@ const handleMessage = (event: MessageEvent) => {
         case MESSAGE_EVENT_TYPE.env:
             browserEnv.value = query.browserEnv
             deviceEnv.value = query.deviceEnv
+            console.log(browserEnv.value, deviceEnv.value);
             break;
         case MESSAGE_EVENT_TYPE.addWidget:
             handleWidgetAdd(query)

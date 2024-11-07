@@ -1,10 +1,11 @@
 <template>
     <div v-for="item in list" :key="item.id" :id="`w_${item.id}`" :gs-id="`w_${item.id}`"
-        :gs-w="item.cusStyle[browserEnv].w" :gs-h="item.cusStyle[browserEnv].h" :gs-x="item.position[browserEnv].x"
-        :gs-y="item.position[browserEnv].y" :class="{
+        :gs-w="item.cusStyle[deviceEnv].w" :gs-h="item.cusStyle[deviceEnv].h" :gs-x="item.position[deviceEnv].x"
+        :gs-y="item.position[deviceEnv].y" :class="{
             'grid-stack-item': true,
             'pointer-events-none': movingWidgetId == item.id
         }" :style="item.temType == 'addLink' ? 'z-index:11111' : ''">
+        {{ item.cusStyle[deviceEnv].w }}
         <div :class="{
             'grid-stack-item-content': true,
             active: showHandler(item) && browserEnv == BROWSER_ENV.mobile,
@@ -19,7 +20,7 @@
                 </div>
 
                 <div class="grid-item-action" :key="browserEnv">
-                    <div v-show="browserEnv == BROWSER_ENV.desktop && showHandler(item)">
+                    <!-- <div v-show="browserEnv == BROWSER_ENV.desktop && showHandler(item)">
                         <GridItemRemove :item="item" @remove="() => remove(item)" />
                         <teleport :to="teleportId(item)" v-if="showHandler(item)">
                             <component :is="ComponentsReflect[item.type].Handler" :key="item.id" :item="item"
@@ -37,7 +38,7 @@
                         <GridItemMove :item="item">
                         </GridItemMove>
                         <GridItemEdit :item="item" @edit="() => handleEdit(item)" :edit="edit" />
-                    </div>
+                    </div> -->
                 </div>
             </div>
 
@@ -46,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, inject, reactive, computed, watch, onMounted, Fragment } from 'vue'
+import { Ref, inject, reactive, computed, watch, onMounted, Fragment } from 'vue'
 import { type IUserAppItem, BROWSER_ENV, EDIT_TYPE } from '@beetr/constant';
 import GridItemEdit from '../grid-item-edit/index.vue'
 import { BeetrModules, type IModule } from '@beetr/materials';
@@ -68,23 +69,25 @@ const props = defineProps<{
 }>()
 
 const showHandler = computed(() => {
+    console.log(props.editStatus, props.activeWidgetId, browserEnv);
     return (item: IUserAppItem) => props.editStatus && item.id == props.activeWidgetId
 })
 
 
 const emits = defineEmits(['hover', 'widget-edit', 'select', 'switch-edit'])
 const movingWidgetId = inject('movingWidgetId')
-const browserEnv = inject('browserEnv')! as keyof typeof BROWSER_ENV
+const browserEnv = inject<Ref<keyof typeof BROWSER_ENV>>('browserEnv')!
+const deviceEnv = inject<Ref<keyof typeof BROWSER_ENV>>('deviceEnv')!
 const onEmit = inject('onEmit') as (path: string, ...query: any) => void
 
 const teleportId = computed(() => {
-    return (item: IUserAppItem) => browserEnv == BROWSER_ENV.mobile ? '#layoutAddani' : '#m_' + item.id
+    return (item: IUserAppItem) => browserEnv.value == BROWSER_ENV.mobile ? '#layoutAddani' : '#m_' + item.id
 })
 
 
 const handleEdit = (item) => {
     const widget = BeetrModules.find((it: IModule) => it.name == item.type) as IModule
-    if (widget && widget.Drawer[browserEnv]) {
+    if (widget && widget.Drawer[browserEnv.value]) {
         emits('widget-edit', item, EDIT_TYPE.edit)
         return
     } else {
@@ -103,7 +106,7 @@ const touchState = reactive({
 
 /** 鼠标移入，仅触发一次 */
 const onMouseEnter = (item: any) => {
-    if (browserEnv == BROWSER_ENV.mobile) return;
+    if (browserEnv.value == BROWSER_ENV.mobile) return;
     // 编辑的时候不重置
     emits('hover', item.id)
 }

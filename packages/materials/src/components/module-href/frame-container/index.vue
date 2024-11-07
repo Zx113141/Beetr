@@ -19,17 +19,17 @@
 
 <script setup lang="ts">
 import { IUserAppItem, BROWSER_ENV, SvgCopyLink } from '@beetr/constant'
-import { computed, inject } from 'vue';
+import { computed, inject, Ref } from 'vue';
 import { copyToClipboard } from '@beetr/hooks'
-const deviceEnv = inject<keyof typeof BROWSER_ENV>('deviceEnv',)!
+const deviceEnv = inject<Ref<keyof typeof BROWSER_ENV>>('deviceEnv',)!
 const isEdit = inject<boolean>('editStatus')
 const props = defineProps<{
     item: IUserAppItem,
 }>()
 
 const widget_base_style = computed(() => {
-    const w = props.item.cusStyle[deviceEnv].w
-    const h = props.item.cusStyle[deviceEnv].h
+    const w = props.item.cusStyle[deviceEnv.value].w
+    const h = props.item.cusStyle[deviceEnv.value].h
     return (w == 2 && h == 1) || (w == 1 && h == 2) ? 'display:none' : ''
 })
 

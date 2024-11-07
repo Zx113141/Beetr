@@ -28,8 +28,8 @@ import {
 } from "gridstack";
 import useDrag from "../../../service/grid";
 import "../../assets/style/grid-item.scss";
-import { EDIT_TYPE, IUserAppItem } from "@beetr/constant";
-import { onMounted, ref, provide, nextTick, reactive, watch, createVNode } from "vue";
+import { EDIT_TYPE, IUserAppItem, BROWSER_ENV } from "@beetr/constant";
+import { onMounted, ref, provide, nextTick, reactive, watch, createVNode, watchEffect } from "vue";
 import { GridItem } from "..";
 const emits = defineEmits(["update", "select", "widgetEdit"]);
 const [drag, dragstart, dragstop, isMovingWidget] = useDrag();
@@ -38,6 +38,7 @@ const [drag, dragstart, dragstop, isMovingWidget] = useDrag();
 const props = defineProps<{
   list: IUserAppItem[]
   editStatus: boolean
+  browserEnv: keyof typeof BROWSER_ENV
 }>()
 const editObject = reactive({
   visibleActionId: "", // 激活widget id
@@ -48,9 +49,6 @@ const editObject = reactive({
 let grid = ref<GridStack | null>(null);
 
 
-onMounted(() => {
-  window.parent.window.addEventListener('click', onGrdiContainerClick)
-})
 
 
 const onGrdiContainerClick = (e: MouseEvent) => {
@@ -63,6 +61,15 @@ const onGrdiContainerClick = (e: MouseEvent) => {
   }
   return false
 }
+
+watchEffect(() => {
+  console.log(props.browserEnv);
+  window.parent.window && window.parent.window.removeEventListener('click', onGrdiContainerClick)
+  if (props.browserEnv == BROWSER_ENV.mobile) {
+    window.parent.window.addEventListener('click', onGrdiContainerClick)
+  }
+})
+
 const select = (flag: boolean, type) => {
   editObject.edit = false
 
@@ -70,7 +77,6 @@ const select = (flag: boolean, type) => {
 }
 
 const onHover = (id: string) => {
-  console.log(grid.value);
   editObject.visibleActionId = id;
 }
 
@@ -95,11 +101,14 @@ const init = (options: GridStackOptions) => {
   grid.value.on("dragstop", dragstop);
   /** 当小部件由于约束或直接更改而更改其位置/大小时发生 */
   grid.value.on("change", updateGridLayout);
+  console.log(grid.value);
 };
 
 /** 布局改变，更新数据 */
 const updateGridLayout = async (_event: Event, layoutList: GridStackNode[]) => {
-  emits("update", layoutList);
+  if (layoutList) {
+    emits("update", layoutList);
+  }
 
   // do interface
 };
@@ -144,7 +153,8 @@ const dispose = () => {
     grid.value.off("drag");
     grid.value.off("dragstop");
     grid.value.off("change");
-    grid.value.destroy();
+    grid.value.destroy(false);
+    grid.value = null;
   }
 };
 
