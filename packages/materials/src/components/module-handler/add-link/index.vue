@@ -2,7 +2,7 @@
 <template>
     <button v-if="item.type === WIDGET_TYPE.link"
         class="rounded-[4px] outline-none disabled:text-white disabled:text-opacity-40 active:scale-90"
-        @click="() => updateUrl(EDIT_TYPE.messagge)">
+        @click="() => updateUrl(EDIT_TYPE.edit)">
         <SvgEdit></SvgEdit>
     </button>
     <el-popover v-else v-model:visible="activeLink" trigger="click" placement="bottom" popper-class="!p-[6px] !bg-black"

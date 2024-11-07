@@ -117,7 +117,7 @@
 
 <script setup lang="ts">
 
-import { ref, toRefs, watch, inject } from 'vue'
+import { ref, toRefs, Ref, inject } from 'vue'
 
 import { ElIcon, ElInput, ElDivider, ElPopover } from 'element-plus'
 import {
@@ -136,8 +136,8 @@ const props = defineProps<{
     item: IUserAppItem,
 
 }>()
-const deviceEnv = inject<keyof typeof BROWSER_ENV>('deviceEnv') as keyof typeof BROWSER_ENV
-const browserEnv = inject<keyof typeof BROWSER_ENV>('deviceEnv') as keyof typeof BROWSER_ENV
+const deviceEnv = inject<Ref<keyof typeof BROWSER_ENV>>('deviceEnv')!
+const browserEnv = inject<Ref<keyof typeof BROWSER_ENV>>('browserEnv')!
 const emit = defineEmits<{
     (e: 'onEdit', item: IUserAppItem, type: keyof typeof EDIT_TYPE): void
 }>()
@@ -186,7 +186,7 @@ const activeRichTextOpera = ref(false)
 /** 更新x轴 */
 const updatePositionX = (value: string) => {
     const halign = item.value.halign || {}
-    halign[deviceEnv] = value
+    halign[deviceEnv.value] = value
     item.value.halign = halign
     emit('onEdit', item.value, EDIT_TYPE.normal)
     // widgetStore.onUpdate([item.value])
@@ -195,7 +195,7 @@ const updatePositionX = (value: string) => {
 /** 更新y轴 */
 const updatePositionY = (value: string) => {
     const valign = item.value.valign || {}
-    valign[deviceEnv] = value
+    valign[deviceEnv.value] = value
     item.value.valign = valign
     emit('onEdit', item.value, EDIT_TYPE.normal)
     // widgetStore.onUpdate([item.value])

@@ -72,13 +72,17 @@ const onModuleSelect = (params: boolean) => {
 const handleEdit = async (params: IUserAppItem) => {
     const bModule = BeetrModules.find(i => (i.name == params.type)) as IModule
     if (bModule.Drawer[browserEnv.value!]) {
-        showHandler.value = false
-        await nextTick(() => {
-            actionRef.value!.onAddGrid(bModule, params, () => {
-                console.log(999);
-                showHandler.value = true
+        if (browserEnv.value == BROWSER_ENV.mobile) {
+            showHandler.value = false
+            await nextTick(() => {
+                actionRef.value!.onAddGrid(bModule, params, () => {
+                    console.log(999);
+                    showHandler.value = true
+                })
             })
-        })
+        } else {
+            actionRef.value!.onAddGrid(bModule, params,)
+        }
     }
 
 }

@@ -12,15 +12,16 @@
                         width: getImageWH.width + 'px',
                         height: getImageWH.height + 'px'
                     }" ref="getImage">
-                        <video v-if="(editData.screenshotUrl) && editData.variant === MEDIA_TYPE.video"
+                        <!-- <video v-if="(editData.screenshotUrl) && editData.variant === MEDIA_TYPE.video"
                             :src="editData.screenshotUrl" loop autoplay muted playsinline
                             class="rounded-[inherit] object-cover preview-media"></video>
                         <img v-if="(editData.screenshotUrl) && editData.variant === MEDIA_TYPE.image"
                             :src="editData.screenshotUrl" class="rounded-[inherit] object-cover preview-media"
-                            draggable="false" />
-                        <!-- <MoudleWidgetCrop ref="moduleCrop" :item="editData" :env="browserEnv"
-                            @isCrop="(e: boolean) => isAllowCrop = e" @onFinish="finishCrop">
-                        </MoudleWidgetCrop> -->
+                            draggable="false" /> -->
+                        <MoudleWidgetCrop ref="moduleCrop" :item="editData" :env="browserEnv"
+                            @isCrop="(e: boolean) => isAllowCrop = e"
+                            @onFinish="(item: IUserAppItem) => editData = item">
+                        </MoudleWidgetCrop>
                     </div>
                 </div>
 
@@ -122,7 +123,11 @@ const back = () => {
     emit('close', false)
 }
 const handleCrop = () => {
-    editData.value.cropStatus = !editData.value.cropStatus
+    emit('finish', {
+        ...editData.value,
+        cropStatus: !editData.value.cropStatus
+    })
+    // editData.value.cropStatus = !editData.value.cropStatus
 }
 
 const onProgress = (evt: UploadProgressEvent, _uploadFile: UploadFile) => {

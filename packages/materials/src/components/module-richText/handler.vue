@@ -32,6 +32,7 @@ import { PropType, inject } from 'vue'
 import { type IUserAppItem, BROWSER_ENV, EDIT_TYPE } from '@beetr/constant'
 
 const browserEnv = inject('browserEnv',) as keyof typeof BROWSER_ENV
+console.log(browserEnv);
 defineProps({
     /** 当前激活的item */
     item: {

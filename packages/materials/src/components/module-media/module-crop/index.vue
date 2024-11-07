@@ -54,13 +54,13 @@
 <script setup lang="ts">
 // import { _widgetStore } from '~~/store/widget'
 import { MEDIA_TYPE, type IUserAppItem, BROWSER_ENV } from '@beetr/constant'
-import { ref, reactive, watch, computed, toRefs, onMounted, nextTick, inject } from 'vue'
+import { ref, reactive, watch, computed, toRefs, onMounted, nextTick, inject, Ref } from 'vue'
 // import { _envStore } from '~/store/deviceEnv'
 const emit = defineEmits(['isCrop', 'onFinish'])
 
-const deviceEnv = inject<keyof typeof BROWSER_ENV>('deviceEnv',)!
-const browserEnv = inject<keyof typeof BROWSER_ENV>('browserEnv',)!
-
+const deviceEnv = inject<Ref<keyof typeof BROWSER_ENV>>('deviceEnv',)!
+const browserEnv = inject<Ref<keyof typeof BROWSER_ENV>>('browserEnv',)!
+const onEmit = inject('onEmit') as (path: string, ...query: any) => void
 const props = defineProps<{
     item: IUserAppItem,
     allowCrop: boolean,
@@ -106,8 +106,8 @@ const init = async () => {
     const { width, height } = await getImageDimensions()
     imgRect.width = width
     imgRect.height = height
-    const w = item.value.cusStyle[deviceEnv].w
-    const h = item.value.cusStyle[deviceEnv].h / 2
+    const w = item.value.cusStyle[deviceEnv.value].w
+    const h = item.value.cusStyle[deviceEnv.value].h / 2
     emit('isCrop', !(w / h == imgRect.width / imgRect.height))
     preDrawMask()
 }
@@ -125,10 +125,10 @@ const mediaContent = ref<HTMLDivElement | null>(null)
 const getBoxContent = () => {
 
 
-    if (browserEnv == BROWSER_ENV.desktop) {
-        const margin = (deviceEnv === BROWSER_ENV.mobile ? 10 : 15)
-        const { w, h } = item.value.cusStyle[deviceEnv]
-        const base_px = deviceEnv == BROWSER_ENV.desktop ? 105 : 428 / 4
+    if (browserEnv.value == BROWSER_ENV.desktop) {
+        const margin = (deviceEnv.value === BROWSER_ENV.mobile ? 10 : 15)
+        const { w, h } = item.value.cusStyle[deviceEnv.value]
+        const base_px = deviceEnv.value == BROWSER_ENV.desktop ? 105 : 428 / 4
         return {
             width: (base_px * w) * 2 - margin * 2,
             height: (base_px * h) - margin * 2
@@ -271,8 +271,8 @@ const getImageWH = computed(() => {
 
     const naturalW = imgRect.width
     const naturalH = imgRect.height
-    const w = item.value.cusStyle[deviceEnv].w
-    const h = item.value.cusStyle[deviceEnv].h / 2
+    const w = item.value.cusStyle[deviceEnv.value].w
+    const h = item.value.cusStyle[deviceEnv.value].h / 2
 
     const { width, height } = getBoxContent()
     if (w <= h) {
@@ -312,22 +312,13 @@ const getParams = () => {
         cropStatus: false,
         cut: {
             ...item.value.cut,
-            [deviceEnv]: getXYRadio()
+            [deviceEnv.value]: getXYRadio()
         }
     }
 }
 
-const finishCrop = async () => {
-
-    if (isDragging) {
-        return
-    }
-    const params = getParams()
-    // await widgetStore.onUpdate([params])
-
-}
-const onFinish = async () => {
-    await finishCrop()
+const onFinish = () => {
+    onEmit('enableMove', true);
     emit('onFinish', getParams(), false)
 }
 
@@ -341,12 +332,12 @@ const preDrawMask = () => {
     const { radioX, radioY } = calculateRadio()
     if (w == width && height < h) {
         position.x = 0
-        position.y = item.value.cut[deviceEnv]?.y * radioY || 0
+        position.y = item.value.cut[deviceEnv.value]?.y * radioY || 0
     } else {
-        position.x = item.value.cut[deviceEnv]?.x * radioX || 0
+        position.x = item.value.cut[deviceEnv.value]?.x * radioX || 0
         position.y = 0
     }
-    console.log(position, item.value.cut);
+
 
 }
 const excuteAnimation = () => {
@@ -385,11 +376,9 @@ const excuteAnimation = () => {
 
 
 watch(
-    () => props.item.cusStyle[deviceEnv],
+    () => props.item.cusStyle[deviceEnv.value],
     async (newval, oldval) => {
         if (newval.w == oldval.w && newval.h == oldval.h) return
-        // console.log(props.item.cusStyle[deviceEnv], el.clientWidth, el.clientHeight);
-        // console.log(getBoxContent());
         setTimeout(() => {
             preDrawMask()
             nextTick(() => {
@@ -402,13 +391,11 @@ watch(
 )
 watch(() => deviceEnv, () => {
     setTimeout(() => {
-        console.log(1);
         preDrawMask()
     }, 300)
 })
 
 watch(() => props.item.cut, () => {
-    console.log(props.item);
     // setTimeout(() => {
     preDrawMask()
     // }, 300)
@@ -427,8 +414,9 @@ watch(
             await onFinish()
             return
         }
+        onEmit('enableMove', false)
         nextTick(() => {
-            if (deviceEnv != BROWSER_ENV.mobile) {
+            if (deviceEnv.value != BROWSER_ENV.mobile) {
                 excuteAnimation()
             }
             drawMask()

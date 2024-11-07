@@ -4,7 +4,7 @@ import { ElNotification, ElProgress } from 'element-plus'
 import { EditorContent, useEditor } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import Placeholder from '@tiptap/extension-placeholder'
-import { SvgArrow, BROWSER_ENV, MEDIA_TYPE, UPLOAD_TYPE, IUserAppItem, TOKEN_CREDENTIALS } from '@beetr/constant'
+import { SvgArrow, BROWSER_ENV, MEDIA_TYPE, UPLOAD_TYPE, IUserAppItem, TOKEN_CREDENTIALS, EDIT_TYPE } from '@beetr/constant'
 import { debounce } from '@beetr/hooks'
 import UploadMedia from '../module-media-upload/index.vue'
 // import type { IUserAppItem } from '~/api/widget'
@@ -127,7 +127,7 @@ const onProgress = (evt: UploadProgressEvent, _uploadFile: UploadFile) => {
 
 }
 const onError = () => {
-    emits('onEdit', item.value)
+    emits('onEdit', item.value, EDIT_TYPE.remove)
 }
 /** 上传成功 */
 const onSuccess = (

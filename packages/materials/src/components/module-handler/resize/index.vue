@@ -2,10 +2,10 @@
 // import '@amap/amap-jsapi-types'
 declare let AMap: any
 
-import { Svg2M2, Svg2M4, Svg4M1, Svg4M2, Svg4M4 } from '@beetr/constant'
+import { BROWSER_ENV, Svg2M2, Svg2M4, Svg4M1, Svg4M2, Svg4M4 } from '@beetr/constant'
 
 import { type IUserAppItem, ENV_ENUM, WIDGET_TYPE } from '@beetr/constant'
-import { toRefs, computed, inject } from 'vue'
+import { toRefs, computed, inject, Ref } from 'vue'
 
 const props = defineProps<{
     item: IUserAppItem,
@@ -15,7 +15,7 @@ const { item, } = toRefs(props)
 const emit = defineEmits<{
     (e: 'onResize', item: IUserAppItem, type: 'resize'): void
 }>()
-const deviceEnv = inject<keyof typeof ENV_ENUM>('deviceEnv') as keyof typeof ENV_ENUM
+const deviceEnv = inject<Ref<keyof typeof BROWSER_ENV>>('deviceEnv')!
 
 const linkResizeList = [
     {
@@ -77,8 +77,8 @@ const resizeList = computed(() => {
 
 const resize = (item: IUserAppItem, width: number, height: number) => {
     const newItem = { ...item, }
-    newItem.cusStyle[deviceEnv].w = width
-    newItem.cusStyle[deviceEnv].h = height
+    newItem.cusStyle[deviceEnv.value].w = width
+    newItem.cusStyle[deviceEnv.value].h = height
     emit('onResize', newItem, 'resize')
 }
 </script>

@@ -13,22 +13,25 @@
 </template>
 
 <script lang="ts" setup>
-import { type IUserAppItem, SvgCrop, BROWSER_ENV } from '@beetr/constant'
-import { ref, reactive, PropType, onMounted, watchEffect, inject } from 'vue'
+import { type IUserAppItem, SvgCrop, BROWSER_ENV, EDIT_TYPE } from '@beetr/constant'
+import { ref, reactive, PropType, onMounted, watchEffect, inject, Ref } from 'vue'
 const visible = ref(false)
 const disabled = ref(false)
 const imgRect = reactive({
     width: 0,
     height: 0
 })
-const deviceEnv = inject<keyof typeof BROWSER_ENV>('deviceEnv')!
+const emit = defineEmits<{
+    (e: 'onEdit', item: IUserAppItem, type: keyof typeof EDIT_TYPE): void
+}>()
+const deviceEnv = inject<Ref<keyof typeof BROWSER_ENV>>('deviceEnv')!
 
 const props = defineProps({
     item: {
         type: Object as PropType<IUserAppItem>,
         required: true,
     },
-     
+
 })
 const getImageDimensions = (url: string): Promise<{ width: number, height: number }> => {
     return new Promise((resolve, reject) => {
@@ -62,14 +65,14 @@ onMounted(async () => {
     imgRect.height = height
 })
 
-watchEffect(() => {
-    const w = props.item.cusStyle[deviceEnv].w
-    const h = props.item.cusStyle[deviceEnv].h / 2
-    disabled.value = w / h == imgRect.width / imgRect.height
-    if (disabled.value) {
-        emit('onCrop', false)
-    }
-});
+// watchEffect(() => {
+//     const w = props.item.cusStyle[deviceEnv.value].w
+//     const h = props.item.cusStyle[deviceEnv.value].h / 2
+//     disabled.value = w / h == imgRect.width / imgRect.height
+//     if (disabled.value) {
+//         emit('onCrop', false)
+//     }
+// });
 
 
 
@@ -83,10 +86,13 @@ const switchCropStatus = () => {
     if (disabled.value) {
         return
     }
+    emit('onEdit', {
+        ...props.item,
+        cropStatus: !props.item.cropStatus
+    }, EDIT_TYPE.normal)
 
-    emit('onCrop', !Boolean(props.item.cropStatus))
 }
-const emit = defineEmits(['onCrop'])
+// const emit = defineEmits(['onCrop'])
 </script>
 
 <style lang="scss" scoped>
